@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProConnect | Sosyal Forum & Freelance Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom CSS for elements that need more precise styling */
+        .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .nav-item:hover .nav-icon {
+            transform: scale(1.2);
+        }
+        .profile-cover {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        @media (min-width: 1024px) {
+            .profile-cover {
+                height: 300px;
+            }
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+  <!-- Mobile Navigation -->
+    <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg z-50 border-t border-gray-200">
+        <div class="flex justify-around items-center py-2 px-1">
+            <a href="/index.html" class="nav-item text-center flex-1 py-1">
+                <i class="nav-icon fas fa-home text-blue-500 text-lg block mb-1 transition-transform"></i>
+                <span class="text-xs leading-tight">Ana Sayfa</span>
+            </a>
+            <a href="topluluk.html" class="nav-item text-center flex-1 py-1">
+                <i class="nav-icon fas fa-users text-purple-500 text-lg block mb-1 transition-transform"></i>
+                <span class="text-xs leading-tight">Topluluk</span>
+            </a>
+            <a href="projeler.html" class="nav-item text-center flex-1 py-1">
+                <i class="nav-icon fas fa-briefcase text-green-500 text-lg block mb-1 transition-transform"></i>
+                <span class="text-xs leading-tight">Projeler</span>
+            </a>
+            <a href="mesajlar.html" class="nav-item text-center flex-1 py-1">
+                <i class="nav-icon fas fa-message text-yellow-500 text-lg block mb-1 transition-transform"></i>
+                <span class="text-xs leading-tight">Mesajlar</span>
+            </a>
+            <a href="profil.html" class="nav-item text-center flex-1 py-1">
+                <i class="nav-icon fas fa-user text-pink-500 text-lg block mb-1 transition-transform"></i>
+                <span class="text-xs leading-tight">Profil</span>
+            </a>
+        </div>
+    </div>
+
+
+    <!-- Desktop Navigation -->
+    <nav class="hidden lg:flex flex-col w-64 h-screen fixed left-0 top-0 bg-white shadow-lg z-40">
+        <div class="p-4 gradient-bg">
+            <h1 class="text-white text-2xl font-bold">ProConnect</h1>
+            <p class="text-white text-opacity-80 text-sm">Sosyal Forum & Freelance Platform</p>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto scrollbar-hide">
+            <div class="p-4">
+                <div class="flex items-center space-x-3 mb-6">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-10 h-10 rounded-full border-2 border-blue-400">
+                    <div>
+                        <h4 class="font-semibold">Ahmet Yılmaz</h4>
+                        <p class="text-gray-500 text-sm">Web Developer</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-1">
+                    <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 text-blue-600">
+                        <i class="fas fa-home w-5"></i>
+                        <span>Ana Sayfa</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                        <i class="fas fa-users w-5"></i>
+                        <span>Topluluklar</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                        <i class="fas fa-briefcase w-5"></i>
+                        <span>Projeler</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                        <i class="fas fa-comments w-5"></i>
+                        <span>Mesajlar</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                        <i class="fas fa-bell w-5"></i>
+                        <span>Bildirimler</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                        <i class="fas fa-wallet w-5"></i>
+                        <span>Cüzdan</span>
+                    </a>
+                </div>
+                
+                <div class="mt-6">
+                    <h3 class="text-xs uppercase font-semibold text-gray-500 mb-2">Kategoriler</h3>
+                    <div class="space-y-1">
+                        <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-code w-5 text-green-500"></i>
+                            <span>Web Geliştirme</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-paint-brush w-5 text-purple-500"></i>
+                            <span>Tasarım</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-mobile-alt w-5 text-blue-500"></i>
+                            <span>Mobil Uygulama</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-search-dollar w-5 text-yellow-500"></i>
+                            <span>SEO</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-4 border-t">
+            <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                <i class="fas fa-cog w-5"></i>
+                <span>Ayarlar</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                <i class="fas fa-sign-out-alt w-5"></i>
+                <span>Çıkış Yap</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="lg:ml-64 pb-20 lg:pb-0">
+        <!-- Mobile Header -->
+        <header class="lg:hidden flex items-center justify-between p-4 bg-white shadow-sm sticky top-0 z-30">
+            <div class="flex items-center space-x-2">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-8 h-8 rounded-full">
+                <h1 class="font-bold text-lg">ProConnect</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="text-gray-600">
+                    <i class="fas fa-bell"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Desktop Header -->
+        <header class="hidden lg:flex items-center justify-between p-4 bg-white shadow-sm sticky top-0 z-30">
+            <div class="flex-1 max-w-2xl mx-4">
+                <div class="relative">
+                    <input type="text" placeholder="Toplulukta ara, proje bul..." 
+                           class="w-full py-2 pl-10 pr-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="p-2 rounded-full hover:bg-gray-100 relative">
+                    <i class="fas fa-bell text-gray-600"></i>
+                    <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                </button>
+                <button class="p-2 rounded-full hover:bg-gray-100">
+                    <i class="fas fa-envelope text-gray-600"></i>
+                </button>
+                <button class="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 rounded-full py-1 px-3">
+                    <i class="fas fa-plus text-sm text-gray-600"></i>
+                    <span class="text-sm font-medium">Gönderi</span>
+                </button>
+                <div class="w-px h-8 bg-gray-200"></div>
+                <div class="flex items-center space-x-2 cursor-pointer">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-8 h-8 rounded-full">
+                    <span class="text-sm font-medium">Ahmet</span>
+                    <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col lg:flex-row gap-6">
+                <!-- Left Sidebar (Mobile Hidden) -->
+                <div class="hidden lg:block lg:w-1/4">
+                    <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                        <h3 class="font-semibold text-lg mb-3">Kısayollar</h3>
+                        <div class="space-y-2">
+                            <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50">
+                                <div class="w-8 h-8 rounded-md bg-blue-100 flex items-center justify-center">
+                                    <i class="fas fa-fire text-blue-500"></i>
+                                </div>
+                                <span>Popüler Gönderiler</span>
+                            </a>
+                            <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50">
+                                <div class="w-8 h-8 rounded-md bg-purple-100 flex items-center justify-center">
+                                    <i class="fas fa-star text-purple-500"></i>
+                                </div>
+                                <span>Favori Topluluklar</span>
+                            </a>
+                            <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50">
+                                <div class="w-8 h-8 rounded-md bg-green-100 flex items-center justify-center">
+                                    <i class="fas fa-bolt text-green-500"></i>
+                                </div>
+                                <span>Son Projeler</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <h3 class="font-semibold text-lg mb-3">Takip Ettiğin Topluluklar</h3>
+                        <div class="space-y-3">
+                            <a href="#" class="flex items-center space-x-3 group">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold">
+                                    WD
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-medium group-hover:text-blue-600">Web Developers</h4>
+                                    <p class="text-xs text-gray-500">12.5k üye</p>
+                                </div>
+                                <button class="text-blue-500 hover:text-blue-700">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </a>
+                            <a href="#" class="flex items-center space-x-3 group">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-purple-400 to-purple-600 flex items-center justify-center text-white font-bold">
+                                    FD
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-medium group-hover:text-blue-600">Freelance Dünyası</h4>
+                                    <p class="text-xs text-gray-500">8.2k üye</p>
+                                </div>
+                                <button class="text-blue-500 hover:text-blue-700">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </a>
+                            <a href="#" class="flex items-center space-x-3 group">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-green-400 to-green-600 flex items-center justify-center text-white font-bold">
+                                    JS
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-medium group-hover:text-blue-600">JavaScript Türkiye</h4>
+                                    <p class="text-xs text-gray-500">5.7k üye</p>
+                                </div>
+                                <button class="text-blue-500 hover:text-blue-700">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </a>
+                        </div>
+                        <button class="w-full mt-4 text-center text-blue-500 text-sm font-medium hover:text-blue-700">
+                            Daha fazla göster
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Main Feed -->
+                <div class="w-full lg:w-2/4">
+                    <!-- Create Post -->
+                    <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-10 h-10 rounded-full">
+                            <input type="text" placeholder="Topluluğa bir şeyler paylaş..." 
+                                   class="flex-1 py-2 px-4 bg-gray-100 rounded-full hover:bg-gray-200 focus:outline-none cursor-pointer">
+                        </div>
+                        <div class="flex justify-between border-t pt-3">
+                            <button class="flex items-center space-x-2 text-gray-500 hover:bg-gray-100 px-4 py-1 rounded-md">
+                                <i class="fas fa-image text-green-500"></i>
+                                <span>Fotoğraf</span>
+                            </button>
+                            <button class="flex items-center space-x-2 text-gray-500 hover:bg-gray-100 px-4 py-1 rounded-md">
+                                <i class="fas fa-link text-blue-500"></i>
+                                <span>Link</span>
+                            </button>
+                            <button class="flex items-center space-x-2 text-gray-500 hover:bg-gray-100 px-4 py-1 rounded-md">
+                                <i class="fas fa-poll text-yellow-500"></i>
+                                <span>Anket</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Community Filters -->
+                    <div class="bg-white rounded-lg shadow-sm p-3 mb-4 flex overflow-x-auto scrollbar-hide">
+                        <button class="flex-shrink-0 px-4 py-1 bg-purple-100 text-purple-600 rounded-full mr-2 font-medium">
+                            <i class="fas fa-users mr-1"></i> Tüm Topluluklar
+                        </button>
+                        <button class="flex-shrink-0 px-4 py-1 hover:bg-gray-100 rounded-full mr-2 font-medium">
+                            <i class="fas fa-fire mr-1"></i> Popüler
+                        </button>
+                        <button class="flex-shrink-0 px-4 py-1 hover:bg-gray-100 rounded-full mr-2 font-medium">
+                            <i class="fas fa-star mr-1"></i> Takip Edilenler
+                        </button>
+                        <button class="flex-shrink-0 px-4 py-1 hover:bg-gray-100 rounded-full mr-2 font-medium">
+                            <i class="fas fa-plus mr-1"></i> Yeni
+                        </button>
+                        <button class="flex-shrink-0 px-4 py-1 hover:bg-gray-100 rounded-full font-medium">
+                            <i class="fas fa-trophy mr-1"></i> Öne Çıkanlar
+                        </button>
+                    </div>
+                    
+                    <!-- Community Posts -->
+                    <div class="space-y-4">
+                        <!-- Community Post 1 -->
+                        <div class="bg-white rounded-lg shadow-sm overflow-hidden post-card transition-all duration-300">
+                            <div class="p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold">
+                                            WD
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-blue-600">Web Developers Türkiye</h4>
+                                            <div class="flex items-center space-x-1 text-xs text-gray-500">
+                                                <span>12.5k üye</span>
+                                                <span>•</span>
+                                                <span>Ayşe Kaya tarafından</span>
+                                                <span>•</span>
+                                                <span>3 saat önce</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button class="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm font-medium hover:bg-blue-200">
+                                            <i class="fas fa-plus mr-1"></i>Katıl
+                                        </button>
+                                        <button class="text-gray-400 hover:text-gray-600">
+                                            <i class="fas fa-ellipsis-h"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <h3 class="font-bold text-lg mb-2">React 18'in Yeni Özellikleri ve Concurrent Features</h3>
+                                    <p class="text-gray-700">
+                                        Merhaba arkadaşlar! React 18 ile gelen yeni özellikler hakkında konuşalım. Özellikle Concurrent Features ve Suspense'in nasıl kullanılacağını merak ediyorum. Deneyimlerinizi paylaşabilir misiniz?
+                                    </p>
+                                </div>
+                                
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs">#react</span>
+                                    <span class="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs">#javascript</span>
+                                    <span class="px-2 py-1 bg-purple-100 text-purple-600 rounded-full text-xs">#frontend</span>
+                                </div>
+                                
+                                <div class="flex items-center justify-between text-gray-500 text-sm border-t pt-3">
+                                    <div class="flex items-center space-x-4">
+                                        <button class="flex items-center space-x-1 hover:text-blue-500">
+                                            <i class="far fa-heart"></i>
+                                            <span>24</span>
+                                        </button>
+                                        <button class="flex items-center space-x-1 hover:text-blue-500">
+                                            <i class="far fa-comment"></i>
+                                            <span>8 yorum</span>
+                                        </button>
+                                        <button class="flex items-center space-x-1 hover:text-blue-500">
+                                            <i class="fas fa-share"></i>
+                                            <span>Paylaş</span>
+                                        </button>
+                                    </div>
+                                    <button class="flex items-center space-x-1 hover:text-yellow-500">
+                                        <i class="far fa-bookmark"></i>
+                                        <span>Kaydet</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Community Post 2 -->
+                        <div class="bg-white rounded-lg shadow-sm overflow-hidden post-card transition-all duration-300">
+                            <div class="p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-purple-400 to-purple-600 flex items-center justify-center text-white font-bold">
+                                            FD
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-purple-600">Freelance Dünyası</h4>
+                                            <div class="flex items-center space-x-1 text-xs text-gray-500">
+                                                <span>8.2k üye</span>
+                                                <span>•</span>
+                                                <span>Mehmet Özkan tarafından</span>
+                                                <span>•</span>
+                                                <span>5 saat önce</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs font-medium">
+                                            <i class="fas fa-check mr-1"></i>Üye
+                                        </span>
+                                        <button class="text-gray-400 hover:text-gray-600">
+                                            <i class="fas fa-ellipsis-h"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <h3 class="font-bold text-lg mb-2">Freelance Projelerinde Fiyatlandırma Stratejileri</h3>
+                                    <p class="text-gray-700">
+                                        Freelance projelerinde doğru fiyatlandırma yapmak çok önemli. Özellikle yeni başlayanlar için bu konu oldukça karmaşık olabiliyor. Hangi faktörleri göz önünde bulunduruyorsunuz?
+                                    </p>
+                                </div>
+                                
+                                <div class="bg-gray-50 rounded-lg p-3 mb-4">
+                                    <div class="flex items-center space-x-2 text-sm text-gray-500 mb-2">
+                                        <i class="fas fa-poll"></i>
+                                        <span>Anket: Saatlik ücret aralığınız nedir?</span>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm">50-100 TL</span>
+                                            <div class="flex items-center space-x-2">
+                                                <div class="w-20 bg-gray-200 rounded-full h-2">
+                                                    <div class="bg-blue-500 h-2 rounded-full" style="width: 30%"></div>
+                                                </div>
+                                                <span class="text-xs text-gray-500">30%</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm">100-200 TL</span>
+                                            <div class="flex items-center space-x-2">
+                                                <div class="w-20 bg-gray-200 rounded-full h-2">
+                                                    <div class="bg-green-500 h-2 rounded-full" style="width: 45%"></div>
+                                                </div>
+                                                <span class="text-xs text-gray-500">45%</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm">200+ TL</span>
+                                            <div class="flex items-center space-x-2">
+                                                <div class="w-20 bg-gray-200 rounded-full h-2">
+                                                    <div class="bg-purple-500 h-2 rounded-full" style="width: 25%"></div>
+                                                </div>
+                                                <span class="text-xs text-gray-500">25%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    <span class="px-2 py-1 bg-purple-100 text-purple-600 rounded-full text-xs">#freelance</span>
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-600 rounded-full text-xs">#fiyatlandırma</span>
+                                    <span class="px-2 py-1 bg-red-100 text-red-600 rounded-full text-xs">#iş</span>
+                                </div>
+                                
+                                <div class="flex items-center justify-between text-gray-500 text-sm border-t pt-3">
+                                    <div class="flex items-center space-x-4">
+                                        <button class="flex items-center space-x-1 hover:text-blue-500">
+                                            <i class="fas fa-heart text-red-500"></i>
+                                            <span>42</span>
+                                        </button>
+                                        <button class="flex items-center space-x-1 hover:text-blue-500">
+                                            <i class="far fa-comment"></i>
+                                            <span>15 yorum</span>
+                                        </button>
+                                        <button class="flex items-center space-x-1 hover:text-blue-500">
+                                            <i class="fas fa-share"></i>
+                                            <span>Paylaş</span>
+                                        </button>
+                                    </div>
+                                    <button class="flex items-center space-x-1 hover:text-yellow-500">
+                                        <i class="fas fa-bookmark text-yellow-500"></i>
+                                        <span>Kaydedildi</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Community Post 3 -->
+                        <div class="bg-white rounded-lg shadow-sm overflow-hidden post-card transition-all duration-300">
+                            <div class="p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-green-400 to-green-600 flex items-center justify-center text-white font-bold">
+                                            JS
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-green-600">JavaScript Türkiye</h4>
+                                            <div class="flex items-center space-x-1 text-xs text-gray-500">
+                                                <span>5.7k üye</span>
+                                                <span>•</span>
+                                                <span>Zeynep Arslan tarafından</span>
+                                                <span>•</span>
+                                                <span>1 gün önce</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm font-medium hover:bg-green-200">
+                                            <i class="fas fa-plus mr-1"></i>Katıl
+                                        </button>
+                                        <button class="text-gray-400 hover:text-gray-600">
+                                            <i class="fas fa-ellipsis-h"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <h3 class="font-bold text-lg mb-2">Node.js vs Deno: Hangisini Tercih Etmeliyiz?</h3>
+                                    <p class="text-gray-700">
+                                        Backend geliştirme için Node.js kullanıyorum ama Deno'nun avantajları hakkında çok şey duyuyorum. TypeScript desteği ve güvenlik özellikleri gerçekten o kadar iyi mi?
+                                    </p>
+                                </div>
+                                
+                                <div class="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-4 mb-4">
+                                    <div class="flex items-start space-x-3">
+                                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Expert" class="w-10 h-10 rounded-full">
+                                        <div class="flex-1">
+                                            <div class="flex items-center space-x-2 mb-1">
+                                                <h5 class="font-semibold text-sm">Uzman Görüşü - Can Yücel</h5>
+                                                <span class="px-2 py-0.5 bg-yellow-100 text-yellow-600 rounded-full text-xs">
+                                                    <i class="fas fa-star mr-1"></i>Uzman
+                                                </span>
+                                            </div>
+                                            <p class="text-sm text-gray-700">
+                                                "Deno, modern JavaScript/TypeScript geliştirme için gerçekten güçlü bir alternatif. Özellikle güvenlik ve built-in TypeScript desteği çok değerli."
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    <span class="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs">#nodejs</span>
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs">#deno</span>
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-600 rounded-full text-xs">#backend</span>
+                                    <span class="px-2 py-1 bg-purple-100 text-purple-600 rounded-full text-xs">#typescript</span>
+                                </div>
+                                
+                                <div class="flex items-center justify-between text-gray-500 text-sm border-t pt-3">
+                                    <div class="flex items-center space-x-4">
+                                        <button class="flex items-center space-x-1 hover:text-blue-500">
+                                            <i class="far fa-heart"></i>
+                                            <span>18</span>
+                                        </button>
+                                        <button class="flex items-center space-x-1 hover:text-blue-500">
+                                            <i class="far fa-comment"></i>
+                                            <span>12 yorum</span>
+                                        </button>
+                                        <button class="flex items-center space-x-1 hover:text-blue-500">
+                                            <i class="fas fa-share"></i>
+                                            <span>Paylaş</span>
+                                        </button>
+                                    </div>
+                                    <button class="flex items-center space-x-1 hover:text-yellow-500">
+                                        <i class="far fa-bookmark"></i>
+                                        <span>Kaydet</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Load More Button -->
+                        <div class="text-center py-6">
+                            <button class="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-300">
+                                <i class="fas fa-plus mr-2"></i>Daha Fazla Yükle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Sidebar (Mobile Hidden) -->
+                <div class="hidden lg:block lg:w-1/4">
+                    <!-- Trending Communities -->
+                    <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                        <h3 class="font-bold text-lg mb-4 flex items-center">
+                            <i class="fas fa-fire text-orange-500 mr-2"></i>
+                            Trend Topluluklar
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-full bg-gradient-to-r from-red-400 to-red-600 flex items-center justify-center text-white text-xs font-bold">
+                                        AI
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-sm">AI & Machine Learning</h4>
+                                        <p class="text-xs text-gray-500">15.2k üye</p>
+                                    </div>
+                                </div>
+                                <button class="px-2 py-1 bg-red-100 text-red-600 rounded-full text-xs font-medium hover:bg-red-200">
+                                    Katıl
+                                </button>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-400 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">
+                                        UI
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-sm">UI/UX Designers</h4>
+                                        <p class="text-xs text-gray-500">9.8k üye</p>
+                                    </div>
+                                </div>
+                                <button class="px-2 py-1 bg-indigo-100 text-indigo-600 rounded-full text-xs font-medium hover:bg-indigo-200">
+                                    Katıl
+                                </button>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-full bg-gradient-to-r from-pink-400 to-pink-600 flex items-center justify-center text-white text-xs font-bold">
+                                        MB
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-sm">Mobile Development</h4>
+                                        <p class="text-xs text-gray-500">7.3k üye</p>
+                                    </div>
+                                </div>
+                                <button class="px-2 py-1 bg-pink-100 text-pink-600 rounded-full text-xs font-medium hover:bg-pink-200">
+                                    Katıl
+                                </button>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-full bg-gradient-to-r from-teal-400 to-teal-600 flex items-center justify-center text-white text-xs font-bold">
+                                        DV
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-sm">DevOps & Cloud</h4>
+                                        <p class="text-xs text-gray-500">6.1k üye</p>
+                                    </div>
+                                </div>
+                                <button class="px-2 py-1 bg-teal-100 text-teal-600 rounded-full text-xs font-medium hover:bg-teal-200">
+                                    Katıl
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <button class="w-full mt-4 py-2 text-blue-600 hover:bg-blue-50 rounded-md font-medium text-sm">
+                            Tümünü Gör
+                        </button>
+                    </div>
+                    
+                    <!-- Active Users -->
+                    <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                        <h3 class="font-bold text-lg mb-4 flex items-center">
+                            <i class="fas fa-users text-green-500 mr-2"></i>
+                            Aktif Kullanıcılar
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="relative">
+                                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="w-8 h-8 rounded-full">
+                                    <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-sm">Elif Yılmaz</h4>
+                                    <p class="text-xs text-gray-500">Frontend Developer</p>
+                                </div>
+                                <button class="text-blue-600 hover:text-blue-800 text-sm">
+                                    <i class="fas fa-comment"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <div class="relative">
+                                    <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="User" class="w-8 h-8 rounded-full">
+                                    <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-sm">Burak Demir</h4>
+                                    <p class="text-xs text-gray-500">Full Stack Developer</p>
+                                </div>
+                                <button class="text-blue-600 hover:text-blue-800 text-sm">
+                                    <i class="fas fa-comment"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <div class="relative">
+                                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="User" class="w-8 h-8 rounded-full">
+                                    <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-yellow-400 border-2 border-white rounded-full"></div>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-sm">Seda Kaya</h4>
+                                    <p class="text-xs text-gray-500">UI/UX Designer</p>
+                                </div>
+                                <button class="text-blue-600 hover:text-blue-800 text-sm">
+                                    <i class="fas fa-comment"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <div class="relative">
+                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="w-8 h-8 rounded-full">
+                                    <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-sm">Ahmet Çelik</h4>
+                                    <p class="text-xs text-gray-500">Backend Developer</p>
+                                </div>
+                                <button class="text-blue-600 hover:text-blue-800 text-sm">
+                                    <i class="fas fa-comment"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Weekly Events -->
+                    <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                        <h3 class="font-bold text-lg mb-4 flex items-center">
+                            <i class="fas fa-calendar-alt text-purple-500 mr-2"></i>
+                            Bu Hafta Etkinlikler
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="border-l-4 border-blue-500 pl-3">
+                                <h4 class="font-semibold text-sm">React Workshop</h4>
+                                <p class="text-xs text-gray-500 mb-1">Çarşamba, 15:00</p>
+                                <p class="text-xs text-gray-600">Modern React teknikleri</p>
+                            </div>
+                            
+                            <div class="border-l-4 border-green-500 pl-3">
+                                <h4 class="font-semibold text-sm">Freelance Networking</h4>
+                                <p class="text-xs text-gray-500 mb-1">Cuma, 19:00</p>
+                                <p class="text-xs text-gray-600">Freelancerlar buluşması</p>
+                            </div>
+                            
+                            <div class="border-l-4 border-purple-500 pl-3">
+                                <h4 class="font-semibold text-sm">UI/UX Critique</h4>
+                                <p class="text-xs text-gray-500 mb-1">Pazar, 14:00</p>
+                                <p class="text-xs text-gray-600">Tasarım inceleme oturumu</p>
+                            </div>
+                        </div>
+                        
+                        <button class="w-full mt-4 py-2 bg-gradient-to-r from-purple-500 to-blue-600 text-white rounded-md font-medium text-sm hover:from-purple-600 hover:to-blue-700">
+                            Tüm Etkinlikler
+                        </button>
+                    </div>
+                    
+                    <!-- Community Stats -->
+                    <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-4">
+                        <h3 class="font-bold text-lg mb-4 flex items-center">
+                            <i class="fas fa-chart-line text-blue-500 mr-2"></i>
+                            Topluluk İstatistikleri
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">Toplam Üye</span>
+                                <span class="font-bold text-blue-600">47.2k</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">Aktif Kullanıcı</span>
+                                <span class="font-bold text-green-600">3.8k</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">Günlük Post</span>
+                                <span class="font-bold text-purple-600">156</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600">Bu Ay Katılan</span>
+                                <span class="font-bold text-orange-600">+2.1k</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Profile Modal (Hidden by default) -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden" id="profileModal">
+        <div class="absolute top-0 right-0 bottom-0 w-full max-w-md bg-white overflow-y-auto">
+            <div class="sticky top-0 bg-white z-10 p-4 flex justify-between items-center border-b">
+                <h2 class="text-xl font-bold">Profil</h2>
+                <button onclick="closeProfileModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="profile-cover bg-gradient-to-r from-blue-500 to-purple-600"></div>
+            
+            <div class="px-4 pb-6">
+                <div class="flex justify-between items-start -mt-12 mb-4">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-24 h-24 rounded-full border-4 border-white">
+                    <div class="flex space-x-2 mt-4">
+                        <button class="px-4 py-1 bg-blue-500 text-white rounded-full hover:bg-blue-600 font-medium">
+                            <i class="fas fa-user-plus mr-1"></i> Takip Et
+                        </button>
+                        <button class="p-2 rounded-full border border-gray-300 hover:bg-gray-100">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h1 class="text-2xl font-bold">Ahmet Yılmaz</h1>
+                    <p class="text-gray-600 mb-2">Senior Web Developer | React Specialist</p>
+                    <div class="flex items-center space-x-2 text-sm text-gray-500">
+                        <span class="flex items-center">
+                            <i class="fas fa-map-marker-alt mr-1"></i>
+                            <span>İstanbul, Türkiye</span>
+                        </span>
+                        <span>•</span>
+                        <span class="flex items-center">
+                            <i class="fas fa-calendar-alt mr-1"></i>
+                            <span>Haziran 2018'den beri üye</span>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div>
+                            <p class="text-2xl font-bold">142</p>
+                            <p class="text-sm text-gray-500">Takipçi</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold">87</p>
+                            <p class="text-sm text-gray-500">Takip Edilen</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold">4.9</p>
+                            <p class="text-sm text-gray-500">Puan</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="font-semibold text-lg mb-3">Hakkımda</h3>
+                    <p class="text-gray-700 mb-3">
+                        10 yılı aşkın süredir web geliştirme alanında çalışıyorum. React, Node.js ve MongoDB stack'inde uzmanım. Freelance projeler alıyorum ve aynı zamanda bir eğitmenim.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs">React</span>
+                        <span class="px-2 py-1 bg-purple-100 text-purple-600 rounded-full text-xs">Node.js</span>
+                        <span class="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs">MongoDB</span>
+                        <span class="px-2 py-1 bg-yellow-100 text-yellow-600 rounded-full text-xs">JavaScript</span>
+                        <span class="px-2 py-1 bg-red-100 text-red-600 rounded-full text-xs">Firebase</span>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="font-semibold text-lg mb-3">İstatistikler</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Toplam Gönderi</span>
+                                <span class="font-medium">247</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-500 h-2 rounded-full" style="width: 80%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Toplam Beğeni</span>
+                                <span class="font-medium">5.2K</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 65%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Tamamlanan Proje</span>
+                                <span class="font-medium">48</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-purple-500 h-2 rounded-full" style="width: 90%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold text-lg mb-3">Bağlantılar</h3>
+                    <div class="flex space-x-3">
+                        <a href="#" class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-gray-800 text-white flex items-center justify-center">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-blue-400 text-white flex items-center justify-center">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple functions to handle profile modal
+        function openProfileModal() {
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+        
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+        }
+        
+        // For demo purposes, clicking on profile pictures opens the modal
+        document.addEventListener('DOMContentLoaded', function() {
+            const profilePics = document.querySelectorAll('img[alt="Profile"]');
+            profilePics.forEach(pic => {
+                pic.addEventListener('click', openProfileModal);
+            });
+        });
+    </script>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=alicomert/freelance" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
+</html>

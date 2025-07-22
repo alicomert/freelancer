@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProConnect | Hizmetler - Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom CSS for elements that need more precise styling */
+        .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+        .service-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .nav-item:hover .nav-icon {
+            transform: scale(1.2);
+        }
+        .profile-cover {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        @media (min-width: 1024px) {
+            .profile-cover {
+                height: 300px;
+            }
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .category-badge {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        .featured-badge {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+        .service-listing {
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .service-listing:hover {
+            border-left-color: #3b82f6;
+            background-color: #f8fafc;
+        }
+        .auto-delivery {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+    <!-- Mobile Navigation -->
+    <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg z-50 border-t border-gray-200">
+        <div class="flex justify-around items-center py-2 px-1">
+            <a href="index.html" class="nav-item text-center flex-1 py-1">
+                <i class="nav-icon fas fa-home text-blue-500 text-lg block mb-1 transition-transform"></i>
+                <span class="text-xs leading-tight">Ana Sayfa</span>
+            </a>
+            <a href="topluluk.html" class="nav-item text-center flex-1 py-1">
+                <i class="nav-icon fas fa-users text-purple-500 text-lg block mb-1 transition-transform"></i>
+                <span class="text-xs leading-tight">Topluluk</span>
+            </a>
+            <a href="projeler.html" class="nav-item text-center flex-1 py-1">
+                <i class="nav-icon fas fa-briefcase text-green-500 text-lg block mb-1 transition-transform"></i>
+                <span class="text-xs leading-tight">Projeler</span>
+            </a>
+            <a href="mesajlar.html" class="nav-item text-center flex-1 py-1">
+                <i class="nav-icon fas fa-message text-yellow-500 text-lg block mb-1 transition-transform"></i>
+                <span class="text-xs leading-tight">Mesajlar</span>
+            </a>
+            <a href="hizmetler.html" class="nav-item text-center flex-1 py-1">
+                <i class="nav-icon fas fa-cogs text-orange-500 text-lg block mb-1 transition-transform"></i>
+                <span class="text-xs leading-tight">Hizmetler</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav class="hidden lg:flex flex-col w-64 h-screen fixed left-0 top-0 bg-white shadow-lg z-40">
+        <div class="p-4 gradient-bg">
+            <h1 class="text-white text-2xl font-bold">ProConnect</h1>
+            <p class="text-white text-opacity-80 text-sm">Sosyal Forum & Freelance Platform</p>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto scrollbar-hide">
+            <div class="p-4">
+                <div class="flex items-center space-x-3 mb-6">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-10 h-10 rounded-full border-2 border-blue-400">
+                    <div>
+                        <h4 class="font-semibold">Ahmet Yılmaz</h4>
+                        <p class="text-gray-500 text-sm">Web Developer</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-1">
+                    <a href="index.html" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                        <i class="fas fa-home w-5"></i>
+                        <span>Ana Sayfa</span>
+                    </a>
+                    <a href="topluluk.html" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                        <i class="fas fa-users w-5"></i>
+                        <span>Topluluklar</span>
+                    </a>
+                    <a href="projeler.html" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                        <i class="fas fa-briefcase w-5"></i>
+                        <span>Projeler</span>
+                    </a>
+                    <a href="mesajlar.html" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                        <i class="fas fa-comments w-5"></i>
+                        <span>Mesajlar</span>
+                    </a>
+                    <a href="hizmetler.html" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 text-blue-600 bg-blue-50">
+                        <i class="fas fa-cogs w-5"></i>
+                        <span>Hizmetler</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                        <i class="fas fa-bell w-5"></i>
+                        <span>Bildirimler</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                        <i class="fas fa-wallet w-5"></i>
+                        <span>Cüzdan</span>
+                    </a>
+                </div>
+                
+                <div class="mt-6">
+                    <h3 class="text-xs uppercase font-semibold text-gray-500 mb-2">Hizmet Kategorileri</h3>
+                    <div class="space-y-1">
+                        <a href="#hosting" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-server w-5 text-blue-500"></i>
+                            <span>Hosting & Domain</span>
+                            <span class="ml-auto text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full">24</span>
+                        </a>
+                        <a href="#script" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-code w-5 text-green-500"></i>
+                            <span>Script Satışı</span>
+                            <span class="ml-auto text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full">18</span>
+                        </a>
+                        <a href="#social" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-share-alt w-5 text-pink-500"></i>
+                            <span>Sosyal Medya</span>
+                            <span class="ml-auto text-xs bg-pink-100 text-pink-600 px-2 py-1 rounded-full">42</span>
+                        </a>
+                        <a href="#seo" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-search-dollar w-5 text-yellow-500"></i>
+                            <span>SEO & Marketing</span>
+                            <span class="ml-auto text-xs bg-yellow-100 text-yellow-600 px-2 py-1 rounded-full">15</span>
+                        </a>
+                        <a href="#design" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-palette w-5 text-purple-500"></i>
+                            <span>Tasarım</span>
+                            <span class="ml-auto text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full">31</span>
+                        </a>
+                        <a href="#license" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-key w-5 text-indigo-500"></i>
+                            <span>Lisans & Hesap</span>
+                            <span class="ml-auto text-xs bg-indigo-100 text-indigo-600 px-2 py-1 rounded-full">67</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-4 border-t">
+            <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                <i class="fas fa-cog w-5"></i>
+                <span>Ayarlar</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                <i class="fas fa-sign-out-alt w-5"></i>
+                <span>Çıkış Yap</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="lg:ml-64 pb-20 lg:pb-0">
+        <!-- Mobile Header -->
+        <header class="lg:hidden flex items-center justify-between p-4 bg-white shadow-sm sticky top-0 z-30">
+            <div class="flex items-center space-x-2">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-8 h-8 rounded-full">
+                <h1 class="font-bold text-lg">Hizmetler</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="text-gray-600">
+                    <i class="fas fa-bell"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Desktop Header -->
+        <header class="hidden lg:flex items-center justify-between p-4 bg-white shadow-sm sticky top-0 z-30">
+            <div class="flex-1 max-w-2xl mx-4">
+                <div class="relative">
+                    <input type="text" placeholder="Hizmetlerde ara..." 
+                           class="w-full py-2 pl-10 pr-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="p-2 rounded-full hover:bg-gray-100 relative">
+                    <i class="fas fa-bell text-gray-600"></i>
+                    <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                </button>
+                <button class="p-2 rounded-full hover:bg-gray-100">
+                    <i class="fas fa-envelope text-gray-600"></i>
+                </button>
+                <button class="flex items-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full py-2 px-4 transition-colors">
+                    <i class="fas fa-plus text-sm"></i>
+                    <span class="text-sm font-medium">Hizmet İlanı Ver</span>
+                </button>
+                <div class="w-px h-8 bg-gray-200"></div>
+                <div class="flex items-center space-x-2 cursor-pointer">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-8 h-8 rounded-full">
+                    <span class="text-sm font-medium">Ahmet</span>
+                    <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="container mx-auto px-4 py-6">
+            <!-- Hero Section -->
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-6 gradient-bg text-white">
+                <div class="text-center">
+                    <h1 class="text-3xl font-bold mb-2">Hizmet Marketplace</h1>
+                    <p class="text-lg opacity-90 mb-4">Freelancerlardan profesyonel hizmetler alın veya kendi hizmetlerinizi satın</p>
+                    <div class="flex flex-wrap justify-center gap-6 text-sm">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-shield-check"></i>
+                            <span>Güvenli Ödeme</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-clock"></i>
+                            <span>Hızlı Teslimat</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-star"></i>
+                            <span>Kaliteli Hizmet</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-headset"></i>
+                            <span>7/24 Destek</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Hizmet Kategorileri Detaylı -->
+            <div class="mb-12">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                        <i class="fas fa-th-large text-blue-500 mr-3"></i>
+                        Tüm Kategoriler
+                    </h2>
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                        <i class="fas fa-eye mr-2"></i>
+                        Tümünü Gör
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Hosting & VPS -->
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-server text-blue-500 text-2xl mr-3"></i>
+                                <div>
+                                    <h3 class="font-bold text-lg">Hosting & VPS</h3>
+                                    <p class="text-sm text-gray-500">47 ilan</p>
+                                </div>
+                            </div>
+                            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Aktif</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Shared hosting, VPS, dedicated sunucu kiralama hizmetleri</p>
+                    </div>
+
+                    <!-- Hesap & Lisans Satışları -->
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-key text-green-500 text-2xl mr-3"></i>
+                                <div>
+                                    <h3 class="font-bold text-lg">Hesap & Lisans</h3>
+                                    <p class="text-sm text-gray-500">156 ilan</p>
+                                </div>
+                            </div>
+                            <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Çok Satan</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Canva, ChatGPT, Adobe, Office, Windows lisansları</p>
+                    </div>
+
+                    <!-- E-Pin & Oyun Kredileri -->
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-gamepad text-purple-500 text-2xl mr-3"></i>
+                                <div>
+                                    <h3 class="font-bold text-lg">E-Pin & Oyun</h3>
+                                    <p class="text-sm text-gray-500">89 ilan</p>
+                                </div>
+                            </div>
+                            <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded">Otomatik</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Steam, PSN, Xbox, Google Play, iTunes kredileri</p>
+                    </div>
+
+                    <!-- Script & Tema Satışları -->
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-code text-orange-500 text-2xl mr-3"></i>
+                                <div>
+                                    <h3 class="font-bold text-lg">Script & Tema</h3>
+                                    <p class="text-sm text-gray-500">73 ilan</p>
+                                </div>
+                            </div>
+                            <span class="bg-orange-100 text-orange-800 text-xs font-semibold px-2.5 py-0.5 rounded">Popüler</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">WordPress, PHP, HTML temaları ve scriptleri</p>
+                    </div>
+
+                    <!-- Sosyal Medya Hesapları -->
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center">
+                                <i class="fab fa-instagram text-pink-500 text-2xl mr-3"></i>
+                                <div>
+                                    <h3 class="font-bold text-lg">Sosyal Medya</h3>
+                                    <p class="text-sm text-gray-500">124 ilan</p>
+                                </div>
+                            </div>
+                            <span class="bg-pink-100 text-pink-800 text-xs font-semibold px-2.5 py-0.5 rounded">Trend</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Instagram, TikTok, YouTube, Facebook hesap satışları</p>
+                    </div>
+
+                    <!-- SEO & Dijital Pazarlama -->
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-chart-line text-indigo-500 text-2xl mr-3"></i>
+                                <div>
+                                    <h3 class="font-bold text-lg">SEO & Pazarlama</h3>
+                                    <p class="text-sm text-gray-500">62 ilan</p>
+                                </div>
+                            </div>
+                            <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-0.5 rounded">Profesyonel</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">SEO, Google Ads, sosyal medya pazarlama hizmetleri</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-12">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                        <i class="fas fa-list text-blue-500 mr-3"></i>
+                        Son Hizmet İlanları
+                    </h2>
+                    <div class="flex space-x-2">
+                        <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                            <option>Tüm Kategoriler</option>
+                            <option>Hosting & VPS</option>
+                            <option>Hesap & Lisans</option>
+                            <option>E-Pin & Oyun</option>
+                            <option>Script & Tema</option>
+                            <option>Sosyal Medya</option>
+                            <option>SEO & Pazarlama</option>
+                        </select>
+                        <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                            <option>En Yeni</option>
+                            <option>En Ucuz</option>
+                            <option>En Pahalı</option>
+                            <option>En Çok Satan</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Hosting İlanı -->
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                        <div class="flex items-center mb-4">
+                            <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Seller" class="w-12 h-12 rounded-full mr-3">
+                            <div>
+                                <h3 class="font-bold text-gray-800">VPS & Hosting Paketleri</h3>
+                                <p class="text-sm text-gray-500">@hostingpro</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Shared hosting'den VPS'e kadar tüm paketler. SSD disk, SSL sertifikası dahil.</p>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="flex items-center">
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                </div>
+                                <span class="text-sm text-gray-500">(127)</span>
+                            </div>
+                            <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">Premium</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-lg font-bold text-blue-600">₺99 - ₺1,280<span class="text-sm text-gray-500">/ay</span></span>
+                            <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                                İncele
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Lisans İlanı -->
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                        <div class="flex items-center mb-4">
+                            <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Seller" class="w-12 h-12 rounded-full mr-3">
+                            <div>
+                                <h3 class="font-bold text-gray-800">EN UCUZ LİSANSLAR ✅</h3>
+                                <p class="text-sm text-gray-500">@dijitalmagaza</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">CANVA ● CHATGPT ● ADOBE ● OFFICE ● WINDOWS ve daha fazlası 🔥</p>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="flex items-center">
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                </div>
+                                <span class="text-sm text-gray-500">(342)</span>
+                            </div>
+                            <span class="bg-green-500 text-white text-xs px-2 py-1 rounded-full">Çok Satan</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-lg font-bold text-green-600">₺15 - ₺899</span>
+                            <button class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                                İncele
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- E-Pin İlanı -->
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                        <div class="flex items-center mb-4">
+                            <img src="https://randomuser.me/api/portraits/men/28.jpg" alt="Seller" class="w-12 h-12 rounded-full mr-3">
+                            <div>
+                                <h3 class="font-bold text-gray-800">Steam & Oyun E-Pinleri</h3>
+                                <p class="text-sm text-gray-500">@gamestore</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Steam, PSN, Xbox, Google Play ve tüm e-pinler. Anında teslimat.</p>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="flex items-center">
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                </div>
+                                <span class="text-sm text-gray-500">(89)</span>
+                            </div>
+                            <span class="auto-delivery text-white text-xs px-2 py-1 rounded-full">Otomatik Teslimat</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-lg font-bold text-purple-600">₺25 - ₺1,500</span>
+                            <button class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors">
+                                İncele
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Instagram Hesap İlanı -->
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                        <div class="flex items-center mb-4">
+                            <img src="https://randomuser.me/api/portraits/women/25.jpg" alt="Seller" class="w-12 h-12 rounded-full mr-3">
+                            <div>
+                                <h3 class="font-bold text-gray-800">Instagram Hesap Satışı</h3>
+                                <p class="text-sm text-gray-500">@socialking</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">10K-500K takipçili Instagram hesapları. Organik ve aktif takipçiler.</p>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="flex items-center">
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="far fa-star text-yellow-400 mr-1"></i>
+                                </div>
+                                <span class="text-sm text-gray-500">(156)</span>
+                            </div>
+                            <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded-full">Trend</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-lg font-bold text-pink-600">₺150 - ₺15,000</span>
+                            <button class="bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600 transition-colors">
+                                İncele
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- WordPress Script İlanı -->
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                        <div class="flex items-center mb-4">
+                            <img src="https://randomuser.me/api/portraits/men/35.jpg" alt="Seller" class="w-12 h-12 rounded-full mr-3">
+                            <div>
+                                <h3 class="font-bold text-gray-800">WordPress Tema & Plugin</h3>
+                                <p class="text-sm text-gray-500">@wpmaster</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Premium WordPress temaları ve pluginleri. Lisanslı ve güncel sürümler.</p>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="flex items-center">
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                </div>
+                                <span class="text-sm text-gray-500">(203)</span>
+                            </div>
+                            <span class="bg-orange-500 text-white text-xs px-2 py-1 rounded-full">Popüler</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-lg font-bold text-orange-600">₺50 - ₺2,500</span>
+                            <button class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
+                                İncele
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SEO Hizmeti İlanı -->
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                        <div class="flex items-center mb-4">
+                            <img src="https://randomuser.me/api/portraits/women/42.jpg" alt="Seller" class="w-12 h-12 rounded-full mr-3">
+                            <div>
+                                <h3 class="font-bold text-gray-800">SEO & Google Ads</h3>
+                                <p class="text-sm text-gray-500">@seoexpert</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Profesyonel SEO optimizasyonu ve Google Ads kampanya yönetimi.</p>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="flex items-center">
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                    <i class="far fa-star text-yellow-400 mr-1"></i>
+                                </div>
+                                <span class="text-sm text-gray-500">(78)</span>
+                            </div>
+                            <span class="bg-indigo-500 text-white text-xs px-2 py-1 rounded-full">Profesyonel</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-lg font-bold text-indigo-600">₺200 - ₺5,000</span>
+                            <button class="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition-colors">
+                                İncele
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daha Fazla Yükle Butonu -->
+                <div class="text-center mt-8">
+                    <button class="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>
+                        Daha Fazla İlan Yükle
+                    </button>
+                </div>
+            </div>
+
+            <!-- Featured Services -->
+            <section class="mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-2xl font-bold text-gray-800">
+                        <i class="fas fa-star text-yellow-500 mr-2"></i>
+                        Öne Çıkan Hizmetler
+                    </h2>
+                    <button class="text-blue-500 text-sm font-medium hover:text-blue-700">Tümünü Gör</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Featured Service 1 -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 service-card transition-all duration-300 relative">
+                        <div class="absolute top-4 right-4">
+                            <span class="featured-badge text-white text-xs px-2 py-1 rounded-full font-medium">
+                                Öne Çıkan
+                            </span>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Seller" class="w-12 h-12 rounded-full mr-3">
+                            <div>
+                                <h3 class="font-bold text-gray-800">VPS & Hosting Paketleri</h3>
+                                <p class="text-sm text-gray-500">@hostingpro</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Shared hosting'den VPS'e kadar tüm paketler. SSD disk, SSL sertifikası dahil.</p>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star text-xs"></i>
+                                    <i class="fas fa-star text-xs"></i>
+                                    <i class="fas fa-star text-xs"></i>
+                                    <i class="fas fa-star text-xs"></i>
+                                    <i class="fas fa-star text-xs"></i>
+                                </div>
+                                <span class="text-sm text-gray-500">(127)</span>
+                            </div>
+                            <span class="auto-delivery text-white text-xs px-2 py-1 rounded-full">Otomatik Teslimat</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-lg font-bold text-blue-600">₺99 - ₺1,280<span class="text-sm text-gray-500">/ay</span></span>
+                            <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                                İncele
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Featured Service 2 -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 service-card transition-all duration-300">
+                        <div class="flex items-center mb-4">
+                            <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Seller" class="w-12 h-12 rounded-full mr-3">
+                            <div>
+                                <h3 class="font-bold text-gray-800">Lisans & Hesap Satışları</h3>
+                                <p class="text-sm text-gray-500">@dijitalmagaza</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Canva, ChatGPT, Adobe, Office ve daha fazlası. Güvenli hesap transferi.</p>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star text-xs"></i>
+                                    <i class="fas fa-star text-xs"></i>
+                                    <i class="fas fa-star text-xs"></i>
+                                    <i class="fas fa-star text-xs"></i>
+                                    <i class="far fa-star text-xs"></i>
+                                </div>
+                                <span class="text-sm text-gray-500">(342)</span>
+                            </div>
+                            <span class="bg-green-500 text-white text-xs px-2 py-1 rounded-full">Çok Satan</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-lg font-bold text-green-600">₺15 - ₺899</span>
+                            <button class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                                İncele
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Featured Service 3 -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 service-card transition-all duration-300">
+                        <div class="flex items-center mb-4">
+                            <img src="https://randomuser.me/api/portraits/men/28.jpg" alt="Seller" class="w-12 h-12 rounded-full mr-3">
+                            <div>
+                                <h3 class="font-bold text-gray-800">E-Pin & Oyun Kredileri</h3>
+                                <p class="text-sm text-gray-500">@gamestore</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Steam, PSN, Xbox, Google Play ve tüm e-pinler. Anında teslimat.</p>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star text-xs"></i>
+                                    <i class="fas fa-star text-xs"></i>
+                                    <i class="fas fa-star text-xs"></i>
+                                    <i class="fas fa-star text-xs"></i>
+                                    <i class="fas fa-star text-xs"></i>
+                                </div>
+                                <span class="text-sm text-gray-500">(89)</span>
+                            </div>
+                            <span class="auto-delivery text-white text-xs px-2 py-1 rounded-full">Otomatik Teslimat</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-lg font-bold text-purple-600">₺25 - ₺1,500</span>
+                            <button class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors">
+                                İncele
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Service Categories -->
+            <section id="hosting" class="mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-2xl font-bold text-gray-800">
+                        <i class="fas fa-server text-blue-500 mr-2"></i>
+                        Hosting & Domain Hizmetleri
+                    </h2>
+                    <button class="text-blue-500 text-sm font-medium hover:text-blue-700">Tümünü Gör (24)</button>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm">
+                    <!-- Service Listing 1 -->
+                    <div class="service-listing p-4 border-b border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Seller" class="w-12 h-12 rounded-full">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">Premium Hosting Paketi - Sınırsız Trafik</h3>
+                                    <p class="text-sm text-gray-500">@mehmethost • 2 saat önce</p>
+                                    <p class="text-sm text-gray-600 mt-1">SSD disk, ücretsiz SSL, cPanel, 7/24 destek</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-lg font-bold text-blue-600">₺99/ay</div>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="auto-delivery text-white text-xs px-2 py-1 rounded-full">Otomatik</span>
+                                    <div class="flex text-yellow-400">
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                    </div>
+                                    <span class="text-xs text-gray-500">(127)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Service Listing 2 -->
+                    <div class="service-listing p-4 border-b border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="Seller" class="w-12 h-12 rounded-full">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">Domain Kayıt Hizmeti - Tüm Uzantılar</h3>
+                                    <p class="text-sm text-gray-500">@domainpro • 4 saat önce</p>
+                                    <p class="text-sm text-gray-600 mt-1">.com, .net, .org, .com.tr ve 500+ uzantı</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-lg font-bold text-blue-600">₺45/yıl</div>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">Hızlı</span>
+                                    <div class="flex text-yellow-400">
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="far fa-star text-xs"></i>
+                                    </div>
+                                    <span class="text-xs text-gray-500">(89)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Service Listing 3 -->
+                    <div class="service-listing p-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <img src="https://randomuser.me/api/portraits/men/35.jpg" alt="Seller" class="w-12 h-12 rounded-full">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">VPS Sunucu Kiralama - Yönetimli</h3>
+                                    <p class="text-sm text-gray-500">@vpsexpert • 1 gün önce</p>
+                                    <p class="text-sm text-gray-600 mt-1">4 CPU, 8GB RAM, 100GB SSD, yönetimli hizmet</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-lg font-bold text-blue-600">₺299/ay</div>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="bg-purple-500 text-white text-xs px-2 py-1 rounded-full">Premium</span>
+                                    <div class="flex text-yellow-400">
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                    </div>
+                                    <span class="text-xs text-gray-500">(156)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Social Media Services -->
+            <section id="social" class="mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-2xl font-bold text-gray-800">
+                        <i class="fas fa-share-alt text-pink-500 mr-2"></i>
+                        Sosyal Medya Hizmetleri
+                    </h2>
+                    <button class="text-pink-500 text-sm font-medium hover:text-pink-700">Tümünü Gör (42)</button>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm">
+                    <!-- Social Media Listing 1 -->
+                    <div class="service-listing p-4 border-b border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Seller" class="w-12 h-12 rounded-full">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">Instagram Hesap Satışı - 50K+ Takipçi</h3>
+                                    <p class="text-sm text-gray-500">@socialexpert • 30 dakika önce</p>
+                                    <p class="text-sm text-gray-600 mt-1">Organik takipçi, aktif hesap, güvenli transfer</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-lg font-bold text-pink-600">₺2,500</div>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded-full">Popüler</span>
+                                    <div class="flex text-yellow-400">
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="far fa-star text-xs"></i>
+                                    </div>
+                                    <span class="text-xs text-gray-500">(89)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Media Listing 2 -->
+                    <div class="service-listing p-4 border-b border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <img src="https://randomuser.me/api/portraits/men/42.jpg" alt="Seller" class="w-12 h-12 rounded-full">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">Facebook Sayfa Satışı - Onaylı Mavi Tik</h3>
+                                    <p class="text-sm text-gray-500">@fbpages • 1 saat önce</p>
+                                    <p class="text-sm text-gray-600 mt-1">100K+ beğeni, mavi tik onaylı, eski tarihli</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-lg font-bold text-pink-600">₺5,000</div>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">Onaylı</span>
+                                    <div class="flex text-yellow-400">
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                    </div>
+                                    <span class="text-xs text-gray-500">(67)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Media Listing 3 -->
+                    <div class="service-listing p-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <img src="https://randomuser.me/api/portraits/women/25.jpg" alt="Seller" class="w-12 h-12 rounded-full">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">TikTok Takipçi Artırma - Organik</h3>
+                                    <p class="text-sm text-gray-500">@tiktokguru • 3 saat önce</p>
+                                    <p class="text-sm text-gray-600 mt-1">10K takipçi paketi, organik ve güvenli</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-lg font-bold text-pink-600">₺199</div>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="auto-delivery text-white text-xs px-2 py-1 rounded-full">Otomatik</span>
+                                    <div class="flex text-yellow-400">
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="far fa-star text-xs"></i>
+                                    </div>
+                                    <span class="text-xs text-gray-500">(234)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Script Sales -->
+            <section id="script" class="mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-2xl font-bold text-gray-800">
+                        <i class="fas fa-code text-green-500 mr-2"></i>
+                        Script Satışı
+                    </h2>
+                    <button class="text-green-500 text-sm font-medium hover:text-green-700">Tümünü Gör (18)</button>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm">
+                    <!-- Script Listing 1 -->
+                    <div class="service-listing p-4 border-b border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <img src="https://randomuser.me/api/portraits/men/28.jpg" alt="Seller" class="w-12 h-12 rounded-full">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">WordPress Premium Tema Paketi - 100+ Tema</h3>
+                                    <p class="text-sm text-gray-500">@codemaster • 2 saat önce</p>
+                                    <p class="text-sm text-gray-600 mt-1">Lisanslı temalar, plugin dahil, güncel versiyonlar</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-lg font-bold text-green-600">₺299</div>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="auto-delivery text-white text-xs px-2 py-1 rounded-full">Otomatik</span>
+                                    <div class="flex text-yellow-400">
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                    </div>
+                                    <span class="text-xs text-gray-500">(203)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Script Listing 2 -->
+                    <div class="service-listing p-4 border-b border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <img src="https://randomuser.me/api/portraits/men/38.jpg" alt="Seller" class="w-12 h-12 rounded-full">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">E-ticaret Scripti - Hazır Mağaza</h3>
+                                    <p class="text-sm text-gray-500">@ecommercepro • 5 saat önce</p>
+                                    <p class="text-sm text-gray-600 mt-1">PHP Laravel, admin panel, ödeme entegrasyonu</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-lg font-bold text-green-600">₺1,500</div>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="bg-purple-500 text-white text-xs px-2 py-1 rounded-full">Premium</span>
+                                    <div class="flex text-yellow-400">
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="far fa-star text-xs"></i>
+                                    </div>
+                                    <span class="text-xs text-gray-500">(45)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Script Listing 3 -->
+                    <div class="service-listing p-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <img src="https://randomuser.me/api/portraits/women/35.jpg" alt="Seller" class="w-12 h-12 rounded-full">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">Forum Scripti - Tam Özellikli</h3>
+                                    <p class="text-sm text-gray-500">@forumdev • 1 gün önce</p>
+                                    <p class="text-sm text-gray-600 mt-1">Modern tasarım, mobil uyumlu, SEO optimized</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-lg font-bold text-green-600">₺899</div>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="bg-green-500 text-white text-xs px-2 py-1 rounded-full">Yeni</span>
+                                    <div class="flex text-yellow-400">
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                    </div>
+                                    <span class="text-xs text-gray-500">(78)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Call to Action -->
+            <div class="bg-white rounded-lg shadow-sm p-6 text-center">
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Kendi Hizmetinizi Satmaya Başlayın!</h3>
+                <p class="text-gray-500 mb-4">Binlerce müşteriye ulaşın ve gelir elde edin</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>Hizmet İlanı Ver
+                    </button>
+                    <button class="bg-gray-100 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-200 transition-colors">
+                        <i class="fas fa-question-circle mr-2"></i>Nasıl Çalışır?
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

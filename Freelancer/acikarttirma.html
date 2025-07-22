@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProConnect | Dijital Ürünler Açık Arttırma</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom CSS for digital auction styling */
+        .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+        .auction-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.15);
+        }
+        .nav-item:hover .nav-icon {
+            transform: scale(1.2);
+        }
+        .bid-animation {
+            animation: bidPulse 0.6s ease-in-out;
+        }
+        @keyframes bidPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .countdown-timer {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+        }
+        .price-highlight {
+            background: linear-gradient(45deg, #10b981, #059669);
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .auction-status-live {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+            animation: pulse 2s infinite;
+        }
+        .auction-status-ending {
+            background: linear-gradient(45deg, #f59e0b, #d97706);
+            animation: pulse 1s infinite;
+        }
+        .auction-status-ended {
+            background: linear-gradient(45deg, #6b7280, #4b5563);
+        }
+        .digital-badge {
+            background: linear-gradient(45deg, #8b5cf6, #3b82f6);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+    <!-- Mobile Navigation -->
+    <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg z-50 border-t border-gray-200">
+        <div class="flex justify-around items-center py-2 px-1">
+            <a href="index.html" class="nav-item text-center flex-1 py-2">
+                <i class="nav-icon fas fa-home text-blue-500 text-lg block mb-1 transition-transform"></i>
+                <span class="text-xs leading-tight">Ana Sayfa</span>
+            </a>
+            <a href="topluluk.html" class="nav-item text-center flex-1 py-2">
+                <i class="nav-icon fas fa-users text-purple-500 text-lg block mb-1 transition-transform"></i>
+                <span class="text-xs leading-tight">Topluluk</span>
+            </a>
+            <a href="projeler.html" class="nav-item text-center flex-1 py-2">
+                <i class="nav-icon fas fa-briefcase text-green-500 text-lg block mb-1 transition-transform"></i>
+                <span class="text-xs leading-tight">Projeler</span>
+            </a>
+            <a href="acikarttirma.html" class="nav-item text-center flex-1 py-2">
+                <i class="nav-icon fas fa-gavel text-red-500 text-lg block mb-1 transition-transform"></i>
+                <span class="text-xs leading-tight">Arttırma</span>
+            </a>
+            <a href="profil.html" class="nav-item text-center flex-1 py-2">
+                <i class="nav-icon fas fa-user text-pink-500 text-lg block mb-1 transition-transform"></i>
+                <span class="text-xs leading-tight">Profil</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav class="hidden lg:flex flex-col w-64 h-screen fixed left-0 top-0 bg-white shadow-lg z-40">
+        <div class="p-4 gradient-bg">
+            <h1 class="text-white text-2xl font-bold">ProConnect</h1>
+            <p class="text-white text-opacity-80 text-sm">Dijital Arttırma Platformu</p>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto scrollbar-hide">
+            <div class="p-4">
+                <div class="flex items-center space-x-3 mb-6">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-10 h-10 rounded-full border-2 border-blue-400">
+                    <div>
+                        <h4 class="font-semibold">Ahmet Yılmaz</h4>
+                        <p class="text-gray-500 text-sm">Dijital Satıcı</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-1">
+                    <a href="index.html" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                        <i class="fas fa-home w-5"></i>
+                        <span>Ana Sayfa</span>
+                    </a>
+                    <a href="acikarttirma.html" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 text-red-600 bg-red-50">
+                        <i class="fas fa-gavel w-5"></i>
+                        <span>Dijital Arttırma</span>
+                    </a>
+                    <a href="topluluk.html" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                        <i class="fas fa-users w-5"></i>
+                        <span>Topluluk</span>
+                    </a>
+                    <a href="projeler.html" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                        <i class="fas fa-briefcase w-5"></i>
+                        <span>Projeler</span>
+                    </a>
+                    <a href="mesajlar.html" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                        <i class="fas fa-comments w-5"></i>
+                        <span>Mesajlar</span>
+                    </a>
+                    <a href="hizmetler.html" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                        <i class="fas fa-store w-5"></i>
+                        <span>Hizmetler</span>
+                    </a>
+                </div>
+                
+                <div class="mt-6">
+                    <h3 class="text-xs uppercase font-semibold text-gray-500 mb-2">Dijital Kategoriler</h3>
+                    <div class="space-y-1">
+                        <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-code w-5 text-blue-500"></i>
+                            <span>Yazılım & Web</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-share-alt w-5 text-pink-500"></i>
+                            <span>Sosyal Medya</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-gamepad w-5 text-green-500"></i>
+                            <span>Oyun & E-Pin</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-key w-5 text-purple-500"></i>
+                            <span>Lisans & Hesap</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-download w-5 text-orange-500"></i>
+                            <span>Dijital İçerik</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-4 border-t">
+            <button class="w-full bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors mb-2">
+                <i class="fas fa-plus mr-2"></i>
+                Dijital Arttırma Başlat
+            </button>
+            <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                <i class="fas fa-cog w-5"></i>
+                <span>Ayarlar</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="lg:ml-64 pb-20 lg:pb-0">
+        <!-- Mobile Header -->
+        <header class="lg:hidden flex items-center justify-between p-4 bg-white shadow-sm sticky top-0 z-30">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-gavel text-red-500 text-xl"></i>
+                <h1 class="font-bold text-lg">Dijital Arttırma</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="text-gray-600 relative">
+                    <i class="fas fa-bell"></i>
+                    <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full text-xs"></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Desktop Header -->
+        <header class="hidden lg:flex items-center justify-between p-4 bg-white shadow-sm sticky top-0 z-30">
+            <div class="flex-1 max-w-2xl mx-4">
+                <div class="relative">
+                    <input type="text" placeholder="Dijital ürünlerde ara..." 
+                           class="w-full py-2 pl-10 pr-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="p-2 rounded-full hover:bg-gray-100 relative">
+                    <i class="fas fa-bell text-gray-600"></i>
+                    <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                </button>
+                <button class="flex items-center space-x-2 bg-red-500 hover:bg-red-600 text-white rounded-full py-2 px-4">
+                    <i class="fas fa-gavel text-sm"></i>
+                    <span class="text-sm font-medium">Dijital Arttırma Başlat</span>
+                </button>
+                <div class="w-px h-8 bg-gray-200"></div>
+                <div class="flex items-center space-x-2 cursor-pointer">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-8 h-8 rounded-full">
+                    <span class="text-sm font-medium">Ahmet</span>
+                    <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="container mx-auto px-4 py-6">
+            <!-- Filter Bar -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                    <div class="flex flex-wrap gap-2">
+                        <button class="px-4 py-2 bg-red-500 text-white rounded-full text-sm font-medium">
+                            <i class="fas fa-fire mr-1"></i>
+                            Canlı Arttırmalar
+                        </button>
+                        <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-200">
+                            <i class="fas fa-clock mr-1"></i>
+                            Yakında Bitenler
+                        </button>
+                        <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-200">
+                            <i class="fas fa-star mr-1"></i>
+                            Öne Çıkanlar
+                        </button>
+                        <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-200">
+                            <i class="fas fa-trophy mr-1"></i>
+                            Yeni Başlayanlar
+                        </button>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                            <option>Tüm Kategoriler</option>
+                            <option>Dijital Ürünler</option>
+                            <option>Yazılım & Web</option>
+                            <option>Sosyal Medya</option>
+                            <option>Oyun & E-Pin</option>
+                            <option>Lisans & Hesap</option>
+                        </select>
+                        <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                            <option>Sıralama</option>
+                            <option>En Yüksek Teklif</option>
+                            <option>En Yakın Bitiş</option>
+                            <option>En Yeni</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Digital Auctions Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                <!-- Digital Product 1 - Instagram Account -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden auction-card transition-all duration-300">
+                    <div class="relative">
+                        <div class="h-48 bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 flex items-center justify-center">
+                            <div class="text-center text-white">
+                                <i class="fab fa-instagram text-6xl mb-2"></i>
+                                <p class="text-lg font-bold">@teknoloji_dunyasi</p>
+                                <p class="text-sm opacity-90">125K Takipçi</p>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 left-3">
+                            <span class="auction-status-live text-white text-xs font-bold px-2 py-1 rounded-full">
+                                <i class="fas fa-circle mr-1"></i>CANLI
+                            </span>
+                        </div>
+                        <div class="absolute top-3 right-3 countdown-timer text-white text-xs font-bold px-2 py-1 rounded-full">
+                            <i class="fas fa-clock mr-1"></i>1g 5s 23dk
+                        </div>
+                        <div class="absolute bottom-3 left-3 right-3">
+                            <div class="bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                                <i class="fas fa-users mr-1"></i>18 teklif veren
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-bold text-lg text-gray-800">Instagram Teknoloji Hesabı</h3>
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                <span class="text-sm text-gray-600">4.9</span>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-600 text-sm mb-3">Organik büyüme, aktif takipçi kitlesi. Teknoloji nişinde güçlü engagement oranı.</p>
+                        
+                        <div class="flex items-center space-x-2 mb-3">
+                            <img src="https://randomuser.me/api/portraits/men/25.jpg" alt="Seller" class="w-6 h-6 rounded-full">
+                            <span class="text-sm text-gray-600">SocialMediaPro</span>
+                            <i class="fas fa-check-circle text-green-500 text-xs"></i>
+                        </div>
+                        
+                        <div class="border-t pt-3">
+                            <div class="flex items-center justify-between mb-3">
+                                <div>
+                                    <p class="text-xs text-gray-500">Başlangıç Fiyatı</p>
+                                    <p class="text-sm font-medium text-gray-700">₺2,500</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs text-gray-500">Güncel Teklif</p>
+                                    <p class="text-xl font-bold price-highlight text-white px-2 py-1 rounded">₺8,750</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Recent Bids -->
+                            <div class="space-y-2 mb-3">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-600">@mehmet_k</span>
+                                    <span class="font-medium">₺8,750</span>
+                                    <span class="text-gray-500">2dk önce</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-600">@ayse_digital</span>
+                                    <span class="font-medium">₺8,500</span>
+                                    <span class="text-gray-500">5dk önce</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-600">@can_sosyal</span>
+                                    <span class="font-medium">₺8,250</span>
+                                    <span class="text-gray-500">8dk önce</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="flex items-center space-x-2 mb-3">
+                                <button onclick="openAuctionDetails('instagram-account')" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+                                    <i class="fas fa-info-circle mr-1"></i>Detaylar
+                                </button>
+                                <button onclick="openAuctionRules()" class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+                                    <i class="fas fa-question-circle mr-1"></i>Bilgi
+                                </button>
+                            </div>
+                            
+                            <!-- Bid Input -->
+                            <div class="flex items-center space-x-2">
+                                <input type="number" placeholder="₺9,000" min="9000" step="250" 
+                                       class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent">
+                                <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors bid-animation">
+                                    Teklif Ver
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Min. artış: ₺250</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Digital Product 2 - WordPress Theme -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden auction-card transition-all duration-300">
+                    <div class="relative">
+                        <div class="h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                            <div class="text-center text-white">
+                                <i class="fab fa-wordpress text-6xl mb-2"></i>
+                                <p class="text-lg font-bold">Premium Theme</p>
+                                <p class="text-sm opacity-90">E-ticaret Teması</p>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 left-3">
+                            <span class="auction-status-ending text-white text-xs font-bold px-2 py-1 rounded-full">
+                                <i class="fas fa-exclamation mr-1"></i>BİTİYOR
+                            </span>
+                        </div>
+                        <div class="absolute top-3 right-3 countdown-timer text-white text-xs font-bold px-2 py-1 rounded-full">
+                            <i class="fas fa-clock mr-1"></i>0g 0s 47dk
+                        </div>
+                        <div class="absolute bottom-3 left-3 right-3">
+                            <div class="bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                                <i class="fas fa-users mr-1"></i>12 teklif veren
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-bold text-lg text-gray-800">WordPress E-ticaret Teması</h3>
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                <span class="text-sm text-gray-600">4.7</span>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-600 text-sm mb-3">Responsive tasarım, WooCommerce uyumlu, SEO optimized premium tema.</p>
+                        
+                        <div class="flex items-center space-x-2 mb-3">
+                            <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Seller" class="w-6 h-6 rounded-full">
+                            <span class="text-sm text-gray-600">WebDesignStudio</span>
+                            <i class="fas fa-check-circle text-green-500 text-xs"></i>
+                        </div>
+                        
+                        <div class="border-t pt-3">
+                            <div class="flex items-center justify-between mb-3">
+                                <div>
+                                    <p class="text-xs text-gray-500">Başlangıç Fiyatı</p>
+                                    <p class="text-sm font-medium text-gray-700">₺500</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs text-gray-500">Güncel Teklif</p>
+                                    <p class="text-xl font-bold price-highlight text-white px-2 py-1 rounded">₺1,850</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Recent Bids -->
+                            <div class="space-y-2 mb-3">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-600">@web_master</span>
+                                    <span class="font-medium">₺1,850</span>
+                                    <span class="text-gray-500">1dk önce</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-600">@eticaret_pro</span>
+                                    <span class="font-medium">₺1,800</span>
+                                    <span class="text-gray-500">3dk önce</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="flex items-center space-x-2 mb-3">
+                                <button onclick="openAuctionDetails('wordpress-theme')" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+                                    <i class="fas fa-info-circle mr-1"></i>Detaylar
+                                </button>
+                                <button onclick="openAuctionRules()" class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+                                    <i class="fas fa-question-circle mr-1"></i>Bilgi
+                                </button>
+                            </div>
+                            
+                            <!-- Bid Input -->
+                            <div class="flex items-center space-x-2">
+                                <input type="number" placeholder="₺1,900" min="1900" step="50" 
+                                       class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent">
+                                <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                    Teklif Ver
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Min. artış: ₺50</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Digital Product 3 - Steam Account -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden auction-card transition-all duration-300">
+                    <div class="relative">
+                        <div class="h-48 bg-gradient-to-br from-gray-800 to-blue-900 flex items-center justify-center">
+                            <div class="text-center text-white">
+                                <i class="fab fa-steam text-6xl mb-2"></i>
+                                <p class="text-lg font-bold">Steam Hesabı</p>
+                                <p class="text-sm opacity-90">150+ Oyun</p>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 left-3">
+                            <span class="auction-status-live text-white text-xs font-bold px-2 py-1 rounded-full">
+                                <i class="fas fa-circle mr-1"></i>CANLI
+                            </span>
+                        </div>
+                        <div class="absolute top-3 right-3 countdown-timer text-white text-xs font-bold px-2 py-1 rounded-full">
+                            <i class="fas fa-clock mr-1"></i>3g 8s 15dk
+                        </div>
+                        <div class="absolute bottom-3 left-3 right-3">
+                            <div class="bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                                <i class="fas fa-users mr-1"></i>25 teklif veren
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-bold text-lg text-gray-800">Premium Steam Hesabı</h3>
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                <span class="text-sm text-gray-600">4.8</span>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-600 text-sm mb-3">CS:GO, GTA V, Cyberpunk 2077 dahil 150+ premium oyun. VAC ban yok.</p>
+                        
+                        <div class="flex items-center space-x-2 mb-3">
+                            <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Seller" class="w-6 h-6 rounded-full">
+                            <span class="text-sm text-gray-600">GamerPro</span>
+                            <i class="fas fa-check-circle text-green-500 text-xs"></i>
+                        </div>
+                        
+                        <div class="border-t pt-3">
+                            <div class="flex items-center justify-between mb-3">
+                                <div>
+                                    <p class="text-xs text-gray-500">Başlangıç Fiyatı</p>
+                                    <p class="text-sm font-medium text-gray-700">₺3,000</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs text-gray-500">Güncel Teklif</p>
+                                    <p class="text-xl font-bold price-highlight text-white px-2 py-1 rounded">₺12,500</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Recent Bids -->
+                            <div class="space-y-2 mb-3">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-600">@oyuncu_ali</span>
+                                    <span class="font-medium">₺12,500</span>
+                                    <span class="text-gray-500">30sn önce</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-600">@steam_lover</span>
+                                    <span class="font-medium">₺12,000</span>
+                                    <span class="text-gray-500">2dk önce</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-600">@gamer_pro</span>
+                                    <span class="font-medium">₺11,500</span>
+                                    <span class="text-gray-500">4dk önce</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="flex items-center space-x-2 mb-3">
+                                <button onclick="openAuctionDetails('steam-account')" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+                                    <i class="fas fa-info-circle mr-1"></i>Detaylar
+                                </button>
+                                <button onclick="openAuctionRules()" class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+                                    <i class="fas fa-question-circle mr-1"></i>Bilgi
+                                </button>
+                            </div>
+                            
+                            <!-- Bid Input -->
+                            <div class="flex items-center space-x-2">
+                                <input type="number" placeholder="₺13,000" min="13000" step="500" 
+                                       class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent">
+                                <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                    Teklif Ver
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Min. artış: ₺500</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Digital Product 4 - Adobe License -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden auction-card transition-all duration-300">
+                    <div class="relative">
+                        <div class="h-48 bg-gradient-to-br from-red-600 to-orange-500 flex items-center justify-center">
+                            <div class="text-center text-white">
+                                <i class="fas fa-paint-brush text-6xl mb-2"></i>
+                                <p class="text-lg font-bold">Adobe CC 2024</p>
+                                <p class="text-sm opacity-90">1 Yıl Lisans</p>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 left-3">
+                            <span class="auction-status-live text-white text-xs font-bold px-2 py-1 rounded-full">
+                                <i class="fas fa-circle mr-1"></i>CANLI
+                            </span>
+                        </div>
+                        <div class="absolute top-3 right-3 countdown-timer text-white text-xs font-bold px-2 py-1 rounded-full">
+                            <i class="fas fa-clock mr-1"></i>2g 12s 8dk
+                        </div>
+                        <div class="absolute bottom-3 left-3 right-3">
+                            <div class="bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                                <i class="fas fa-users mr-1"></i>31 teklif veren
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-bold text-lg text-gray-800">Adobe Creative Cloud 2024</h3>
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                <span class="text-sm text-gray-600">4.9</span>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-600 text-sm mb-3">Photoshop, Illustrator, Premiere Pro dahil tüm uygulamalar. 1 yıl garanti.</p>
+                        
+                        <div class="flex items-center space-x-2 mb-3">
+                            <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="Seller" class="w-6 h-6 rounded-full">
+                            <span class="text-sm text-gray-600">LicenseDealer</span>
+                            <i class="fas fa-check-circle text-green-500 text-xs"></i>
+                        </div>
+                        
+                        <div class="border-t pt-3">
+                            <div class="flex items-center justify-between mb-3">
+                                <div>
+                                    <p class="text-xs text-gray-500">Başlangıç Fiyatı</p>
+                                    <p class="text-sm font-medium text-gray-700">₺800</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs text-gray-500">Güncel Teklif</p>
+                                    <p class="text-xl font-bold price-highlight text-white px-2 py-1 rounded">₺2,150</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Recent Bids -->
+                            <div class="space-y-2 mb-3">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-600">@designer_pro</span>
+                                    <span class="font-medium">₺2,150</span>
+                                    <span class="text-gray-500">45sn önce</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-600">@grafik_uzman</span>
+                                    <span class="font-medium">₺2,100</span>
+                                    <span class="text-gray-500">2dk önce</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="flex items-center space-x-2 mb-3">
+                                <button onclick="openAuctionDetails('adobe-license')" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+                                    <i class="fas fa-info-circle mr-1"></i>Detaylar
+                                </button>
+                                <button onclick="openAuctionRules()" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+                                    <i class="fas fa-question-circle mr-1"></i>Bilgi
+                                </button>
+                            </div>
+                            
+                            <!-- Bid Input -->
+                            <div class="flex items-center space-x-2">
+                                <input type="number" placeholder="₺2,200" min="2200" step="50" 
+                                       class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent">
+                                <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                    Teklif Ver
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Min. artış: ₺50</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Digital Product 5 - YouTube Channel -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden auction-card transition-all duration-300">
+                    <div class="relative">
+                        <div class="h-48 bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center">
+                            <div class="text-center text-white">
+                                <i class="fab fa-youtube text-6xl mb-2"></i>
+                                <p class="text-lg font-bold">YouTube Kanalı</p>
+                                <p class="text-sm opacity-90">50K Abone</p>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 left-3">
+                            <span class="auction-status-ending text-white text-xs font-bold px-2 py-1 rounded-full">
+                                <i class="fas fa-exclamation mr-1"></i>BİTİYOR
+                            </span>
+                        </div>
+                        <div class="absolute top-3 right-3 countdown-timer text-white text-xs font-bold px-2 py-1 rounded-full">
+                            <i class="fas fa-clock mr-1"></i>0g 1s 12dk
+                        </div>
+                        <div class="absolute bottom-3 left-3 right-3">
+                            <div class="bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                                <i class="fas fa-users mr-1"></i>22 teklif veren
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-bold text-lg text-gray-800">Teknoloji YouTube Kanalı</h3>
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                <span class="text-sm text-gray-600">4.6</span>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-600 text-sm mb-3">Monetize edilmiş kanal, düzenli gelir. Teknoloji nişinde güçlü izleyici kitlesi.</p>
+                        
+                        <div class="flex items-center space-x-2 mb-3">
+                            <img src="https://randomuser.me/api/portraits/men/38.jpg" alt="Seller" class="w-6 h-6 rounded-full">
+                            <span class="text-sm text-gray-600">ContentCreator</span>
+                            <i class="fas fa-check-circle text-green-500 text-xs"></i>
+                        </div>
+                        
+                        <div class="border-t pt-3">
+                            <div class="flex items-center justify-between mb-3">
+                                <div>
+                                    <p class="text-xs text-gray-500">Başlangıç Fiyatı</p>
+                                    <p class="text-sm font-medium text-gray-700">₺5,000</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs text-gray-500">Güncel Teklif</p>
+                                    <p class="text-xl font-bold price-highlight text-white px-2 py-1 rounded">₺18,750</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Recent Bids -->
+                            <div class="space-y-2 mb-3">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-600">@youtube_king</span>
+                                    <span class="font-medium">₺18,750</span>
+                                    <span class="text-gray-500">15sn önce</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-600">@content_pro</span>
+                                    <span class="font-medium">₺18,500</span>
+                                    <span class="text-gray-500">1dk önce</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="flex items-center space-x-2 mb-3">
+                                <button onclick="openAuctionDetails('youtube-channel')" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+                                    <i class="fas fa-info-circle mr-1"></i>Detaylar
+                                </button>
+                                <button onclick="openAuctionRules()" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+                                    <i class="fas fa-question-circle mr-1"></i>Bilgi
+                                </button>
+                            </div>
+                            
+                            <!-- Bid Input -->
+                            <div class="flex items-center space-x-2">
+                                <input type="number" placeholder="₺19,000" min="19000" step="250" 
+                                       class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent">
+                                <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                    Teklif Ver
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Min. artış: ₺250</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Digital Product 6 - Mobile App Source Code -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden auction-card transition-all duration-300">
+                    <div class="relative">
+                        <div class="h-48 bg-gradient-to-br from-green-500 to-blue-600 flex items-center justify-center">
+                            <div class="text-center text-white">
+                                <i class="fas fa-mobile-alt text-6xl mb-2"></i>
+                                <p class="text-lg font-bold">Mobil Uygulama</p>
+                                <p class="text-sm opacity-90">Kaynak Kodu</p>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 left-3">
+                            <span class="auction-status-live text-white text-xs font-bold px-2 py-1 rounded-full">
+                                <i class="fas fa-circle mr-1"></i>CANLI
+                            </span>
+                        </div>
+                        <div class="absolute top-3 right-3 countdown-timer text-white text-xs font-bold px-2 py-1 rounded-full">
+                            <i class="fas fa-clock mr-1"></i>4g 6s 35dk
+                        </div>
+                        <div class="absolute bottom-3 left-3 right-3">
+                            <div class="bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                                <i class="fas fa-users mr-1"></i>15 teklif veren
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-bold text-lg text-gray-800">E-ticaret Mobil App</h3>
+                            <div class="flex items-center space-x-1">
+                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                <span class="text-sm text-gray-600">4.7</span>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-600 text-sm mb-3">React Native ile geliştirilmiş, iOS ve Android uyumlu. Tam kaynak kodu.</p>
+                        
+                        <div class="flex items-center space-x-2 mb-3">
+                            <img src="https://randomuser.me/api/portraits/men/42.jpg" alt="Seller" class="w-6 h-6 rounded-full">
+                            <span class="text-sm text-gray-600">MobileDev</span>
+                            <i class="fas fa-check-circle text-green-500 text-xs"></i>
+                        </div>
+                        
+                        <div class="border-t pt-3">
+                            <div class="flex items-center justify-between mb-3">
+                                <div>
+                                    <p class="text-xs text-gray-500">Başlangıç Fiyatı</p>
+                                    <p class="text-sm font-medium text-gray-700">₺1,500</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs text-gray-500">Güncel Teklif</p>
+                                    <p class="text-xl font-bold price-highlight text-white px-2 py-1 rounded">₺4,250</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Recent Bids -->
+                            <div class="space-y-2 mb-3">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-600">@app_developer</span>
+                                    <span class="font-medium">₺4,250</span>
+                                    <span class="text-gray-500">3dk önce</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-gray-600">@mobile_expert</span>
+                                    <span class="font-medium">₺4,000</span>
+                                    <span class="text-gray-500">7dk önce</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="flex items-center space-x-2 mb-3">
+                                <button onclick="openAuctionDetails('mobile-app')" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+                                    <i class="fas fa-info-circle mr-1"></i>Detaylar
+                                </button>
+                                <button onclick="openAuctionRules()" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+                                    <i class="fas fa-question-circle mr-1"></i>Bilgi
+                                </button>
+                            </div>
+                            
+                            <!-- Bid Input -->
+                            <div class="flex items-center space-x-2">
+                                <input type="number" placeholder="₺4,500" min="4500" step="250" 
+                                       class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent">
+                                <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                    Teklif Ver
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Min. artış: ₺250</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Load More Button -->
+            <div class="text-center mt-8">
+                <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-8 py-3 rounded-lg font-medium transition-colors">
+                    <i class="fas fa-plus mr-2"></i>
+                    Daha Fazla Dijital Ürün Yükle
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Auction Details Modal -->
+    <div id="auctionDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-2xl w-full max-h-screen overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold text-gray-800">Açık Artırma Detayları</h2>
+                        <button onclick="closeModal('auctionDetailsModal')" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    <div id="auctionDetailsContent">
+                        <!-- Content will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auction Rules Modal -->
+    <div id="auctionRulesModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-4xl w-full max-h-screen overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">Açık Artırma Kuralları ve Bilgileri</h2>
+                        <button onclick="closeModal('auctionRulesModal')" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Rules Content -->
+                    <div class="space-y-6">
+                        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                            <h3 class="text-lg font-semibold text-red-800 mb-3">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>Önemli Kurallar
+                            </h3>
+                            <div class="text-red-700 space-y-2">
+                                <p>• Açık artırma kategorilerindeki bazı düzensizliklerin önüne geçmek amacıyla yeni kategori kuralları uygulanmaya başlanmıştır.</p>
+                                <p>• Açık artırma minimum başlangıç fiyatı <strong>50 TL</strong> olarak belirlenmiştir.</p>
+                                <p>• Açık artırma minimum bitiş süresi <strong>12 saat</strong> olacaktır. 12 saatten kısa süreli açık artırma konularına izin verilmeyecektir.</p>
+                                <p>• Aynı ürün veya hizmet için yeni bir açık artırma başlatmadan önce, önceki açık artırmanın tamamlanması zorunludur.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
+                            <h3 class="text-lg font-semibold text-yellow-800 mb-3">
+                                <i class="fas fa-ban mr-2"></i>Yasaklanan Davranışlar
+                            </h3>
+                            <div class="text-yellow-700 space-y-2">
+                                <p>• Açık artırma devam ederken aynı ürün veya hizmetin satışı <strong>yasaktır</strong>.</p>
+                                <p>• Açık artırma konularında hile, sahte teklifler veya fiyat yükseltme amacıyla arkadaşlar veya çoklu hesaplar (multi hesaplar) üzerinden yapılan işlemler <strong>kesinlikle yasaktır</strong>.</p>
+                                <p>• Bu gibi haksızlık teşkil eden durumlar tespit edildiğinde, ilgili üye veya üyelere <strong>minimum 1 ay ban cezası</strong> uygulanacaktır.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                            <h3 class="text-lg font-semibold text-blue-800 mb-3">
+                                <i class="fas fa-info-circle mr-2"></i>Genel Bilgiler
+                            </h3>
+                            <div class="text-blue-700 space-y-2">
+                                <p>• Tüm açık artırmalar dijital ürün ve hizmetler için geçerlidir.</p>
+                                <p>• Ödeme işlemleri güvenli ödeme sistemleri üzerinden gerçekleştirilir.</p>
+                                <p>• Kazanan kullanıcı 24 saat içinde ödeme yapmalıdır.</p>
+                                <p>• Satıcılar ürün teslimini 48 saat içinde tamamlamalıdır.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded">
+                            <h3 class="text-lg font-semibold text-green-800 mb-3">
+                                <i class="fas fa-shield-alt mr-2"></i>Güvenlik Önlemleri
+                            </h3>
+                            <div class="text-green-700 space-y-2">
+                                <p>• Tüm işlemler kayıt altına alınır ve denetlenir.</p>
+                                <p>• Şüpheli aktiviteler otomatik olarak tespit edilir.</p>
+                                <p>• Kullanıcı şikayetleri 24 saat içinde değerlendirilir.</p>
+                                <p>• Bu konuda hiçbir şekilde taviz verilmeyecektir.</p>
+                            </div>
+                        </div>
+
+                        <!-- Comments Section -->
+                        <div class="border-t pt-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                                <i class="fas fa-comments mr-2"></i>Kullanıcı Yorumları
+                            </h3>
+                            
+                            <!-- Comment Input -->
+                            <div class="mb-4">
+                                <div class="flex items-start space-x-3">
+                                    <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="User" class="w-8 h-8 rounded-full">
+                                    <div class="flex-1">
+                                        <textarea placeholder="Kurallar hakkında yorumunuzu yazın..." 
+                                                class="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                                                rows="3"></textarea>
+                                        <div class="flex justify-between items-center mt-2">
+                                            <span class="text-xs text-gray-500">Maksimum 500 karakter</span>
+                                            <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                                Yorum Yap
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Existing Comments -->
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                                    <img src="https://randomuser.me/api/portraits/men/15.jpg" alt="User" class="w-8 h-8 rounded-full">
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-2 mb-1">
+                                            <span class="font-medium text-gray-800">@mehmet_trader</span>
+                                            <span class="text-xs text-gray-500">2 saat önce</span>
+                                        </div>
+                                        <p class="text-gray-700 text-sm">Bu kurallar gerçekten gerekli. Önceden çok fazla sahte teklif vardı. Teşekkürler admin ekibi!</p>
+                                        <div class="flex items-center space-x-4 mt-2">
+                                            <button class="text-xs text-gray-500 hover:text-blue-500">
+                                                <i class="fas fa-thumbs-up mr-1"></i>Beğen (12)
+                                            </button>
+                                            <button class="text-xs text-gray-500 hover:text-blue-500">
+                                                <i class="fas fa-reply mr-1"></i>Yanıtla
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                                    <img src="https://randomuser.me/api/portraits/women/25.jpg" alt="User" class="w-8 h-8 rounded-full">
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-2 mb-1">
+                                            <span class="font-medium text-gray-800">@ayse_digital</span>
+                                            <span class="text-xs text-gray-500">4 saat önce</span>
+                                        </div>
+                                        <p class="text-gray-700 text-sm">12 saat minimum süre biraz uzun gibi. 6 saat olsa daha iyi olmaz mı?</p>
+                                        <div class="flex items-center space-x-4 mt-2">
+                                            <button class="text-xs text-gray-500 hover:text-blue-500">
+                                                <i class="fas fa-thumbs-up mr-1"></i>Beğen (5)
+                                            </button>
+                                            <button class="text-xs text-gray-500 hover:text-blue-500">
+                                                <i class="fas fa-reply mr-1"></i>Yanıtla
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                                    <img src="https://randomuser.me/api/portraits/men/30.jpg" alt="User" class="w-8 h-8 rounded-full">
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-2 mb-1">
+                                            <span class="font-medium text-gray-800">@admin_team</span>
+                                            <i class="fas fa-check-circle text-green-500 text-xs"></i>
+                                            <span class="text-xs text-gray-500">3 saat önce</span>
+                                        </div>
+                                        <p class="text-gray-700 text-sm">@ayse_digital 12 saat minimum süre, kullanıcıların düşünme ve karar verme zamanı için gerekli. Bu süre değişmeyecek.</p>
+                                        <div class="flex items-center space-x-4 mt-2">
+                                            <button class="text-xs text-gray-500 hover:text-blue-500">
+                                                <i class="fas fa-thumbs-up mr-1"></i>Beğen (18)
+                                            </button>
+                                            <button class="text-xs text-gray-500 hover:text-blue-500">
+                                                <i class="fas fa-reply mr-1"></i>Yanıtla
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Real-time Updates -->
+    <script>
+        // Modal Functions
+        function openAuctionDetails(auctionId) {
+            // Redirect to detail page with auction ID
+            window.location.href = `acikarttirmadetay.html?id=${auctionId}`;
+        }
+        
+        function openAuctionRules() {
+            const modal = document.getElementById('auctionRulesModal');
+            modal.classList.remove('hidden');
+        }
+        
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.add('hidden');
+        }
+
+        // Simulate real-time bid updates
+        function updateBids() {
+            const priceElements = document.querySelectorAll('.price-highlight');
+            const countdownElements = document.querySelectorAll('.countdown-timer');
+            
+            // Update countdown timers
+            countdownElements.forEach(element => {
+                // Simulate countdown updates
+                const timeText = element.textContent;
+                // Add countdown logic here
+            });
+            
+            // Simulate new bids occasionally
+            if (Math.random() < 0.1) {
+                // Add new bid animation
+                const bidButtons = document.querySelectorAll('.bid-animation');
+                bidButtons.forEach(button => {
+                    if (Math.random() < 0.3) {
+                        button.classList.add('bid-animation');
+                        setTimeout(() => {
+                            button.classList.remove('bid-animation');
+                        }, 600);
+                    }
+                });
+            }
+        }
+
+        // Update every 5 seconds
+        setInterval(updateBids, 5000);
+
+        // Close modals when clicking outside
+        document.addEventListener('click', function(event) {
+            const modals = ['auctionDetailsModal', 'auctionRulesModal'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (event.target === modal) {
+                    closeModal(modalId);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
