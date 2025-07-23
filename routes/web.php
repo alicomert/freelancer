@@ -92,6 +92,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
 });
 
+// Profile route for guests - redirect to home with login modal
+Route::get('/profile', function () {
+    if (auth()->check()) {
+        return view('profile.index');
+    }
+    return redirect('/')->with('openLoginModal', true);
+})->name('profile');
+
 // Auth routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);

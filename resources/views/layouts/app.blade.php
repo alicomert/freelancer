@@ -1004,6 +1004,12 @@
                 });
                 pic.style.cursor = 'pointer';
             });
+
+            // Check if we need to open login modal (from profile redirect)
+            @if(session('openLoginModal'))
+                openAuthModal();
+                showLoginForm();
+            @endif
         });
     </script>
 </body>
