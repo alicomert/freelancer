@@ -82,26 +82,26 @@
     <!-- Mobile Navigation -->
     <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-lg z-50 border-t border-gray-200 dark:border-gray-700 transition-colors duration-300">
         <div class="flex justify-around items-center py-2 px-1">
-            <a href="/" class="nav-item text-center flex-1 py-2">
-                <i class="nav-icon fas fa-home text-blue-500 text-lg block mb-1 transition-transform"></i>
-                <span class="text-xs leading-tight text-gray-700 dark:text-gray-300">Ana Sayfa</span>
+            <a href="/" class="nav-item text-center flex-1 py-2 {{ request()->is('/') ? 'bg-blue-50 dark:bg-blue-900/20 rounded-lg' : '' }}">
+                <i class="nav-icon fas fa-home {{ request()->is('/') ? 'text-blue-600 dark:text-blue-400' : 'text-blue-500' }} text-lg block mb-1 transition-transform"></i>
+                <span class="text-xs leading-tight {{ request()->is('/') ? 'text-blue-600 dark:text-blue-400 font-semibold' : 'text-gray-700 dark:text-gray-300' }}">Ana Sayfa</span>
             </a>
-            <a href="/community" class="nav-item text-center flex-1 py-2">
-                <i class="nav-icon fas fa-users text-purple-500 text-lg block mb-1 transition-transform"></i>
-                <span class="text-xs leading-tight text-gray-700 dark:text-gray-300">Topluluk</span>
+            <a href="/community" class="nav-item text-center flex-1 py-2 {{ request()->is('community*') ? 'bg-purple-50 dark:bg-purple-900/20 rounded-lg' : '' }}">
+                <i class="nav-icon fas fa-users {{ request()->is('community*') ? 'text-purple-600 dark:text-purple-400' : 'text-purple-500' }} text-lg block mb-1 transition-transform"></i>
+                <span class="text-xs leading-tight {{ request()->is('community*') ? 'text-purple-600 dark:text-purple-400 font-semibold' : 'text-gray-700 dark:text-gray-300' }}">Topluluk</span>
             </a>
-            <a href="/projects" class="nav-item text-center flex-1 py-2">
-                <i class="nav-icon fas fa-briefcase text-green-500 text-lg block mb-1 transition-transform"></i>
-                <span class="text-xs leading-tight text-gray-700 dark:text-gray-300">Projeler</span>
+            <a href="/projects" class="nav-item text-center flex-1 py-2 {{ request()->is('projects*') ? 'bg-green-50 dark:bg-green-900/20 rounded-lg' : '' }}">
+                <i class="nav-icon fas fa-briefcase {{ request()->is('projects*') ? 'text-green-600 dark:text-green-400' : 'text-green-500' }} text-lg block mb-1 transition-transform"></i>
+                <span class="text-xs leading-tight {{ request()->is('projects*') ? 'text-green-600 dark:text-green-400 font-semibold' : 'text-gray-700 dark:text-gray-300' }}">Projeler</span>
             </a>
-            <a href="/services" class="nav-item text-center flex-1 py-2">
-                <i class="nav-icon fas fa-cogs text-orange-500 text-lg block mb-1 transition-transform"></i>
-                <span class="text-xs leading-tight text-gray-700 dark:text-gray-300">Hizmetler</span>
+            <a href="/services" class="nav-item text-center flex-1 py-2 {{ request()->is('services*') ? 'bg-orange-50 dark:bg-orange-900/20 rounded-lg' : '' }}">
+                <i class="nav-icon fas fa-cogs {{ request()->is('services*') ? 'text-orange-600 dark:text-orange-400' : 'text-orange-500' }} text-lg block mb-1 transition-transform"></i>
+                <span class="text-xs leading-tight {{ request()->is('services*') ? 'text-orange-600 dark:text-orange-400 font-semibold' : 'text-gray-700 dark:text-gray-300' }}">Hizmetler</span>
             </a>
        
-            <a href="/profile" class="nav-item text-center flex-1 py-2">
-                <i class="nav-icon fas fa-user text-pink-500 text-lg block mb-1 transition-transform"></i>
-                <span class="text-xs leading-tight text-gray-700 dark:text-gray-300">Profil</span>
+            <a href="/profile" class="nav-item text-center flex-1 py-2 {{ request()->is('profile*') ? 'bg-pink-50 dark:bg-pink-900/20 rounded-lg' : '' }}">
+                <i class="nav-icon fas fa-user {{ request()->is('profile*') ? 'text-pink-600 dark:text-pink-400' : 'text-pink-500' }} text-lg block mb-1 transition-transform"></i>
+                <span class="text-xs leading-tight {{ request()->is('profile*') ? 'text-pink-600 dark:text-pink-400 font-semibold' : 'text-gray-700 dark:text-gray-300' }}">Profil</span>
             </a>
         </div>
     </div>
@@ -136,35 +136,35 @@
                 @endauth
                 
                 <div class="space-y-1">
-                    <a href="/" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400 transition-colors">
+                    <a href="/" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('/') ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
                         <i class="fas fa-home w-5"></i>
                         <span>Ana Sayfa</span>
                     </a>
-                    <a href="/community" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors">
+                    <a href="/community" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('community*') ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
                         <i class="fas fa-users w-5"></i>
                         <span>Topluluk</span>
                     </a>
-                    <a href="/projects" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors">
+                    <a href="/projects" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('projects*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
                         <i class="fas fa-briefcase w-5"></i>
                         <span>Projeler</span>
                     </a>
-                    <a href="/services" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors">
+                    <a href="/services" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('services*') ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
                         <i class="fas fa-cogs w-5"></i>
                         <span>Hizmetler</span>
                     </a>
-                    <a href="/auctions" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors">
+                    <a href="/auctions" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('auctions*') ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
                         <i class="fas fa-gavel w-5"></i>
                         <span>Açık Arttırma</span>
                     </a>
-                    <a href="/messages" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors">
+                    <a href="/messages" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('messages*') ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
                         <i class="fas fa-comments w-5"></i>
                         <span>Mesajlar</span>
                     </a>
-                    <a href="/notifications" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors">
+                    <a href="/notifications" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('notifications*') ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
                         <i class="fas fa-bell w-5"></i>
                         <span>Bildirimler</span>
                     </a>
-                    <a href="/wallet" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors">
+                    <a href="/wallet" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('wallet*') ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
                         <i class="fas fa-wallet w-5"></i>
                         <span>Cüzdan</span>
                     </a>
@@ -203,7 +203,7 @@
                 <span class="hidden dark:block">Aydınlık Mod</span>
             </button>
             
-            <a href="/settings" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors">
+            <a href="/settings" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('settings*') ? 'bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
                 <i class="fas fa-cog w-5"></i>
                 <span>Ayarlar</span>
             </a>
@@ -318,6 +318,132 @@
         </div>
     </div>
 </main>
+
+    <!-- Profile Modal -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden" id="profileModal">
+        <div class="absolute top-0 right-0 bottom-0 w-full max-w-md bg-white dark:bg-gray-800 overflow-y-auto">
+            <div class="sticky top-0 bg-white dark:bg-gray-800 z-10 p-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white">Profil</h2>
+                <button onclick="closeProfileModal()" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="profile-cover bg-gradient-to-r from-blue-500 to-purple-600 h-32"></div>
+            
+            <div class="px-4 pb-6">
+                <div class="flex justify-between items-start -mt-12 mb-4">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-24 h-24 rounded-full border-4 border-white dark:border-gray-800">
+                    <div class="flex space-x-2 mt-4">
+                        <button class="px-4 py-1 bg-blue-500 text-white rounded-full hover:bg-blue-600 font-medium transition-colors">
+                            <i class="fas fa-user-plus mr-1"></i> Takip Et
+                        </button>
+                        <button class="p-2 rounded-full border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-ellipsis-h text-gray-600 dark:text-gray-400"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Ahmet Yılmaz</h1>
+                    <p class="text-gray-600 dark:text-gray-400 mb-2">Senior Web Developer | React Specialist</p>
+                    <div class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+                        <span class="flex items-center">
+                            <i class="fas fa-map-marker-alt mr-1"></i>
+                            <span>İstanbul, Türkiye</span>
+                        </span>
+                        <span>•</span>
+                        <span class="flex items-center">
+                            <i class="fas fa-calendar-alt mr-1"></i>
+                            <span>Haziran 2018'den beri üye</span>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-6">
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div>
+                            <p class="text-2xl font-bold text-gray-900 dark:text-white">142</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Takipçi</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-gray-900 dark:text-white">87</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Takip Edilen</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-gray-900 dark:text-white">4.9</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Puan</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="font-semibold text-lg mb-3 text-gray-900 dark:text-white">Hakkımda</h3>
+                    <p class="text-gray-700 dark:text-gray-300 mb-3">
+                        10 yılı aşkın süredir web geliştirme alanında çalışıyorum. React, Node.js ve MongoDB stack'inde uzmanım. Freelance projeler alıyorum ve aynı zamanda bir eğitmenim.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-full text-xs">React</span>
+                        <span class="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-400 rounded-full text-xs">Node.js</span>
+                        <span class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 rounded-full text-xs">MongoDB</span>
+                        <span class="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-600 dark:text-yellow-400 rounded-full text-xs">JavaScript</span>
+                        <span class="px-2 py-1 bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400 rounded-full text-xs">Firebase</span>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="font-semibold text-lg mb-3 text-gray-900 dark:text-white">İstatistikler</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-700 dark:text-gray-300">Toplam Gönderi</span>
+                                <span class="font-medium text-gray-900 dark:text-white">247</span>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                <div class="bg-blue-500 h-2 rounded-full" style="width: 80%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-700 dark:text-gray-300">Toplam Beğeni</span>
+                                <span class="font-medium text-gray-900 dark:text-white">5.2K</span>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 65%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-700 dark:text-gray-300">Tamamlanan Proje</span>
+                                <span class="font-medium text-gray-900 dark:text-white">48</span>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                <div class="bg-purple-500 h-2 rounded-full" style="width: 90%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold text-lg mb-3 text-gray-900 dark:text-white">Bağlantılar</h3>
+                    <div class="flex space-x-3">
+                        <a href="#" class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition-colors">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-gray-800 dark:bg-gray-600 text-white flex items-center justify-center hover:bg-gray-900 dark:hover:bg-gray-500 transition-colors">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-blue-400 text-white flex items-center justify-center hover:bg-blue-500 transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center hover:bg-red-700 transition-colors">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Authentication Modal -->
     <div id="auth-modal" class="fixed inset-0 z-50 hidden">
@@ -848,6 +974,36 @@
                     });
                 });
             }
+        });
+
+        // Profile Modal Functions
+        function openProfileModal() {
+            document.getElementById('profileModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close profile modal when clicking on backdrop
+        document.addEventListener('click', function(event) {
+            const profileModal = document.getElementById('profileModal');
+            if (profileModal && event.target === profileModal) {
+                closeProfileModal();
+            }
+        });
+        
+        // For demo purposes, clicking on profile pictures opens the modal
+        document.addEventListener('DOMContentLoaded', function() {
+            const profilePics = document.querySelectorAll('img[alt="Profile"]');
+            profilePics.forEach(pic => {
+                pic.addEventListener('click', function() {
+                    openProfileModal();
+                });
+                pic.style.cursor = 'pointer';
+            });
         });
     </script>
 </body>

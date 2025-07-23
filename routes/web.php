@@ -58,7 +58,10 @@ Route::prefix('messages')->name('messages.')->group(function () {
 
 // Notifications
 Route::prefix('notifications')->name('notifications.')->group(function () {
-    Route::get('/', function () { return view('notifications.index'); })->name('index');
+    Route::get('/', [App\Http\Controllers\NotificationController::class, 'index'])->name('index');
+    Route::post('/{id}/read', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('mark-read');
+    Route::post('/mark-all-read', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('mark-all-read');
+    Route::delete('/{id}', [App\Http\Controllers\NotificationController::class, 'delete'])->name('delete');
 });
 
 // Wallet
