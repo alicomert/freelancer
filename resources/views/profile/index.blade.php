@@ -310,6 +310,34 @@
                 <div class="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed" data-bio-display itemprop="description">
                     {{ isset($user) && $user->bio ? $user->bio : 'Henüz bir biyografi eklenmemiş.' }}
                 </div>
+                
+                @php
+                    $aboutSkills = $user->skills()->orderBy('sort_order')->get();
+                    $aboutExpertise = $aboutSkills->where('type', 'expertise');
+                    $aboutTools = $aboutSkills->where('type', 'tool');
+                    $allAboutSkills = $aboutExpertise->merge($aboutTools);
+                    
+                    // 6 farklı renk paleti
+                    $colors = [
+                        'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
+                        'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
+                        'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300',
+                        'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300',
+                        'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
+                        'bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300'
+                    ];
+                @endphp
+                
+                @if($allAboutSkills->count() > 0)
+                    <div class="flex flex-wrap gap-2">
+                        @foreach($allAboutSkills as $index => $skill)
+                            <span class="px-3 py-1 {{ $colors[$index % 6] }} rounded-full text-sm font-medium">
+                                {{ $skill->name }}
+                            </span>
+                        @endforeach
+                    </div>
+                @endif
+                
                 @if(isset($user) && $user->bio)
                 <meta itemprop="knowsAbout" content="{{ strip_tags($user->bio) }}" />
                 @endif

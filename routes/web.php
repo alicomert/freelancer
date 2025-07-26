@@ -116,7 +116,7 @@ Route::middleware(['auth'])->prefix('profile')->group(function () {
     Route::get('/skills', [SkillController::class, 'index'])->name('skills.index');
     Route::post('/skills', [SkillController::class, 'store'])->name('skills.store');
     Route::put('/skills/{skill}', [SkillController::class, 'update'])->name('skills.update');
-    Route::delete('/skills/{skill}', [SkillController::class, 'destroy'])->name('skills.destroy');
+    Route::delete('/skills/{skill}', [SkillController::class, 'destroy'])->name('profile.skills.destroy');
     Route::post('/skills/update-order', [SkillController::class, 'updateOrder'])->name('skills.updateOrder');
 });
 

@@ -6,6 +6,7 @@ use App\Models\UserSkill;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 
 class SkillController extends Controller
@@ -58,7 +59,12 @@ class SkillController extends Controller
 
     public function update(Request $request, UserSkill $skill)
     {
-        $this->authorize('update', $skill);
+        if (Gate::denies('update', $skill)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Bu işlem için yetkiniz yok.'
+            ], 403);
+        }
 
         $validator = Validator::make($request->all(), [
             'level' => 'required_if:type,expertise|integer|min:1|max:100',
@@ -75,9 +81,34 @@ class SkillController extends Controller
 
     public function destroy(UserSkill $skill)
     {
-        $this->authorize('delete', $skill);
-        $skill->delete();
-        return response()->json(['success' => true]);
+        try {
+            // Policy kontrolü
+            if (Gate::denies('delete', $skill)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Bu işlem için yetkiniz yok.'
+                ], 403);
+            }
+            
+            // Beceriyi sil
+            $skill->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Beceri başarıyla silindi.'
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Skill deletion error: ' . $e->getMessage(), [
+                'skill_id' => $skill->id,
+                'user_id' => Auth::id(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Beceri silinirken bir hata oluştu.'
+            ], 500);
+        }
     }
 
     public function updateOrder(Request $request)
