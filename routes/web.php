@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\SkillController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SiteSettingController;
+use App\Http\Controllers\ProfileController;
 
 // Ana sayfa
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -88,14 +90,13 @@ Route::prefix('freelancers')->name('freelancers.')->group(function () {
 
 // User profile and settings
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', function () { return view('profile.index'); })->name('profile.show');
     Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
 });
 
-// Profile route for guests - redirect to home with login modal
+// Profile route - redirect to user's own profile or login
 Route::get('/profile', function () {
     if (auth()->check()) {
-        return view('profile.index');
+        return redirect('/' . auth()->user()->username);
     }
     return redirect('/')->with('openLoginModal', true);
 })->name('profile');
@@ -108,10 +109,33 @@ Route::post('/register-step1', [AuthController::class, 'registerStep1'])->name('
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::middleware(['auth'])->prefix('profile')->group(function () {
+    Route::post('/verify-identity', [ProfileController::class, 'verifyIdentity'])->name('profile.verify-identity');
+    Route::post('/update-bio', [ProfileController::class, 'updateBio'])->name('profile.update.bio');
+    Route::get('/skills/search', [SkillController::class, 'search'])->name('skills.search');
+    Route::get('/skills', [SkillController::class, 'index'])->name('skills.index');
+    Route::post('/skills', [SkillController::class, 'store'])->name('skills.store');
+    Route::put('/skills/{skill}', [SkillController::class, 'update'])->name('skills.update');
+    Route::delete('/skills/{skill}', [SkillController::class, 'destroy'])->name('skills.destroy');
+    Route::post('/skills/update-order', [SkillController::class, 'updateOrder'])->name('skills.updateOrder');
+});
+
 // Site Settings API Routes
 Route::prefix('api/site-settings')->name('api.site-settings.')->group(function () {
     Route::get('/public', [SiteSettingController::class, 'getPublicSettings'])->name('public');
     Route::get('/{key}', [SiteSettingController::class, 'show'])->name('show');
+});
+
+// Education API Routes (require authentication)
+Route::middleware(['auth', 'web'])->prefix('api')->group(function () {
+    Route::post('/education', [App\Http\Controllers\EducationController::class, 'store'])->name('education.store');
+    Route::get('/education/{id}', [App\Http\Controllers\EducationController::class, 'show'])->name('education.show');
+    Route::put('/education/{id}', [App\Http\Controllers\EducationController::class, 'update'])->name('education.update');
+    Route::delete('/education/{id}', [App\Http\Controllers\EducationController::class, 'destroy'])->name('education.destroy');
+    Route::post('/education/update-order', [App\Http\Controllers\EducationController::class, 'updateOrder'])->name('education.update-order');
+    
+    // Skills API Routes
+    Route::put('/skills', [App\Http\Controllers\SkillController::class, 'update'])->name('skills.update');
 });
 
 // Admin Site Settings Routes (require authentication)
@@ -122,3 +146,6 @@ Route::middleware('auth')->prefix('admin/site-settings')->name('admin.site-setti
     Route::delete('/{key}', [SiteSettingController::class, 'destroy'])->name('destroy');
     Route::post('/clear-cache', [SiteSettingController::class, 'clearCache'])->name('clear-cache');
 });
+
+// Username-based profile route (must be at the end to avoid conflicts)
+Route::get('/{username}', [ProfileController::class, 'show'])->name('user.profile');

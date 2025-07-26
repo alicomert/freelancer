@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $siteSettings['site_name'] ?? 'FreelancerHub' }} | {{ $siteSettings['site_tagline'] ?? 'Sosyal Forum & Freelance Platform' }}</title>
-    <meta name="description" content="{{ $siteSettings['site_description'] ?? 'Freelancer ve işverenler için güvenli platform' }}">
-    <meta name="keywords" content="{{ $siteSettings['site_keywords'] ?? 'freelancer, iş, proje' }}">
-    <meta name="author" content="{{ $siteSettings['site_name'] ?? 'Freelancer' }}">
+    <title>@yield('title', ($siteSettings['site_name'] ?? 'FreelancerHub') . ' | ' . ($siteSettings['site_tagline'] ?? 'Sosyal Forum & Freelance Platform'))</title>
+    
+    <!-- Default Meta Tags -->
+    <meta name="description" content="@yield('meta_description', $siteSettings['site_description'] ?? 'Freelancer ve işverenler için güvenli platform')">
+    <meta name="keywords" content="@yield('meta_keywords', $siteSettings['site_keywords'] ?? 'freelancer, iş, proje')">
+    <meta name="author" content="@yield('meta_author', $siteSettings['site_name'] ?? 'Freelancer')">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
-    <!-- Open Graph Meta Tags -->
+    <!-- Page-specific Meta Tags -->
+    @stack('meta')
+    
+    <!-- Default Open Graph Meta Tags (will be overridden by page-specific ones) -->
+    @if(!View::hasSection('meta'))
     <meta property="og:title" content="{{ $siteSettings['site_name'] ?? 'FreelancerHub' }}">
     <meta property="og:description" content="{{ $siteSettings['site_description'] ?? 'Freelancer ve işverenler için güvenli platform' }}">
     <meta property="og:image" content="{{ asset($siteSettings['site_og_image'] ?? 'images/og-image.jpg') }}">
@@ -17,18 +23,21 @@
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="{{ $siteSettings['site_name'] ?? 'FreelancerHub' }}">
     
-    <!-- Twitter Card Meta Tags -->
+    <!-- Default Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $siteSettings['site_name'] ?? 'FreelancerHub' }}">
     <meta name="twitter:description" content="{{ $siteSettings['site_description'] ?? 'Freelancer ve işverenler için güvenli platform' }}">
     <meta name="twitter:image" content="{{ asset($siteSettings['site_og_image'] ?? 'images/og-image.jpg') }}">
+    @endif
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset($siteSettings['site_favicon'] ?? 'logos/favicon.ico') }}">
     <link rel="apple-touch-icon" href="{{ asset($siteSettings['site_favicon'] ?? 'logos/favicon.ico') }}">
     
-    <!-- Canonical URL -->
+    <!-- Default Canonical URL (will be overridden by page-specific ones) -->
+    @if(!View::hasSection('meta'))
     <link rel="canonical" href="{{ url()->current() }}">
+    @endif
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -317,6 +326,9 @@
             </div>
         </div>
     </div>
+
+    <!-- General Toast Notification Component -->
+    @include('components.toast-notification')
 </main>
 
     <!-- Profile Modal -->

@@ -127,3 +127,8 @@ Important Implementation Notes:
 8. Use Laravel's event and listener system for decoupled code
 9. Implement proper database transactions for data integrity
 10. Use Laravel's built-in scheduling features for recurring tasks
+
+ÖNEMLİ NOT
+Laravel 11'de önemli değişiklik: Temel Controller sınıfı artık middleware() metodunu içermiyor. Middleware tanımlamaları route seviyesinde yapılmalı veya farklı yöntemler kullanılmalı.
+
+Genel Kural: Laravel'in yeni versiyonlarında, middleware tanımlamalarını controller constructor'ında yapmak yerine, route dosyalarında yapmak daha güvenli ve önerilen yöntem.

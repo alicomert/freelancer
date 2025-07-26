@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Crypt;
 
 class User extends Authenticatable
 {
@@ -20,7 +21,6 @@ class User extends Authenticatable
         'cover_image',
         'bio',
         'title',
-        'skills',
         'hourly_rate',
         'location',
         'website',
@@ -68,7 +68,6 @@ class User extends Authenticatable
             'rating' => 'decimal:2',
             'total_earned' => 'decimal:2',
             'hourly_rate' => 'decimal:2',
-            'skills' => 'array',
         ];
     }
 
@@ -143,6 +142,16 @@ class User extends Authenticatable
         return $this->hasMany(Review::class, 'reviewed_id');
     }
 
+    public function educations()
+    {
+        return $this->hasMany(UserEducation::class)->orderBy('sort_order', 'asc');
+    }
+
+    public function skills()
+    {
+        return $this->hasMany(UserSkill::class)->orderBy('sort_order', 'asc');
+    }
+
     // Scopes
     public function scopeActive($query)
     {
@@ -163,6 +172,20 @@ class User extends Authenticatable
     public function getFullNameAttribute()
     {
         return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function setTcIdentityAttribute($value)
+    {
+        $this->attributes['tc_identity'] = Crypt::encryptString($value);
+    }
+
+    public function getTcIdentityAttribute($value)
+    {
+        try {
+            return Crypt::decryptString($value);
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+            return $value;
+        }
     }
 
     public function getAvatarUrlAttribute()

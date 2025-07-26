@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "88970a0117c062eed55fa8728fc43833",
+    "content-hash": "d663a0c0ed1c0baa6275404114b52c01",
     "packages": [
         {
             "name": "brick/math",
@@ -509,6 +509,61 @@
                 }
             ],
             "time": "2025-03-06T22:45:56+00:00"
+        },
+        {
+            "name": "epigra/tckimlik",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/epigra/tckimlik.git",
+                "reference": "f043b6838a7d1a481c65852505ec6ce0198cb6e7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/epigra/tckimlik/zipball/f043b6838a7d1a481c65852505ec6ce0198cb6e7",
+                "reference": "f043b6838a7d1a481c65852505ec6ce0198cb6e7",
+                "shasum": ""
+            },
+            "require-dev": {
+                "orchestra/testbench": "^6.x-dev"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Epigra\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Uğur Aydoğdu",
+                    "email": "ugur.aydogdu@epigra.com"
+                },
+                {
+                    "name": "Musa Kurt",
+                    "email": "hackedtim61@gmail.com"
+                }
+            ],
+            "description": "TC Kimlik Numarası Kontrolü ve Doğrulaması",
+            "homepage": "https://github.com/epigra/tckimlik",
+            "keywords": [
+                "doğrulama",
+                "form",
+                "kimlik",
+                "laravel",
+                "tc",
+                "tc kimlik",
+                "tckn",
+                "validation"
+            ],
+            "support": {
+                "issues": "https://github.com/epigra/tckimlik/issues",
+                "source": "https://github.com/epigra/tckimlik/tree/v1.1.0"
+            },
+            "time": "2024-01-12T20:44:05+00:00"
         },
         {
             "name": "fruitcake/php-cors",

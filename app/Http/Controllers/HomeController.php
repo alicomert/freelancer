@@ -29,7 +29,7 @@ class HomeController extends Controller
                 ->get();
 
             // Get top freelancers
-            $topFreelancers = User::where('user_type', 'freelancer')
+            $topFreelancers = User::where('is_freelancer', true)
                 ->orderBy('rating', 'desc')
                 ->orderBy('total_reviews', 'desc')
                 ->take(8)
@@ -49,7 +49,7 @@ class HomeController extends Controller
             // Get platform statistics
             $stats = [
                 'total_projects' => Project::count(),
-                'total_freelancers' => User::where('user_type', 'freelancer')->count(),
+                'total_freelancers' => User::where('is_freelancer', true)->count(),
                 'total_completed' => Project::where('status', 'completed')->count(),
                 'total_earnings' => Project::where('status', 'completed')->sum('budget_max'),
             ];

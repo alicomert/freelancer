@@ -4,80 +4,9 @@
 <!-- Content Area -->
 <div class="container mx-auto px-4 py-6">
     <div class="flex flex-col lg:flex-row gap-6">
-        <!-- Left Sidebar (Mobile Hidden) -->
-        <div class="hidden lg:block lg:w-1/4">
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 mb-4 transition-colors duration-300">
-                <h3 class="font-semibold text-lg mb-3 text-gray-900 dark:text-white">Kısayollar</h3>
-                <div class="space-y-2">
-                    <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors">
-                        <div class="w-8 h-8 rounded-md bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                            <i class="fas fa-fire text-blue-500"></i>
-                        </div>
-                        <span>Popüler Gönderiler</span>
-                    </a>
-                    <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors">
-                        <div class="w-8 h-8 rounded-md bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
-                            <i class="fas fa-star text-purple-500"></i>
-                        </div>
-                        <span>Favori Topluluklar</span>
-                    </a>
-                    <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors">
-                        <div class="w-8 h-8 rounded-md bg-green-100 dark:bg-green-900 flex items-center justify-center">
-                            <i class="fas fa-bolt text-green-500"></i>
-                        </div>
-                        <span>Son Projeler</span>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 transition-colors duration-300">
-                <h3 class="font-semibold text-lg mb-3 text-gray-900 dark:text-white">Takip Ettiğin Topluluklar</h3>
-                <div class="space-y-3">
-                    <a href="#" class="flex items-center space-x-3 group">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold">
-                            WD
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-medium group-hover:text-blue-600 text-gray-900 dark:text-white">Web Developers</h4>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">12.5k üye</p>
-                        </div>
-                        <button class="text-blue-500 hover:text-blue-700">
-                            <i class="fas fa-ellipsis-h"></i>
-                        </button>
-                    </a>
-                    <a href="#" class="flex items-center space-x-3 group">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-purple-400 to-purple-600 flex items-center justify-center text-white font-bold">
-                            FD
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-medium group-hover:text-blue-600 text-gray-900 dark:text-white">Freelance Dünyası</h4>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">8.2k üye</p>
-                        </div>
-                        <button class="text-blue-500 hover:text-blue-700">
-                            <i class="fas fa-ellipsis-h"></i>
-                        </button>
-                    </a>
-                    <a href="#" class="flex items-center space-x-3 group">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-green-400 to-green-600 flex items-center justify-center text-white font-bold">
-                            JS
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-medium group-hover:text-blue-600 text-gray-900 dark:text-white">JavaScript Türkiye</h4>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">5.7k üye</p>
-                        </div>
-                        <button class="text-blue-500 hover:text-blue-700">
-                            <i class="fas fa-ellipsis-h"></i>
-                        </button>
-                    </a>
-                </div>
-                <button class="w-full mt-4 text-center text-blue-500 text-sm font-medium hover:text-blue-700">
-                    Daha fazla göster
-                </button>
-            </div>
-        </div>
         
         <!-- Main Feed -->
-        <div class="w-full lg:w-2/4">
+        <div class="w-full lg:w-3/4">
             <!-- Create Post -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 mb-4 transition-colors duration-300">
                 <div class="flex items-center space-x-3 mb-4">
