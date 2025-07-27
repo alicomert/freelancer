@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SiteSettingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\FollowController;
 
 // Ana sayfa
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -108,6 +109,17 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register-step1', [AuthController::class, 'registerStep1'])->name('register.step1');
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Follow/Block routes (require authentication)
+Route::middleware('auth')->prefix('api')->group(function () {
+    Route::post('/follow/{userId}', [FollowController::class, 'follow'])->name('follow');
+    Route::delete('/follow/{userId}', [FollowController::class, 'unfollow'])->name('unfollow');
+    Route::post('/block/{userId}', [FollowController::class, 'block'])->name('block');
+    Route::delete('/block/{userId}', [FollowController::class, 'unblock'])->name('unblock');
+    Route::get('/follow-status/{userId}', [FollowController::class, 'checkStatus'])->name('follow.status');
+    Route::get('/followers/{userId}', [FollowController::class, 'getFollowers'])->name('followers.list');
+    Route::get('/following/{userId}', [FollowController::class, 'getFollowing'])->name('following.list');
+});
 
 // Protected routes that require authentication and account status check
 Route::middleware(['auth', 'check.account.status'])->prefix('profile')->group(function () {

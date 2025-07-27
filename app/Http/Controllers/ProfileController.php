@@ -39,7 +39,20 @@ class ProfileController extends Controller
         // Check if the current user can edit this profile
         $canEdit = auth()->check() && auth()->id() === $user->id;
         
-        return view('profile.index', compact('user', 'canEdit'));
+        // Initialize follow/block status variables
+        $isFollowing = false;
+        $isBlocked = false;
+        $isBlockedBy = false;
+        
+        // Check follow and block status if user is authenticated and viewing someone else's profile
+        if (auth()->check() && auth()->id() !== $user->id) {
+            $currentUser = auth()->user();
+            $isFollowing = $currentUser->isFollowing($user->id);
+            $isBlocked = $currentUser->isBlocked($user->id);
+            $isBlockedBy = $currentUser->isBlockedBy($user->id);
+        }
+        
+        return view('profile.index', compact('user', 'canEdit', 'isFollowing', 'isBlocked', 'isBlockedBy'));
     }
 
     public function updateBio(Request $request)
@@ -89,6 +102,9 @@ class ProfileController extends Controller
         $rules = [
             'first_name' => 'required|string|max:50',
             'last_name' => 'required|string|max:50',
+            'location' => 'nullable|string|max:100',
+            'website' => 'nullable|url|max:255',
+            'phone' => 'nullable|string|max:20',
         ];
 
         // If password fields are provided, add password validation
@@ -120,6 +136,9 @@ class ProfileController extends Controller
             // Update basic info
             $user->first_name = $request->first_name;
             $user->last_name = $request->last_name;
+            $user->location = $request->location;
+            $user->website = $request->website;
+            $user->phone = $request->phone;
 
             $passwordChanged = false;
             

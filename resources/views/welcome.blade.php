@@ -10,7 +10,8 @@
             <!-- Create Post -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 mb-4 transition-colors duration-300">
                 <div class="flex items-center space-x-3 mb-4">
-                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-10 h-10 rounded-full">
+                    <img src="{{ isset($user) && $user->avatar ? asset('storage/' . $user->avatar) : asset('images/default-avatar.svg') }}" 
+                                     alt="{{ isset($user) ? $user->full_name . ' profil fotoğrafı' : 'Profil fotoğrafı' }}" class="w-10 h-10 rounded-full">
                     <input type="text" placeholder="Neler paylaşmak istersin?" 
                            class="flex-1 py-2 px-4 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none cursor-pointer transition-colors">
                 </div>

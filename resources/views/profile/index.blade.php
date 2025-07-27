@@ -170,7 +170,7 @@
                     <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between relative z-10">
                         <div class="flex flex-col lg:flex-row lg:items-end lg:space-x-4">
                             <div class="relative -mt-16 lg:-mt-20 mb-4 lg:mb-0">
-                                <img src="{{ isset($user) && $user->avatar ? asset('storage/' . $user->avatar) : 'https://randomuser.me/api/portraits/men/32.jpg' }}" 
+                                <img src="{{ isset($user) && $user->avatar ? asset('storage/' . $user->avatar) : asset('images/default-avatar.svg') }}" 
                                      alt="{{ isset($user) ? $user->full_name . ' profil fotoğrafı' : 'Profil fotoğrafı' }}" 
                                      class="w-32 h-32 lg:w-40 lg:h-40 rounded-full border-4 border-white dark:border-gray-800 shadow-lg"
                                      itemprop="image">
@@ -235,7 +235,13 @@
                                         {{ $user->website }}
                                     </a>
                                     @endif
-                                    <a href="{{ isset($user) && $user->website ? $user->website : '#' }}" target="_blank" rel="noopener noreferrer" class="flex items-center text-blue-500 dark:text-blue-400 lg:hidden hover:text-blue-600 dark:hover:text-blue-300 transition-colors order-4">
+                                    @if(isset($user) && $user->phone)
+                                    <span class="flex items-center text-gray-500 dark:text-gray-400 order-5">
+                                        <i class="fas fa-phone mr-1" aria-hidden="true"></i>
+                                        {{ $user->phone }}
+                                    </span>
+                                    @endif
+                                    <a href="{{ isset($user) && $user->website ? $user->website : '#' }}" target="_blank" rel="noopener noreferrer" class="flex items-center text-blue-500 dark:text-blue-400 lg:hidden hover:text-blue-600 dark:hover:text-blue-300 transition-colors order-6">
                                         <i class="fas fa-globe mr-1" aria-hidden="true"></i>
                                         {{ isset($user) && $user->website ? $user->website : 'Website yok' }}
                                     </a>
@@ -244,11 +250,24 @@
                         </div>
                         <div class="flex flex-wrap gap-2 mt-4 lg:mt-0">
                             @if(isset($user) && auth()->check() && auth()->user()->id !== $user->id)
-                            <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-full font-medium">
-                                <i class="fas fa-user-plus mr-2"></i>Takip Et
+                            <!-- Follow/Unfollow Button -->
+                            <button id="followBtn" onclick="toggleFollow({{ $user->id }})" 
+                                class="{{ $isFollowing ? 'bg-gray-500 hover:bg-gray-600' : 'bg-blue-500 hover:bg-blue-600' }} text-white px-6 py-2 rounded-full font-medium transition-all duration-200">
+                                <i id="followIcon" class="{{ $isFollowing ? 'fas fa-user-check' : 'fas fa-user-plus' }} mr-2"></i>
+                                <span id="followText">{{ $isFollowing ? 'Takip Ediliyor' : 'Takip Et' }}</span>
                             </button>
+                            
+                            <!-- Message Button -->
                             <button class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full font-medium">
                                 <i class="fas fa-envelope mr-2"></i>Mesaj Gönder
+                            </button>
+                            
+                            <!-- Block/Unblock Button -->
+                            <button id="blockBtn" onclick="toggleBlock({{ $user->id }})" 
+                                class="{{ $isBlocked ? 'bg-orange-500 hover:bg-orange-600' : 'bg-red-500 hover:bg-red-600' }} text-white px-4 py-2 rounded-full font-medium transition-all duration-200" 
+                                title="{{ $isBlocked ? 'Engeli Kaldır' : 'Kullanıcıyı Engelle' }}">
+                                <i id="blockIcon" class="{{ $isBlocked ? 'fas fa-user-check' : 'fas fa-ban' }}"></i>
+                                <span id="blockText" class="hidden lg:inline ml-2">{{ $isBlocked ? 'Engeli Kaldır' : 'Engelle' }}</span>
                             </button>
                             @elseif(!isset($user) || (auth()->check() && auth()->user()->id === $user->id))
                             <button onclick="openProfileEditModal()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-full font-medium">
@@ -265,28 +284,28 @@
                     <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700" itemscope itemtype="https://schema.org/Person">
                         <div class="text-center" itemprop="interactionStatistic" itemscope itemtype="https://schema.org/InteractionCounter">
                             <meta itemprop="interactionType" content="https://schema.org/CreateAction" />
-                            <p class="text-2xl font-bold text-gray-900 dark:text-white" itemprop="userInteractionCount">247</p>
+                            <p class="text-2xl font-bold text-gray-900 dark:text-white" itemprop="userInteractionCount">{{ isset($user) && $user->posts ? $user->posts->count() : '0' }}</p>
                             <p class="text-sm text-gray-500 dark:text-gray-400">Gönderi</p>
                         </div>
-                        <div class="text-center" itemprop="interactionStatistic" itemscope itemtype="https://schema.org/InteractionCounter">
+                        <div class="text-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg p-2 transition-colors" onclick="openFollowersModal()" itemprop="interactionStatistic" itemscope itemtype="https://schema.org/InteractionCounter">
                             <meta itemprop="interactionType" content="https://schema.org/FollowAction" />
-                            <p class="text-2xl font-bold text-gray-900 dark:text-white" itemprop="userInteractionCount">1.2K</p>
+                            <p id="followersCount" class="text-2xl font-bold text-gray-900 dark:text-white" itemprop="userInteractionCount">{{ isset($user) ? number_format($user->followers_count) : '0' }}</p>
                             <p class="text-sm text-gray-500 dark:text-gray-400">Takipçi</p>
                         </div>
-                        <div class="text-center" itemprop="interactionStatistic" itemscope itemtype="https://schema.org/InteractionCounter">
+                        <div class="text-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg p-2 transition-colors" onclick="openFollowingModal()" itemprop="interactionStatistic" itemscope itemtype="https://schema.org/InteractionCounter">
                             <meta itemprop="interactionType" content="https://schema.org/SubscribeAction" />
-                            <p class="text-2xl font-bold text-gray-900 dark:text-white" itemprop="userInteractionCount">89</p>
+                            <p id="followingCount" class="text-2xl font-bold text-gray-900 dark:text-white" itemprop="userInteractionCount">{{ isset($user) ? number_format($user->following_count) : '0' }}</p>
                             <p class="text-sm text-gray-500 dark:text-gray-400">Takip</p>
                         </div>
                         <div class="text-center" itemprop="aggregateRating" itemscope itemtype="https://schema.org/AggregateRating">
-                            <p class="text-2xl font-bold text-blue-600 dark:text-blue-400" itemprop="ratingValue">4.9</p>
+                            <p class="text-2xl font-bold text-blue-600 dark:text-blue-400" itemprop="ratingValue">{{ isset($user) && $user->average_rating ? number_format($user->average_rating, 1) : '0.0' }}</p>
                             <p class="text-sm text-gray-500 dark:text-gray-400">Puan</p>
                             <meta itemprop="bestRating" content="5" />
                             <meta itemprop="worstRating" content="1" />
                             <meta itemprop="ratingCount" content="{{ isset($user) && $user->total_reviews ? $user->total_reviews : '0' }}" />
                         </div>
                         <div class="text-center">
-                            <p class="text-2xl font-bold text-green-600 dark:text-green-400" itemprop="numberOfEmployees">48</p>
+                            <p class="text-2xl font-bold text-green-600 dark:text-green-400" itemprop="numberOfEmployees">{{ isset($user) && $user->projects ? $user->projects->count() : '0' }}</p>
                             <p class="text-sm text-gray-500 dark:text-gray-400">Proje</p>
                         </div>
                     </div>
@@ -3070,6 +3089,66 @@ document.addEventListener('DOMContentLoaded', function() {
                                            placeholder="Soyadınız">
                                 </div>
 
+                                <!-- Location -->
+                                <div>
+                                    <label for="edit_location" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <i class="fas fa-map-marker-alt mr-1"></i>
+                                        Konum
+                                    </label>
+                                    <div class="relative mt-1">
+                                        <input type="text" 
+                                               id="edit_location" 
+                                               name="location" 
+                                               value="{{ $user->location }}"
+                                               maxlength="100"
+                                               autocomplete="off"
+                                               class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
+                                               placeholder="İl seçin veya yazın...">
+                                        <div id="locationDropdown" class="absolute z-10 w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg mt-1 max-h-60 overflow-y-auto hidden">
+                                            <!-- İl listesi buraya dinamik olarak eklenecek -->
+                                        </div>
+                                    </div>
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                        İl adını yazmaya başlayın veya listeden seçin
+                                    </p>
+                                </div>
+
+                                <!-- Website -->
+                                <div>
+                                    <label for="edit_website" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <i class="fas fa-globe mr-1"></i>
+                                        Web Sitesi
+                                    </label>
+                                    <input type="url" 
+                                           id="edit_website" 
+                                           name="website" 
+                                           value="{{ $user->website }}"
+                                           maxlength="255"
+                                           class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
+                                           placeholder="https://www.example.com">
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                        Kişisel web sitenizin URL'sini girin
+                                    </p>
+                                </div>
+
+                                <!-- Phone -->
+                                <div>
+                                    <label for="edit_phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <i class="fas fa-phone mr-1"></i>
+                                        Telefon
+                                    </label>
+                                    <input type="tel" 
+                                           id="edit_phone" 
+                                           name="phone" 
+                                           value="{{ $user->phone }}"
+                                           maxlength="20"
+                                           class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
+                                           placeholder="+90 555 123 45 67">
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                        İletişim için telefon numaranız
+                                    </p>
+                                </div>
+
                                 <!-- Current Password -->
                                 <div>
                                     <label for="current_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -3193,6 +3272,19 @@ window.openProfileEditModal = function() {
         // Prevent body scroll
         document.body.style.overflow = 'hidden';
         
+        // Mevcut kullanıcı verilerini form alanlarına doldur
+        const firstNameInput = document.getElementById('edit_first_name');
+        const lastNameInput = document.getElementById('edit_last_name');
+        const locationInput = document.getElementById('edit_location');
+        const websiteInput = document.getElementById('edit_website');
+        const phoneInput = document.getElementById('edit_phone');
+        
+        if (firstNameInput) firstNameInput.value = '{{ $user->first_name ?? "" }}';
+        if (lastNameInput) lastNameInput.value = '{{ $user->last_name ?? "" }}';
+        if (locationInput) locationInput.value = '{{ $user->location ?? "" }}';
+        if (websiteInput) websiteInput.value = '{{ $user->website ?? "" }}';
+        if (phoneInput) phoneInput.value = '{{ $user->phone ?? "" }}';
+        
         // Focus first input
         const firstInput = document.getElementById('edit_first_name');
         if (firstInput) {
@@ -3230,12 +3322,116 @@ window.closeProfileEditModal = function() {
             // Reset original values
             const firstNameInput = document.getElementById('edit_first_name');
             const lastNameInput = document.getElementById('edit_last_name');
+            const locationInput = document.getElementById('edit_location');
+            const websiteInput = document.getElementById('edit_website');
+            const phoneInput = document.getElementById('edit_phone');
             
-            if (firstNameInput) firstNameInput.value = '{{ $user->first_name }}';
-            if (lastNameInput) lastNameInput.value = '{{ $user->last_name }}';
+            if (firstNameInput) firstNameInput.value = '{{ $user->first_name ?? "" }}';
+            if (lastNameInput) lastNameInput.value = '{{ $user->last_name ?? "" }}';
+            if (locationInput) locationInput.value = '{{ $user->location ?? "" }}';
+            if (websiteInput) websiteInput.value = '{{ $user->website ?? "" }}';
+            if (phoneInput) phoneInput.value = '{{ $user->phone ?? "" }}';
         }, 500);
     }
 };
+
+// İl listesi
+const cities = {!! json_encode(json_decode(file_get_contents(resource_path('data/iller.json')), true)) !!};
+
+// İl autocomplete fonksiyonları
+function initLocationAutocomplete() {
+    const locationInput = document.getElementById('edit_location');
+    const dropdown = document.getElementById('locationDropdown');
+    
+    if (!locationInput || !dropdown) return;
+    
+    // Input focus olduğunda dropdown'ı göster
+    locationInput.addEventListener('focus', function() {
+        showLocationDropdown();
+    });
+    
+    // Input'a yazı yazıldığında filtrele
+    locationInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase();
+        filterCities(query);
+    });
+    
+    // Dropdown dışına tıklandığında gizle
+    document.addEventListener('click', function(e) {
+        if (!locationInput.contains(e.target) && !dropdown.contains(e.target)) {
+            hideLocationDropdown();
+        }
+    });
+}
+
+function showLocationDropdown() {
+    const dropdown = document.getElementById('locationDropdown');
+    const locationInput = document.getElementById('edit_location');
+    
+    if (!dropdown || !locationInput) return;
+    
+    const query = locationInput.value.toLowerCase();
+    filterCities(query);
+    dropdown.classList.remove('hidden');
+}
+
+function hideLocationDropdown() {
+    const dropdown = document.getElementById('locationDropdown');
+    if (dropdown) {
+        dropdown.classList.add('hidden');
+    }
+}
+
+function filterCities(query) {
+    const dropdown = document.getElementById('locationDropdown');
+    if (!dropdown) return;
+    
+    dropdown.innerHTML = '';
+    
+    // Tüm illeri filtrele
+    const filteredCities = Object.entries(cities).filter(([code, name]) => {
+        const cityCode = code.padStart(2, '0');
+        const displayText = `${cityCode} - ${name}`;
+        return displayText.toLowerCase().includes(query) || 
+               name.toLowerCase().includes(query) ||
+               cityCode.includes(query);
+    });
+    
+    // Maksimum 10 sonuç göster
+    const limitedCities = filteredCities.slice(0, 10);
+    
+    if (limitedCities.length === 0) {
+        const noResult = document.createElement('div');
+        noResult.className = 'px-3 py-2 text-sm text-gray-500 dark:text-gray-400';
+        noResult.textContent = 'İl bulunamadı';
+        dropdown.appendChild(noResult);
+        return;
+    }
+    
+    limitedCities.forEach(([code, name]) => {
+        const cityCode = code.padStart(2, '0');
+        const displayText = `${cityCode} - ${name}`;
+        
+        const option = document.createElement('div');
+        option.className = 'px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-900 dark:text-white';
+        option.textContent = displayText;
+        option.setAttribute('data-city-name', name);
+        
+        option.addEventListener('click', function() {
+            selectCity(name);
+        });
+        
+        dropdown.appendChild(option);
+    });
+}
+
+function selectCity(cityName) {
+    const locationInput = document.getElementById('edit_location');
+    if (locationInput) {
+        locationInput.value = cityName;
+        hideLocationDropdown();
+    }
+}
 
 // Toggle password visibility
 window.togglePassword = function(inputId) {
@@ -3258,6 +3454,9 @@ window.togglePassword = function(inputId) {
 // Handle form submission
 document.addEventListener('DOMContentLoaded', function() {
     const profileEditForm = document.getElementById('profileEditForm');
+    
+    // İl autocomplete'i başlat
+    initLocationAutocomplete();
     
     if (profileEditForm) {
         profileEditForm.addEventListener('submit', function(e) {
@@ -3541,3 +3740,661 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+// Follow/Unfollow functionality - PHP'den gelen değerlerle başlat
+@if(isset($user) && auth()->check() && auth()->user()->id !== $user->id)
+let isFollowing = {{ $isFollowing ? 'true' : 'false' }};
+let isBlocked = {{ $isBlocked ? 'true' : 'false' }};
+@else
+let isFollowing = false;
+let isBlocked = false;
+@endif
+
+// Toggle follow/unfollow
+function toggleFollow(userId) {
+    if (isBlocked) {
+        showNotification('Bu kullanıcıyı engellemişsiniz. Önce engeli kaldırın.', 'error');
+        return;
+    }
+
+    const followBtn = document.getElementById('followBtn');
+    const followIcon = document.getElementById('followIcon');
+    const followText = document.getElementById('followText');
+    
+    // Disable button during request
+    followBtn.disabled = true;
+    followIcon.className = 'fas fa-spinner fa-spin mr-2';
+    followText.textContent = isFollowing ? 'Takipten Çıkılıyor...' : 'Takip Ediliyor...';
+
+    const method = isFollowing ? 'DELETE' : 'POST';
+    const url = `/api/follow/${userId}`;
+
+    fetch(url, {
+        method: method,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            isFollowing = !isFollowing;
+            updateFollowButton();
+            updateFollowersCount(data.followersCount);
+            showNotification(data.message, 'success');
+        } else {
+            showNotification(data.message || 'Bir hata oluştu!', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Bir hata oluştu. Lütfen tekrar deneyin.', 'error');
+    })
+    .finally(() => {
+        followBtn.disabled = false;
+        updateFollowButton();
+    });
+}
+
+// Toggle block/unblock
+function toggleBlock(userId) {
+    const blockBtn = document.getElementById('blockBtn');
+    const blockIcon = document.getElementById('blockIcon');
+    const blockText = document.getElementById('blockText');
+    
+    // Show confirmation dialog
+    const action = isBlocked ? 'engeli kaldırmak' : 'engellemek';
+    if (!confirm(`Bu kullanıcıyı ${action} istediğinizden emin misiniz?`)) {
+        return;
+    }
+    
+    // Disable button during request
+    blockBtn.disabled = true;
+    blockIcon.className = 'fas fa-spinner fa-spin';
+    blockText.textContent = isBlocked ? 'Engel Kaldırılıyor...' : 'Engelleniyor...';
+
+    const method = isBlocked ? 'DELETE' : 'POST';
+    const url = `/api/block/${userId}`;
+
+    fetch(url, {
+        method: method,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            isBlocked = !isBlocked;
+            
+            // If user was blocked, automatically unfollow
+            if (isBlocked && isFollowing) {
+                isFollowing = false;
+                updateFollowersCount(data.followersCount);
+            }
+            
+            updateBlockButton();
+            updateFollowButton();
+            showNotification(data.message, 'success');
+        } else {
+            showNotification(data.message || 'Bir hata oluştu!', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Bir hata oluştu. Lütfen tekrar deneyin.', 'error');
+    })
+    .finally(() => {
+        blockBtn.disabled = false;
+        updateBlockButton();
+    });
+}
+
+// Update follow button appearance
+function updateFollowButton() {
+    const followBtn = document.getElementById('followBtn');
+    const followIcon = document.getElementById('followIcon');
+    const followText = document.getElementById('followText');
+    
+    if (!followBtn || !followIcon || !followText) return;
+    
+    if (isBlocked) {
+        followBtn.style.display = 'none';
+        return;
+    }
+    
+    followBtn.style.display = 'inline-flex';
+    
+    if (isFollowing) {
+        followBtn.className = 'bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-full font-medium transition-all duration-200';
+        followIcon.className = 'fas fa-user-check mr-2';
+        followText.textContent = 'Takip Ediliyor';
+    } else {
+        followBtn.className = 'bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-full font-medium transition-all duration-200';
+        followIcon.className = 'fas fa-user-plus mr-2';
+        followText.textContent = 'Takip Et';
+    }
+}
+
+// Update block button appearance
+function updateBlockButton() {
+    const blockBtn = document.getElementById('blockBtn');
+    const blockIcon = document.getElementById('blockIcon');
+    const blockText = document.getElementById('blockText');
+    
+    if (!blockBtn || !blockIcon || !blockText) return;
+    
+    if (isBlocked) {
+        blockBtn.className = 'bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-full font-medium transition-all duration-200';
+        blockBtn.title = 'Engeli Kaldır';
+        blockIcon.className = 'fas fa-user-check';
+        blockText.textContent = 'Engeli Kaldır';
+    } else {
+        blockBtn.className = 'bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full font-medium transition-all duration-200';
+        blockBtn.title = 'Kullanıcıyı Engelle';
+        blockIcon.className = 'fas fa-ban';
+        blockText.textContent = 'Engelle';
+    }
+}
+
+// Update followers count
+function updateFollowersCount(newCount) {
+    const followersCountElement = document.getElementById('followersCount');
+    if (followersCountElement && newCount !== undefined) {
+        followersCountElement.textContent = new Intl.NumberFormat('tr-TR').format(newCount);
+    }
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm transition-all duration-300 transform translate-x-full`;
+    
+    // Set notification style based on type
+    if (type === 'success') {
+        notification.className += ' bg-green-100 border border-green-400 text-green-700';
+        notification.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span>${message}</span>
+            </div>
+        `;
+    } else if (type === 'error') {
+        notification.className += ' bg-red-100 border border-red-400 text-red-700';
+        notification.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <span>${message}</span>
+            </div>
+        `;
+    } else {
+        notification.className += ' bg-blue-100 border border-blue-400 text-blue-700';
+        notification.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas fa-info-circle mr-2"></i>
+                <span>${message}</span>
+            </div>
+        `;
+    }
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.classList.remove('translate-x-full');
+    }, 100);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.classList.add('translate-x-full');
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
+}
+</script>
+
+<!-- Followers Modal -->
+<div id="followersModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md max-h-[80vh] flex flex-col">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Takipçiler</h3>
+                <button onclick="closeFollowersModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex space-x-2">
+                    <div class="relative flex-1">
+                        <input type="text" 
+                               id="followersSearch" 
+                               placeholder="Takipçi ara..." 
+                               class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                               onkeypress="if(event.key==='Enter') searchFollowersButton()">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                    <button onclick="searchFollowersButton()" 
+                            class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button onclick="clearFollowersSearch()" 
+                            class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Followers List -->
+            <div class="flex-1 overflow-y-auto">
+                <div id="followersList" class="p-4 space-y-3">
+                    <!-- Loading state -->
+                    <div id="followersLoading" class="flex items-center justify-center py-8">
+                        <i class="fas fa-spinner fa-spin text-2xl text-gray-400"></i>
+                    </div>
+                </div>
+                
+                <!-- Load More Button -->
+                <div id="followersLoadMore" class="p-4 border-t border-gray-200 dark:border-gray-700 hidden">
+                    <button onclick="loadMoreFollowers()" class="w-full py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors">
+                        Daha Fazla Göster
+                    </button>
+                </div>
+                
+                <!-- No Results -->
+                <div id="followersNoResults" class="hidden p-8 text-center">
+                    <i class="fas fa-users text-4xl text-gray-300 dark:text-gray-600 mb-4"></i>
+                    <p class="text-gray-500 dark:text-gray-400">Takipçi bulunamadı</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Following Modal -->
+<div id="followingModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md max-h-[80vh] flex flex-col">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Takip Edilenler</h3>
+                <button onclick="closeFollowingModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex space-x-2">
+                    <div class="relative flex-1">
+                        <input type="text" 
+                               id="followingSearch" 
+                               placeholder="Takip edilen ara..." 
+                               class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                               onkeypress="if(event.key==='Enter') searchFollowingButton()">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                    <button onclick="searchFollowingButton()" 
+                            class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button onclick="clearFollowingSearch()" 
+                            class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Following List -->
+            <div class="flex-1 overflow-y-auto">
+                <div id="followingList" class="p-4 space-y-3">
+                    <!-- Loading state -->
+                    <div id="followingLoading" class="flex items-center justify-center py-8">
+                        <i class="fas fa-spinner fa-spin text-2xl text-gray-400"></i>
+                    </div>
+                </div>
+                
+                <!-- Load More Button -->
+                <div id="followingLoadMore" class="p-4 border-t border-gray-200 dark:border-gray-700 hidden">
+                    <button onclick="loadMoreFollowing()" class="w-full py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors">
+                        Daha Fazla Göster
+                    </button>
+                </div>
+                
+                <!-- No Results -->
+                <div id="followingNoResults" class="hidden p-8 text-center">
+                    <i class="fas fa-users text-4xl text-gray-300 dark:text-gray-600 mb-4"></i>
+                    <p class="text-gray-500 dark:text-gray-400">Takip edilen bulunamadı</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Followers Modal Variables
+let followersCurrentPage = 1;
+let followersLastPage = 1;
+let followersSearchTimeout = null;
+let followersCurrentSearch = '';
+let followersLoading = false;
+
+// Following Modal Variables
+let followingCurrentPage = 1;
+let followingLastPage = 1;
+let followingSearchTimeout = null;
+let followingCurrentSearch = '';
+let followingLoading = false;
+
+// Open Followers Modal
+function openFollowersModal() {
+    document.getElementById('followersModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    resetFollowersModal();
+    loadFollowers();
+}
+
+// Close Followers Modal
+function closeFollowersModal() {
+    document.getElementById('followersModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+// Open Following Modal
+function openFollowingModal() {
+    document.getElementById('followingModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    resetFollowingModal();
+    loadFollowing();
+}
+
+// Close Following Modal
+function closeFollowingModal() {
+    document.getElementById('followingModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+// Reset Followers Modal
+function resetFollowersModal() {
+    followersCurrentPage = 1;
+    followersLastPage = 1;
+    followersCurrentSearch = '';
+    document.getElementById('followersSearch').value = '';
+    document.getElementById('followersList').innerHTML = '<div id="followersLoading" class="flex items-center justify-center py-8"><i class="fas fa-spinner fa-spin text-2xl text-gray-400"></i></div>';
+    document.getElementById('followersLoadMore').classList.add('hidden');
+    document.getElementById('followersNoResults').classList.add('hidden');
+}
+
+// Reset Following Modal
+function resetFollowingModal() {
+    followingCurrentPage = 1;
+    followingLastPage = 1;
+    followingCurrentSearch = '';
+    document.getElementById('followingSearch').value = '';
+    document.getElementById('followingList').innerHTML = '<div id="followingLoading" class="flex items-center justify-center py-8"><i class="fas fa-spinner fa-spin text-2xl text-gray-400"></i></div>';
+    document.getElementById('followingLoadMore').classList.add('hidden');
+    document.getElementById('followingNoResults').classList.add('hidden');
+}
+
+// Load Followers
+function loadFollowers(page = 1, search = '') {
+    if (followersLoading) return;
+    followersLoading = true;
+    
+    const userId = {{ $user->id }};
+    const url = `/api/followers/${userId}?page=${page}&search=${encodeURIComponent(search)}`;
+    
+    fetch(url, {
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            followersCurrentPage = data.current_page;
+            followersLastPage = data.last_page;
+            
+            if (page === 1) {
+                document.getElementById('followersList').innerHTML = '';
+            }
+            
+            if (data.data.length === 0 && page === 1) {
+                document.getElementById('followersNoResults').classList.remove('hidden');
+            } else {
+                document.getElementById('followersNoResults').classList.add('hidden');
+                renderFollowers(data.data);
+            }
+            
+            // Show/hide load more button
+            if (data.has_more) {
+                document.getElementById('followersLoadMore').classList.remove('hidden');
+            } else {
+                document.getElementById('followersLoadMore').classList.add('hidden');
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error loading followers:', error);
+        showNotification('Takipçiler yüklenirken hata oluştu', 'error');
+    })
+    .finally(() => {
+        followersLoading = false;
+        document.getElementById('followersLoading')?.remove();
+    });
+}
+
+// Load Following
+function loadFollowing(page = 1, search = '') {
+    if (followingLoading) return;
+    followingLoading = true;
+    
+    const userId = {{ $user->id }};
+    const url = `/api/following/${userId}?page=${page}&search=${encodeURIComponent(search)}`;
+    
+    fetch(url, {
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            followingCurrentPage = data.current_page;
+            followingLastPage = data.last_page;
+            
+            if (page === 1) {
+                document.getElementById('followingList').innerHTML = '';
+            }
+            
+            if (data.data.length === 0 && page === 1) {
+                document.getElementById('followingNoResults').classList.remove('hidden');
+            } else {
+                document.getElementById('followingNoResults').classList.add('hidden');
+                renderFollowing(data.data);
+            }
+            
+            // Show/hide load more button
+            if (data.has_more) {
+                document.getElementById('followingLoadMore').classList.remove('hidden');
+            } else {
+                document.getElementById('followingLoadMore').classList.add('hidden');
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error loading following:', error);
+        showNotification('Takip edilenler yüklenirken hata oluştu', 'error');
+    })
+    .finally(() => {
+        followingLoading = false;
+        document.getElementById('followingLoading')?.remove();
+    });
+}
+
+// Render Followers
+function renderFollowers(followers) {
+    const container = document.getElementById('followersList');
+    
+    followers.forEach(follow => {
+        const user = follow.follower;
+        if (!user) return;
+        
+        const userElement = document.createElement('div');
+        userElement.className = 'flex items-center space-x-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-colors';
+        userElement.onclick = () => window.location.href = `/${user.username}`;
+        
+        const avatarUrl = user.avatar ? `/storage/${user.avatar}` : '/images/default-avatar.svg';
+        
+        userElement.innerHTML = `
+            <img src="${avatarUrl}" 
+                 alt="${user.first_name} ${user.last_name}" 
+                 class="w-12 h-12 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600"
+                 onerror="this.src='/images/default-avatar.svg'">
+            <div class="flex-1 min-w-0">
+                <p class="font-medium text-gray-900 dark:text-white truncate">
+                    ${user.first_name} ${user.last_name}
+                </p>
+                <p class="text-sm text-gray-500 dark:text-gray-400 truncate">
+                    @${user.username}
+                </p>
+            </div>
+            <i class="fas fa-chevron-right text-gray-400"></i>
+        `;
+        
+        container.appendChild(userElement);
+    });
+}
+
+// Render Following
+function renderFollowing(following) {
+    const container = document.getElementById('followingList');
+    
+    following.forEach(follow => {
+        const user = follow.following;
+        if (!user) return;
+        
+        const userElement = document.createElement('div');
+        userElement.className = 'flex items-center space-x-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-colors';
+        userElement.onclick = () => window.location.href = `/${user.username}`;
+        
+        const avatarUrl = user.avatar ? `/storage/${user.avatar}` : '/images/default-avatar.svg';
+        
+        userElement.innerHTML = `
+            <img src="${avatarUrl}" 
+                 alt="${user.first_name} ${user.last_name}" 
+                 class="w-12 h-12 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600"
+                 onerror="this.src='/images/default-avatar.svg'">
+            <div class="flex-1 min-w-0">
+                <p class="font-medium text-gray-900 dark:text-white truncate">
+                    ${user.first_name} ${user.last_name}
+                </p>
+                <p class="text-sm text-gray-500 dark:text-gray-400 truncate">
+                    @${user.username}
+                </p>
+            </div>
+            <i class="fas fa-chevron-right text-gray-400"></i>
+        `;
+        
+        container.appendChild(userElement);
+    });
+}
+
+// Search Followers (Button-based)
+function searchFollowersButton() {
+    const query = document.getElementById('followersSearch').value.trim();
+    followersCurrentSearch = query;
+    resetFollowersModal();
+    loadFollowers(1, query);
+}
+
+// Search Following (Button-based)
+function searchFollowingButton() {
+    const query = document.getElementById('followingSearch').value.trim();
+    followingCurrentSearch = query;
+    resetFollowingModal();
+    loadFollowing(1, query);
+}
+
+// Clear Followers Search
+function clearFollowersSearch() {
+    document.getElementById('followersSearch').value = '';
+    followersCurrentSearch = '';
+    resetFollowersModal();
+    loadFollowers(1, '');
+}
+
+// Clear Following Search
+function clearFollowingSearch() {
+    document.getElementById('followingSearch').value = '';
+    followingCurrentSearch = '';
+    resetFollowingModal();
+    loadFollowing(1, '');
+}
+
+// Search Followers (Legacy - kept for compatibility)
+function searchFollowers(query) {
+    // This function is now disabled to prevent auto-search
+    // Use searchFollowersButton() instead
+}
+
+// Search Following (Legacy - kept for compatibility)
+function searchFollowing(query) {
+    // This function is now disabled to prevent auto-search
+    // Use searchFollowingButton() instead
+}
+
+// Load More Followers
+function loadMoreFollowers() {
+    if (followersCurrentPage < followersLastPage) {
+        loadFollowers(followersCurrentPage + 1, followersCurrentSearch);
+    }
+}
+
+// Load More Following
+function loadMoreFollowing() {
+    if (followingCurrentPage < followingLastPage) {
+        loadFollowing(followingCurrentPage + 1, followingCurrentSearch);
+    }
+}
+
+// Close modals when clicking outside
+document.addEventListener('click', function(event) {
+    const followersModal = document.getElementById('followersModal');
+    const followingModal = document.getElementById('followingModal');
+    
+    if (event.target === followersModal) {
+        closeFollowersModal();
+    }
+    
+    if (event.target === followingModal) {
+        closeFollowingModal();
+    }
+});
+
+// Close modals with Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        if (!document.getElementById('followersModal').classList.contains('hidden')) {
+            closeFollowersModal();
+        }
+        if (!document.getElementById('followingModal').classList.contains('hidden')) {
+            closeFollowingModal();
+        }
+    }
+});
+</script>
+@endpush

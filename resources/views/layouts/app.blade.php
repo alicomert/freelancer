@@ -126,7 +126,8 @@
             <div class="p-4">
                 @auth
                 <div class="flex items-center space-x-3 mb-6">
-                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-10 h-10 rounded-full border-2 border-blue-400">
+                    <img src="{{ isset($user) && $user->avatar ? asset('storage/' . $user->avatar) : asset('images/default-avatar.svg') }}" 
+                                     alt="{{ isset($user) ? $user->full_name . ' profil fotoğrafı' : 'Profil fotoğrafı' }}"  class="w-10 h-10 rounded-full border-2 border-blue-400">
                     <div>
                         <h4 class="font-semibold text-gray-900 dark:text-white">{{ Auth::user()->name }}</h4>
                         <p class="text-gray-500 dark:text-gray-400 text-sm">Web Developer</p>
@@ -1024,5 +1025,8 @@
             @endif
         });
     </script>
+    
+    <!-- Page-specific scripts -->
+    @stack('scripts')
 </body>
 </html>

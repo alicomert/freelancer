@@ -130,6 +130,28 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id');
     }
 
+    // Yeni performanslı takip etme ilişkileri
+    public function userFollows()
+    {
+        return $this->hasMany(UserFollow::class, 'follower_id');
+    }
+
+    public function userFollowers()
+    {
+        return $this->hasMany(UserFollow::class, 'following_id');
+    }
+
+    // Engelleme ilişkileri
+    public function blockedUsers()
+    {
+        return $this->hasMany(UserBlock::class, 'blocker_id');
+    }
+
+    public function blockedByUsers()
+    {
+        return $this->hasMany(UserBlock::class, 'blocked_id');
+    }
+
     public function notifications()
     {
         return $this->hasMany(Notification::class);
@@ -214,5 +236,111 @@ class User extends Authenticatable
             'rating' => $reviews->avg('rating') ?? 0,
             'total_reviews' => $reviews->count()
         ]);
+    }
+
+    // Performanslı takip etme metodları
+    public function followUser($userId)
+    {
+        // Zaten takip ediyorsa veya kendisini takip etmeye çalışıyorsa
+        if ($this->id == $userId || $this->isFollowing($userId)) {
+            return false;
+        }
+
+        // Engelleme kontrolü
+        if ($this->isBlocked($userId) || $this->isBlockedBy($userId)) {
+            return false;
+        }
+
+        // Takip et
+        UserFollow::create([
+            'follower_id' => $this->id,
+            'following_id' => $userId
+        ]);
+
+        // Sayaçları güncelle
+        $this->increment('following_count');
+        User::where('id', $userId)->increment('followers_count');
+
+        return true;
+    }
+
+    public function unfollowUser($userId)
+    {
+        $follow = UserFollow::where('follower_id', $this->id)
+                           ->where('following_id', $userId)
+                           ->first();
+
+        if ($follow) {
+            $follow->delete();
+            
+            // Sayaçları güncelle
+            $this->decrement('following_count');
+            User::where('id', $userId)->decrement('followers_count');
+            
+            return true;
+        }
+
+        return false;
+    }
+
+    public function isFollowing($userId)
+    {
+        return UserFollow::where('follower_id', $this->id)
+                        ->where('following_id', $userId)
+                        ->exists();
+    }
+
+    public function blockUser($userId, $reason = null)
+    {
+        // Kendisini engelleyemez
+        if ($this->id == $userId) {
+            return false;
+        }
+
+        // Zaten engelliyorsa
+        if ($this->isBlocked($userId)) {
+            return false;
+        }
+
+        // Takip ilişkisini kaldır
+        $this->unfollowUser($userId);
+        User::find($userId)->unfollowUser($this->id);
+
+        // Engelle
+        UserBlock::create([
+            'blocker_id' => $this->id,
+            'blocked_id' => $userId,
+            'reason' => $reason
+        ]);
+
+        return true;
+    }
+
+    public function unblockUser($userId)
+    {
+        $block = UserBlock::where('blocker_id', $this->id)
+                          ->where('blocked_id', $userId)
+                          ->first();
+
+        if ($block) {
+            $block->delete();
+            return true;
+        }
+
+        return false;
+    }
+
+    public function isBlocked($userId)
+    {
+        return UserBlock::where('blocker_id', $this->id)
+                       ->where('blocked_id', $userId)
+                       ->exists();
+    }
+
+    public function isBlockedBy($userId)
+    {
+        return UserBlock::where('blocker_id', $userId)
+                       ->where('blocked_id', $this->id)
+                       ->exists();
     }
 }
