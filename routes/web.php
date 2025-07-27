@@ -109,15 +109,25 @@ Route::post('/register-step1', [AuthController::class, 'registerStep1'])->name('
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::middleware(['auth'])->prefix('profile')->group(function () {
+// Protected routes that require authentication and account status check
+Route::middleware(['auth', 'check.account.status'])->prefix('profile')->group(function () {
     Route::post('/verify-identity', [ProfileController::class, 'verifyIdentity'])->name('profile.verify-identity');
     Route::post('/update-bio', [ProfileController::class, 'updateBio'])->name('profile.update.bio');
+    Route::put('/update/{id}', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('/skills/search', [SkillController::class, 'search'])->name('skills.search');
     Route::get('/skills', [SkillController::class, 'index'])->name('skills.index');
     Route::post('/skills', [SkillController::class, 'store'])->name('skills.store');
     Route::put('/skills/{skill}', [SkillController::class, 'update'])->name('skills.update');
-    Route::delete('/skills/{skill}', [SkillController::class, 'destroy'])->name('profile.skills.destroy');
+    Route::delete('/skills/{skill}', [SkillController::class, 'destroy'])->name('skills.destroy');
+    Route::post('/skills/sort', [SkillController::class, 'sort'])->name('skills.sort');
     Route::post('/skills/update-order', [SkillController::class, 'updateOrder'])->name('skills.updateOrder');
+    
+    // Education routes
+    Route::get('/educations', [EducationController::class, 'index'])->name('educations.index');
+    Route::post('/educations', [EducationController::class, 'store'])->name('educations.store');
+    Route::put('/educations/{education}', [EducationController::class, 'update'])->name('educations.update');
+    Route::delete('/educations/{education}', [EducationController::class, 'destroy'])->name('educations.destroy');
+    Route::post('/educations/sort', [EducationController::class, 'sort'])->name('educations.sort');
 });
 
 // Site Settings API Routes

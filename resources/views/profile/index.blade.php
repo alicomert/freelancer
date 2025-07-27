@@ -185,6 +185,26 @@
                                 <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white" itemprop="name">
                                     {{ isset($user) ? $user->full_name : '' }}
                                 </h1>
+                                
+                                @if(isset($user))
+                                    @if($user->account_status == 1)
+                                        <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 mb-2">
+                                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                                            Riskli Hesap
+                                        </div>
+                                    @elseif($user->account_status == 2)
+                                        <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 mb-2">
+                                            <i class="fas fa-ban mr-2"></i>
+                                            Banlandı
+                                            @if($user->banned_at)
+                                                <span class="ml-2 text-xs">
+                                                    ({{ \Carbon\Carbon::parse($user->banned_at)->locale('tr')->translatedFormat('d.m.Y H:i') }})
+                                                </span>
+                                            @endif
+                                        </div>
+                                    @endif
+                                @endif
+                                
                                 @if(isset($user) && $user->title)
                                 <p class="text-lg text-gray-600 dark:text-gray-300 mb-2" itemprop="jobTitle">{{ $user->title }}</p>
                                 @endif
@@ -231,7 +251,7 @@
                                 <i class="fas fa-envelope mr-2"></i>Mesaj Gönder
                             </button>
                             @elseif(!isset($user) || (auth()->check() && auth()->user()->id === $user->id))
-                            <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-full font-medium">
+                            <button onclick="openProfileEditModal()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-full font-medium">
                                 <i class="fas fa-edit mr-2"></i>Profili Düzenle
                             </button>
                             @endif
@@ -2967,6 +2987,393 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+<!-- Profile Edit Modal -->
+<div id="profileEditModal" role="dialog" aria-modal="true" aria-labelledby="profile-edit-modal-title" class="relative z-50 hidden">
+    <!-- Background backdrop -->
+    <div class="fixed inset-0 bg-gray-500/75 transition-opacity ease-in-out duration-500 opacity-0" id="profileEditBackdrop"></div>
+
+    <div class="fixed inset-0 overflow-hidden">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
+                <!-- Slide-over panel -->
+                <div class="pointer-events-auto relative w-screen max-w-lg transform transition ease-in-out duration-500 sm:duration-700 translate-x-full" id="profileEditPanel">
+                    <!-- Close button -->
+                    <div class="absolute top-0 left-0 -ml-8 flex pt-4 pr-2 sm:-ml-10 sm:pr-4">
+                        <button type="button" onclick="closeProfileEditModal()" class="relative rounded-md text-red-500 hover:text-red-700 focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:outline-hidden">
+                            <span class="absolute -inset-2.5"></span>
+                            <span class="sr-only">Paneli kapat</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-6">
+                                <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="flex h-full flex-col overflow-y-auto bg-white dark:bg-gray-800 py-6 shadow-xl">
+                        <div class="px-4 sm:px-6">
+                            <h2 id="profile-edit-modal-title" class="text-base font-semibold text-gray-900 dark:text-white">
+                                <i class="fas fa-user-edit mr-2"></i>
+                                Profil Bilgilerini Düzenle
+                            </h2>
+                            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                Kişisel bilgilerinizi güncelleyin
+                            </p>
+                        </div>
+                        
+                        <div class="relative mt-6 flex-1 px-4 sm:px-6">
+                            <!-- Success Message -->
+                            <div id="profileEditSuccessMessage" class="hidden mb-4 p-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-300 rounded-md">
+                                <div class="flex">
+                                    <i class="fas fa-check-circle mr-2 mt-0.5"></i>
+                                    <span>Profil bilgileri başarıyla güncellendi!</span>
+                                </div>
+                            </div>
+
+                            <!-- Error Message -->
+                            <div id="profileEditErrorMessage" class="hidden mb-4 p-4 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-300 rounded-md">
+                                <div class="flex">
+                                    <i class="fas fa-exclamation-triangle mr-2 mt-0.5"></i>
+                                    <span id="profileEditErrorText">Bir hata oluştu!</span>
+                                </div>
+                            </div>
+
+                            <!-- Form -->
+                            <form id="profileEditForm" class="space-y-6">
+                                @csrf
+                                
+                                <!-- First Name -->
+                                <div>
+                                    <label for="edit_first_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Ad <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           id="edit_first_name" 
+                                           name="first_name" 
+                                           value="{{ $user->first_name }}"
+                                           required
+                                           maxlength="50"
+                                           class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
+                                           placeholder="Adınız">
+                                </div>
+
+                                <!-- Last Name -->
+                                <div>
+                                    <label for="edit_last_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Soyad <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           id="edit_last_name" 
+                                           name="last_name" 
+                                           value="{{ $user->last_name }}"
+                                           required
+                                           maxlength="50"
+                                           class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
+                                           placeholder="Soyadınız">
+                                </div>
+
+                                <!-- Current Password -->
+                                <div>
+                                    <label for="current_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Mevcut Şifre
+                                    </label>
+                                    <div class="relative mt-1">
+                                        <input type="password" 
+                                               id="current_password" 
+                                               name="current_password" 
+                                               class="block w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
+                                               placeholder="Mevcut şifreniz">
+                                        <button type="button" onclick="togglePassword('current_password')" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                            <i class="fas fa-eye text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" id="current_password_icon"></i>
+                                        </button>
+                                    </div>
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                        Şifre değiştirmek istiyorsanız mevcut şifrenizi girin
+                                    </p>
+                                </div>
+
+                                <!-- New Password -->
+                                <div>
+                                    <label for="new_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Yeni Şifre
+                                    </label>
+                                    <div class="relative mt-1">
+                                        <input type="password" 
+                                               id="new_password" 
+                                               name="password" 
+                                               minlength="8"
+                                               class="block w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
+                                               placeholder="Yeni şifreniz (en az 8 karakter)">
+                                        <button type="button" onclick="togglePassword('new_password')" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                            <i class="fas fa-eye text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" id="new_password_icon"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Confirm New Password -->
+                                <div>
+                                    <label for="password_confirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Yeni Şifre Tekrar
+                                    </label>
+                                    <div class="relative mt-1">
+                                        <input type="password" 
+                                               id="password_confirmation" 
+                                               name="password_confirmation" 
+                                               minlength="8"
+                                               class="block w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
+                                               placeholder="Yeni şifrenizi tekrar girin">
+                                        <button type="button" onclick="togglePassword('password_confirmation')" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                            <i class="fas fa-eye text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" id="password_confirmation_icon"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="pt-4">
+                                    <button type="submit" 
+                                            id="profileEditSubmitBtn"
+                                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+                                        <span id="profileEditSubmitText">
+                                            <i class="fas fa-save mr-2"></i>
+                                            Değişiklikleri Kaydet
+                                        </span>
+                                        <span id="profileEditLoadingText" class="hidden">
+                                            <i class="fas fa-spinner fa-spin mr-2"></i>
+                                            Kaydediliyor...
+                                        </span>
+                                    </button>
+                                </div>
+
+                                <!-- Info Box -->
+                                <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md">
+                                    <div class="flex">
+                                        <div class="flex-shrink-0">
+                                            <i class="fas fa-info-circle text-blue-400"></i>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h3 class="text-sm font-medium text-blue-800 dark:text-blue-200">
+                                                Profil Güncelleme Bilgileri
+                                            </h3>
+                                            <div class="mt-2 text-sm text-blue-700 dark:text-blue-300">
+                                                <ul class="list-disc list-inside space-y-1">
+                                                    <li>Ad ve soyad bilgileri zorunludur</li>
+                                                    <li>Şifre değiştirmek için mevcut şifrenizi girmelisiniz</li>
+                                                    <li>Yeni şifre en az 8 karakter olmalıdır</li>
+                                                    <li>Değişiklikler anında uygulanır</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Profile Edit Modal Functions
+window.openProfileEditModal = function() {
+    const modal = document.getElementById('profileEditModal');
+    const backdrop = document.getElementById('profileEditBackdrop');
+    const panel = document.getElementById('profileEditPanel');
+    
+    if (modal && backdrop && panel) {
+        modal.classList.remove('hidden');
+        
+        // Trigger animations
+        setTimeout(() => {
+            backdrop.classList.remove('opacity-0');
+            backdrop.classList.add('opacity-100');
+            panel.classList.remove('translate-x-full');
+            panel.classList.add('translate-x-0');
+        }, 10);
+        
+        // Prevent body scroll
+        document.body.style.overflow = 'hidden';
+        
+        // Focus first input
+        const firstInput = document.getElementById('edit_first_name');
+        if (firstInput) {
+            setTimeout(() => firstInput.focus(), 300);
+        }
+    }
+};
+
+window.closeProfileEditModal = function() {
+    const modal = document.getElementById('profileEditModal');
+    const backdrop = document.getElementById('profileEditBackdrop');
+    const panel = document.getElementById('profileEditPanel');
+    
+    if (modal && backdrop && panel) {
+        // Trigger animations
+        backdrop.classList.remove('opacity-100');
+        backdrop.classList.add('opacity-0');
+        panel.classList.remove('translate-x-0');
+        panel.classList.add('translate-x-full');
+        
+        // Hide modal after animation
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+            
+            // Reset form and messages
+            const form = document.getElementById('profileEditForm');
+            const successMsg = document.getElementById('profileEditSuccessMessage');
+            const errorMsg = document.getElementById('profileEditErrorMessage');
+            
+            if (form) form.reset();
+            if (successMsg) successMsg.classList.add('hidden');
+            if (errorMsg) errorMsg.classList.add('hidden');
+            
+            // Reset original values
+            const firstNameInput = document.getElementById('edit_first_name');
+            const lastNameInput = document.getElementById('edit_last_name');
+            
+            if (firstNameInput) firstNameInput.value = '{{ $user->first_name }}';
+            if (lastNameInput) lastNameInput.value = '{{ $user->last_name }}';
+        }, 500);
+    }
+};
+
+// Toggle password visibility
+window.togglePassword = function(inputId) {
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(inputId + '_icon');
+    
+    if (input && icon) {
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+};
+
+// Handle form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const profileEditForm = document.getElementById('profileEditForm');
+    
+    if (profileEditForm) {
+        profileEditForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('profileEditSubmitBtn');
+            const submitText = document.getElementById('profileEditSubmitText');
+            const loadingText = document.getElementById('profileEditLoadingText');
+            const successMsg = document.getElementById('profileEditSuccessMessage');
+            const errorMsg = document.getElementById('profileEditErrorMessage');
+            const errorText = document.getElementById('profileEditErrorText');
+            
+            // Show loading state
+            if (submitBtn && submitText && loadingText) {
+                submitBtn.disabled = true;
+                submitText.classList.add('hidden');
+                loadingText.classList.remove('hidden');
+            }
+            
+            // Hide previous messages
+            if (successMsg) successMsg.classList.add('hidden');
+            if (errorMsg) errorMsg.classList.add('hidden');
+            
+            // Get form data
+            const formData = new FormData(profileEditForm);
+            
+            // Add method override for PUT request
+            formData.append('_method', 'PUT');
+            
+            // Send request
+            fetch('{{ route("profile.update", $user->id) }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Reset loading state
+                if (submitBtn && submitText && loadingText) {
+                    submitBtn.disabled = false;
+                    submitText.classList.remove('hidden');
+                    loadingText.classList.add('hidden');
+                }
+                
+                if (data.success) {
+                    // Show success message
+                    if (successMsg) {
+                        successMsg.classList.remove('hidden');
+                    }
+                    
+                    // Update page content if name changed
+                    if (data.user) {
+                        const nameElements = document.querySelectorAll('[data-user-name]');
+                        nameElements.forEach(element => {
+                            element.textContent = data.user.first_name + ' ' + data.user.last_name;
+                        });
+                    }
+                    
+                    // If password was changed, logout after showing message
+                    if (data.password_changed) {
+                        setTimeout(() => {
+                            // Create a form to submit logout request
+                            const logoutForm = document.createElement('form');
+                            logoutForm.method = 'POST';
+                            logoutForm.action = '{{ route("logout") }}';
+                            
+                            // Add CSRF token
+                            const csrfInput = document.createElement('input');
+                            csrfInput.type = 'hidden';
+                            csrfInput.name = '_token';
+                            csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                            logoutForm.appendChild(csrfInput);
+                            
+                            // Add form to body and submit
+                            document.body.appendChild(logoutForm);
+                            logoutForm.submit();
+                        }, 3000);
+                    } else {
+                        // Close modal after delay for normal updates
+                        setTimeout(() => {
+                            closeProfileEditModal();
+                            window.location.reload();
+                        }, 2000);
+                    }
+                } else {
+                    // Show error message
+                    if (errorMsg && errorText) {
+                        errorText.textContent = data.message || 'Profil güncellenirken bir hata oluştu!';
+                        errorMsg.classList.remove('hidden');
+                    }
+                }
+            })
+            .catch(error => {
+                // Reset loading state
+                if (submitBtn && submitText && loadingText) {
+                    submitBtn.disabled = false;
+                    submitText.classList.remove('hidden');
+                    loadingText.classList.add('hidden');
+                }
+                
+                console.error('Error:', error);
+                
+                // Show error message
+                if (errorMsg && errorText) {
+                    errorText.textContent = 'Bir hata oluştu. Lütfen tekrar deneyin.';
+                    errorMsg.classList.remove('hidden');
+                }
+            });
+        });
+    }
+});
+</script>
+
 <!-- Identity Verification Modal -->
 <div id="identity-verification-modal" role="dialog" aria-modal="true" aria-labelledby="identity-verification-modal-title" class="relative z-50 hidden">
     <!-- Background backdrop -->

@@ -28,6 +28,7 @@ return new class extends Migration
             $table->boolean('is_featured')->default(false);
             $table->enum('status', ['active', 'hidden', 'deleted', 'published', 'draft'])->default('active');
             $table->timestamps();
+            $table->softDeletes();
             
             // Indexes for performance
             $table->index(['status', 'is_featured', 'created_at']);

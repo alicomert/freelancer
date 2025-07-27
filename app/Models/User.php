@@ -45,6 +45,8 @@ class User extends Authenticatable
         'is_online',
         'last_seen',
         'status',
+        'account_status',
+        'banned_at',
     ];
 
     protected $hidden = [
@@ -59,6 +61,7 @@ class User extends Authenticatable
             'last_seen' => 'datetime',
             'birth_date' => 'date',
             'joined_date' => 'date',
+            'banned_at' => 'datetime',
             'password' => 'hashed',
             'is_verified' => 'boolean',
             'is_online' => 'boolean',
