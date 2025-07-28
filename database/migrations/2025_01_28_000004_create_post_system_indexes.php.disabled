@@ -1,0 +1,314 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        // 1. Posts Optimized tablosu için performans indeksleri
+        try {
+            Schema::table('posts_optimized', function (Blueprint $table) {
+                // Composite indeksler
+                try { $table->index(['status', 'created_at'], 'posts_status_created_idx'); } catch (Exception $e) {}
+                try { $table->index(['category_id', 'status', 'created_at'], 'posts_category_status_created_idx'); } catch (Exception $e) {}
+                try { $table->index(['user_id', 'status', 'created_at'], 'posts_user_status_created_idx'); } catch (Exception $e) {}
+                try { $table->index(['post_type', 'status'], 'posts_type_status_idx'); } catch (Exception $e) {}
+                
+                // Engagement indeksleri
+                try { $table->index(['views_count', 'created_at'], 'posts_views_created_idx'); } catch (Exception $e) {}
+                try { $table->index(['likes_count', 'created_at'], 'posts_likes_created_idx'); } catch (Exception $e) {}
+                try { $table->index(['comments_count', 'created_at'], 'posts_comments_created_idx'); } catch (Exception $e) {}
+                
+                // Arama için indeksler
+                try { $table->index(['slug'], 'posts_slug_idx'); } catch (Exception $e) {}
+                try { $table->index(['featured_image'], 'posts_featured_image_idx'); } catch (Exception $e) {}
+            });
+        } catch (Exception $e) {
+            // Tablo bulunamadı veya başka bir hata
+        }
+
+        // 2. Users tablosu için ek indeksler
+        try {
+            Schema::table('users', function (Blueprint $table) {
+                try { $table->index(['status', 'created_at'], 'users_status_created_idx'); } catch (Exception $e) {}
+                try { $table->index(['email_verified_at'], 'users_email_verified_idx'); } catch (Exception $e) {}
+            });
+        } catch (Exception $e) {}
+
+        // 3. Categories tablosu için indeksler
+        try {
+            Schema::table('categories', function (Blueprint $table) {
+                try { $table->index(['parent_id', 'status'], 'categories_parent_status_idx'); } catch (Exception $e) {}
+                try { $table->index(['slug'], 'categories_slug_idx'); } catch (Exception $e) {}
+                try { $table->index(['sort_order'], 'categories_sort_idx'); } catch (Exception $e) {}
+            });
+        } catch (Exception $e) {}
+
+        // 4. Comments tablosu için indeksler (eğer varsa)
+        if (Schema::hasTable('comments')) {
+            try {
+                Schema::table('comments', function (Blueprint $table) {
+                    try { $table->index(['commentable_id', 'commentable_type', 'status'], 'comments_commentable_status_idx'); } catch (Exception $e) {}
+                    try { $table->index(['user_id', 'created_at'], 'comments_user_created_idx'); } catch (Exception $e) {}
+                    try { $table->index(['parent_id'], 'comments_parent_idx'); } catch (Exception $e) {}
+                });
+            } catch (Exception $e) {}
+        }
+
+        // 5. Tags ve Post Tags için indeksler (eğer varsa)
+        if (Schema::hasTable('tags')) {
+            try {
+                Schema::table('tags', function (Blueprint $table) {
+                    try { $table->index(['slug'], 'tags_slug_idx'); } catch (Exception $e) {}
+                    try { $table->index(['name'], 'tags_name_idx'); } catch (Exception $e) {}
+                });
+            } catch (Exception $e) {}
+        }
+
+        if (Schema::hasTable('post_tags')) {
+            try {
+                Schema::table('post_tags', function (Blueprint $table) {
+                    try { $table->index(['tag_id', 'post_id'], 'post_tags_tag_post_idx'); } catch (Exception $e) {}
+                    try { $table->index(['post_id', 'tag_id'], 'post_tags_post_tag_idx'); } catch (Exception $e) {}
+                });
+            } catch (Exception $e) {}
+        }
+
+        // 6. SEO Meta tablosu için indeksler
+        if (Schema::hasTable('seo_meta')) {
+            try {
+                Schema::table('seo_meta', function (Blueprint $table) {
+                    try { $table->index(['seoable_type', 'seoable_id'], 'seo_meta_seoable_idx'); } catch (Exception $e) {}
+                    try { $table->index(['meta_title'], 'seo_meta_title_idx'); } catch (Exception $e) {}
+                });
+            } catch (Exception $e) {}
+        }
+
+        // 7. Media tablosu için indeksler (eğer varsa)
+        if (Schema::hasTable('media')) {
+            try {
+                Schema::table('media', function (Blueprint $table) {
+                    try { $table->index(['mediable_type', 'mediable_id'], 'media_mediable_idx'); } catch (Exception $e) {}
+                    try { $table->index(['file_type'], 'media_file_type_idx'); } catch (Exception $e) {}
+                    try { $table->index(['created_at'], 'media_created_idx'); } catch (Exception $e) {}
+                });
+            } catch (Exception $e) {}
+        }
+
+        // 8. Notifications tablosu için indeksler (eğer varsa)
+        if (Schema::hasTable('notifications')) {
+            try {
+                Schema::table('notifications', function (Blueprint $table) {
+                    try { $table->index(['notifiable_type', 'notifiable_id'], 'notifications_notifiable_idx'); } catch (Exception $e) {}
+                    try { $table->index(['read_at'], 'notifications_read_idx'); } catch (Exception $e) {}
+                    try { $table->index(['created_at'], 'notifications_created_idx'); } catch (Exception $e) {}
+                });
+            } catch (Exception $e) {}
+        }
+
+        // 9. Performans için stored procedures
+        try {
+            DB::statement('
+                CREATE PROCEDURE GetPopularPosts(
+                    IN category_id_param BIGINT,
+                    IN limit_param INT,
+                    IN days_param INT
+                )
+                BEGIN
+                    SELECT 
+                        p.*,
+                        CONCAT(u.first_name, " ", u.last_name) as author_name,
+                        c.name as category_name,
+                        (p.views_count + p.likes_count * 2 + p.comments_count * 3) as popularity_score
+                    FROM posts_optimized p
+                    LEFT JOIN users u ON p.user_id = u.id
+                    LEFT JOIN categories c ON p.category_id = c.id
+                    WHERE p.status = 1
+                        AND (category_id_param IS NULL OR p.category_id = category_id_param)
+                        AND p.created_at >= DATE_SUB(NOW(), INTERVAL days_param DAY)
+                    ORDER BY popularity_score DESC
+                    LIMIT limit_param;
+                END
+            ');
+        } catch (Exception $e) {}
+
+        try {
+            DB::statement('
+                CREATE PROCEDURE GetUserPostStats(IN user_id_param BIGINT)
+                BEGIN
+                    SELECT 
+                        COUNT(*) as total_posts,
+                        COUNT(CASE WHEN status = 1 THEN 1 END) as published_posts,
+                        COUNT(CASE WHEN status = 0 THEN 1 END) as draft_posts,
+                        COALESCE(SUM(views_count), 0) as total_views,
+                        COALESCE(SUM(likes_count), 0) as total_likes,
+                        COALESCE(SUM(comments_count), 0) as total_comments,
+                        COALESCE(AVG(views_count), 0) as avg_views_per_post,
+                        MAX(created_at) as last_post_date
+                    FROM posts_optimized 
+                    WHERE user_id = user_id_param;
+                END
+            ');
+        } catch (Exception $e) {}
+
+        // 10. Temizlik için scheduled events
+        try {
+            DB::statement('
+                CREATE EVENT IF NOT EXISTS cleanup_old_cache
+                ON SCHEDULE EVERY 1 HOUR
+                DO
+                BEGIN
+                    DELETE FROM post_cache WHERE expires_at < NOW();
+                    DELETE FROM query_performance_log WHERE executed_at < DATE_SUB(NOW(), INTERVAL 7 DAY);
+                END
+            ');
+        } catch (Exception $e) {}
+
+        try {
+            DB::statement('
+                CREATE EVENT IF NOT EXISTS update_daily_stats
+                ON SCHEDULE EVERY 1 DAY
+                STARTS TIMESTAMP(CURDATE() + INTERVAL 1 DAY, "01:00:00")
+                DO
+                BEGIN
+                    INSERT INTO daily_post_stats (stat_date, category_id, total_posts, total_views, total_likes, total_comments, avg_engagement, created_at, updated_at)
+                    SELECT 
+                        CURDATE() - INTERVAL 1 DAY as stat_date,
+                        p.category_id,
+                        COUNT(*) as total_posts,
+                        COALESCE(SUM(p.views_count), 0) as total_views,
+                        COALESCE(SUM(p.likes_count), 0) as total_likes,
+                        COALESCE(SUM(p.comments_count), 0) as total_comments,
+                        CASE 
+                            WHEN SUM(p.views_count) > 0 THEN (SUM(p.likes_count + p.comments_count) / SUM(p.views_count)) * 100
+                            ELSE 0
+                        END as avg_engagement,
+                        NOW(),
+                        NOW()
+                    FROM posts_optimized p
+                    WHERE p.status = 1
+                        AND DATE(p.created_at) = CURDATE() - INTERVAL 1 DAY
+                    GROUP BY p.category_id
+                    ON DUPLICATE KEY UPDATE
+                        total_posts = VALUES(total_posts),
+                        total_views = VALUES(total_views),
+                        total_likes = VALUES(total_likes),
+                        total_comments = VALUES(total_comments),
+                        avg_engagement = VALUES(avg_engagement),
+                        updated_at = NOW();
+                END
+            ');
+        } catch (Exception $e) {}
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        // Events'leri sil
+        try { DB::statement('DROP EVENT IF EXISTS update_daily_stats'); } catch (Exception $e) {}
+        try { DB::statement('DROP EVENT IF EXISTS cleanup_old_cache'); } catch (Exception $e) {}
+        
+        // Stored procedures'leri sil
+        try { DB::statement('DROP PROCEDURE IF EXISTS GetUserPostStats'); } catch (Exception $e) {}
+        try { DB::statement('DROP PROCEDURE IF EXISTS GetPopularPosts'); } catch (Exception $e) {}
+
+        // İndeksleri sil - Laravel otomatik olarak halleder
+        // Sadece manuel eklenen indeksleri belirtmemiz gerekir
+        
+        try {
+            Schema::table('posts_optimized', function (Blueprint $table) {
+                try { $table->dropIndex('posts_status_created_idx'); } catch (Exception $e) {}
+                try { $table->dropIndex('posts_category_status_created_idx'); } catch (Exception $e) {}
+                try { $table->dropIndex('posts_user_status_created_idx'); } catch (Exception $e) {}
+                try { $table->dropIndex('posts_type_status_idx'); } catch (Exception $e) {}
+                try { $table->dropIndex('posts_views_created_idx'); } catch (Exception $e) {}
+                try { $table->dropIndex('posts_likes_created_idx'); } catch (Exception $e) {}
+                try { $table->dropIndex('posts_comments_created_idx'); } catch (Exception $e) {}
+                try { $table->dropIndex('posts_slug_idx'); } catch (Exception $e) {}
+                try { $table->dropIndex('posts_featured_image_idx'); } catch (Exception $e) {}
+            });
+        } catch (Exception $e) {}
+
+        try {
+            Schema::table('users', function (Blueprint $table) {
+                try { $table->dropIndex('users_status_created_idx'); } catch (Exception $e) {}
+                try { $table->dropIndex('users_email_verified_idx'); } catch (Exception $e) {}
+            });
+        } catch (Exception $e) {}
+
+        try {
+            Schema::table('categories', function (Blueprint $table) {
+                try { $table->dropIndex('categories_parent_status_idx'); } catch (Exception $e) {}
+                try { $table->dropIndex('categories_slug_idx'); } catch (Exception $e) {}
+                try { $table->dropIndex('categories_sort_idx'); } catch (Exception $e) {}
+            });
+        } catch (Exception $e) {}
+
+        // Diğer tabloların indekslerini de sil (eğer varsa)
+        if (Schema::hasTable('comments')) {
+            try {
+                Schema::table('comments', function (Blueprint $table) {
+                    try { $table->dropIndex('comments_commentable_status_idx'); } catch (Exception $e) {}
+                    try { $table->dropIndex('comments_user_created_idx'); } catch (Exception $e) {}
+                    try { $table->dropIndex('comments_parent_idx'); } catch (Exception $e) {}
+                });
+            } catch (Exception $e) {}
+        }
+
+        if (Schema::hasTable('tags')) {
+            try {
+                Schema::table('tags', function (Blueprint $table) {
+                    try { $table->dropIndex('tags_slug_idx'); } catch (Exception $e) {}
+                    try { $table->dropIndex('tags_name_idx'); } catch (Exception $e) {}
+                });
+            } catch (Exception $e) {}
+        }
+
+        if (Schema::hasTable('post_tags')) {
+            try {
+                Schema::table('post_tags', function (Blueprint $table) {
+                    try { $table->dropIndex('post_tags_tag_post_idx'); } catch (Exception $e) {}
+                    try { $table->dropIndex('post_tags_post_tag_idx'); } catch (Exception $e) {}
+                });
+            } catch (Exception $e) {}
+        }
+
+        if (Schema::hasTable('seo_meta')) {
+            try {
+                Schema::table('seo_meta', function (Blueprint $table) {
+                    try { $table->dropIndex('seo_meta_seoable_idx'); } catch (Exception $e) {}
+                    try { $table->dropIndex('seo_meta_title_idx'); } catch (Exception $e) {}
+                });
+            } catch (Exception $e) {}
+        }
+
+        if (Schema::hasTable('media')) {
+            try {
+                Schema::table('media', function (Blueprint $table) {
+                    try { $table->dropIndex('media_mediable_idx'); } catch (Exception $e) {}
+                    try { $table->dropIndex('media_file_type_idx'); } catch (Exception $e) {}
+                    try { $table->dropIndex('media_created_idx'); } catch (Exception $e) {}
+                });
+            } catch (Exception $e) {}
+        }
+
+        if (Schema::hasTable('notifications')) {
+            try {
+                Schema::table('notifications', function (Blueprint $table) {
+                    try { $table->dropIndex('notifications_notifiable_idx'); } catch (Exception $e) {}
+                    try { $table->dropIndex('notifications_read_idx'); } catch (Exception $e) {}
+                    try { $table->dropIndex('notifications_created_idx'); } catch (Exception $e) {}
+                });
+            } catch (Exception $e) {}
+        }
+    }
+};

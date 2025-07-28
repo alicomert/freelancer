@@ -1,0 +1,337 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        // Önce mevcut poll tablolarını ve view'ları sil
+        $this->dropExistingPollStructures();
+        
+        // 1. Post Polls tablosu - Anket soruları
+        Schema::create('post_polls', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('post_id')->constrained('posts_optimized')->onDelete('cascade');
+            $table->string('question', 500);
+            $table->enum('poll_type', ['single_choice', 'multiple_choice', 'rating', 'text'])->default('single_choice');
+            $table->boolean('allow_multiple_votes')->default(false);
+            $table->boolean('show_results_before_vote')->default(false);
+            $table->boolean('anonymous_voting')->default(true);
+            $table->timestamp('expires_at')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->json('settings')->nullable(); // Ek ayarlar için
+            $table->timestamps();
+            
+            // İndeksler
+            $table->index(['post_id', 'is_active']);
+            $table->index(['expires_at']);
+            $table->index(['poll_type']);
+        });
+
+        // 2. Poll Options tablosu - Anket seçenekleri
+        Schema::create('poll_options', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('poll_id')->constrained('post_polls')->onDelete('cascade');
+            $table->string('option_text', 300);
+            $table->string('option_image')->nullable(); // Görsel seçenek
+            $table->integer('sort_order')->default(0);
+            $table->integer('votes_count')->default(0);
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+            
+            // İndeksler
+            $table->index(['poll_id', 'sort_order']);
+            $table->index(['poll_id', 'is_active']);
+        });
+
+        // 3. Poll Votes tablosu - Kullanıcı oyları
+        Schema::create('poll_votes', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('poll_id')->constrained('post_polls')->onDelete('cascade');
+            $table->foreignId('option_id')->constrained('poll_options')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->string('voter_ip', 45)->nullable(); // Anonim oylar için IP
+            $table->text('vote_value')->nullable(); // Text tipindeki anketler için
+            $table->integer('rating_value')->nullable(); // Rating tipindeki anketler için (1-5, 1-10 vb.)
+            $table->timestamp('voted_at');
+            $table->timestamps();
+            
+            // İndeksler ve kısıtlamalar
+            $table->index(['poll_id', 'user_id']);
+            $table->index(['poll_id', 'voted_at']);
+            $table->index(['option_id']);
+            $table->index(['voter_ip']);
+            
+            // Bir kullanıcı aynı ankette sadece bir kez oy verebilir (multiple_choice hariç)
+            $table->unique(['poll_id', 'user_id', 'option_id'], 'unique_user_poll_option_vote');
+        });
+
+        // 4. Poll Analytics tablosu - Anket istatistikleri
+        Schema::create('poll_analytics', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('poll_id')->constrained('post_polls')->onDelete('cascade');
+            $table->date('analytics_date');
+            $table->integer('total_votes')->default(0);
+            $table->integer('unique_voters')->default(0);
+            $table->integer('anonymous_votes')->default(0);
+            $table->integer('registered_votes')->default(0);
+            $table->json('hourly_breakdown')->nullable(); // Saatlik oy dağılımı
+            $table->json('demographic_data')->nullable(); // Demografik veriler
+            $table->timestamps();
+            
+            // İndeksler
+            $table->unique(['poll_id', 'analytics_date']);
+            $table->index(['analytics_date']);
+        });
+
+        // 5. Poll Comments tablosu - Anket yorumları
+        Schema::create('poll_comments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('poll_id')->constrained('post_polls')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->text('comment');
+            $table->foreignId('parent_id')->nullable()->constrained('poll_comments')->onDelete('cascade');
+            $table->boolean('is_approved')->default(true);
+            $table->integer('likes_count')->default(0);
+            $table->timestamps();
+            
+            // İndeksler
+            $table->index(['poll_id', 'created_at']);
+            $table->index(['user_id']);
+            $table->index(['parent_id']);
+            $table->index(['is_approved']);
+        });
+
+        // 6. Poll Shares tablosu - Anket paylaşımları
+        Schema::create('poll_shares', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('poll_id')->constrained('post_polls')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->enum('platform', ['facebook', 'twitter', 'linkedin', 'whatsapp', 'telegram', 'email', 'copy_link']);
+            $table->string('shared_url')->nullable();
+            $table->string('referrer')->nullable();
+            $table->timestamp('shared_at');
+            $table->timestamps();
+            
+            // İndeksler
+            $table->index(['poll_id', 'platform']);
+            $table->index(['user_id', 'shared_at']);
+            $table->index(['shared_at']);
+        });
+
+        // 7. Triggers ve Views oluştur
+        $this->createPollTriggers();
+        $this->createPollViews();
+    }
+
+    /**
+     * Mevcut poll yapılarını temizle
+     */
+    private function dropExistingPollStructures(): void
+    {
+        // Views'leri sil
+        DB::statement('DROP VIEW IF EXISTS poll_results_view');
+        DB::statement('DROP VIEW IF EXISTS popular_polls_view');
+        DB::statement('DROP VIEW IF EXISTS active_polls_view');
+
+        // Triggers'ları sil
+        DB::statement('DROP TRIGGER IF EXISTS update_poll_analytics');
+        DB::statement('DROP TRIGGER IF EXISTS decrease_poll_option_votes_count');
+        DB::statement('DROP TRIGGER IF EXISTS update_poll_option_votes_count');
+
+        // Tabloları sil (foreign key sırası önemli)
+        Schema::dropIfExists('poll_shares');
+        Schema::dropIfExists('poll_comments');
+        Schema::dropIfExists('poll_analytics');
+        Schema::dropIfExists('poll_votes');
+        Schema::dropIfExists('poll_options');
+        Schema::dropIfExists('post_polls');
+    }
+
+    /**
+     * Poll için trigger'ları oluştur
+     */
+    private function createPollTriggers(): void
+    {
+        // Poll vote sayısını otomatik güncelle
+        DB::statement('
+            CREATE TRIGGER update_poll_option_votes_count
+            AFTER INSERT ON poll_votes
+            FOR EACH ROW
+            BEGIN
+                UPDATE poll_options 
+                SET votes_count = votes_count + 1 
+                WHERE id = NEW.option_id;
+            END
+        ');
+
+        // Poll vote silindiğinde sayıyı azalt
+        DB::statement('
+            CREATE TRIGGER decrease_poll_option_votes_count
+            AFTER DELETE ON poll_votes
+            FOR EACH ROW
+            BEGIN
+                UPDATE poll_options 
+                SET votes_count = votes_count - 1 
+                WHERE id = OLD.option_id AND votes_count > 0;
+            END
+        ');
+
+        // Poll analytics güncellemesi
+        DB::statement('
+            CREATE TRIGGER update_poll_analytics
+            AFTER INSERT ON poll_votes
+            FOR EACH ROW
+            BEGIN
+                INSERT INTO poll_analytics (poll_id, analytics_date, total_votes, unique_voters, anonymous_votes, registered_votes, created_at, updated_at)
+                VALUES (
+                    NEW.poll_id,
+                    DATE(NEW.voted_at),
+                    1,
+                    1,
+                    CASE WHEN NEW.user_id IS NULL THEN 1 ELSE 0 END,
+                    CASE WHEN NEW.user_id IS NOT NULL THEN 1 ELSE 0 END,
+                    NOW(),
+                    NOW()
+                )
+                ON DUPLICATE KEY UPDATE
+                    total_votes = total_votes + 1,
+                    anonymous_votes = anonymous_votes + CASE WHEN NEW.user_id IS NULL THEN 1 ELSE 0 END,
+                    registered_votes = registered_votes + CASE WHEN NEW.user_id IS NOT NULL THEN 1 ELSE 0 END,
+                    updated_at = NOW();
+            END
+        ');
+    }
+
+    /**
+     * Poll için view'ları oluştur
+     */
+    private function createPollViews(): void
+    {
+        // Aktif anketler view'ı
+        DB::statement('
+            CREATE VIEW active_polls_view AS
+            SELECT 
+                pp.id,
+                pp.post_id,
+                pp.question,
+                pp.poll_type,
+                pp.allow_multiple_votes,
+                pp.show_results_before_vote,
+                pp.anonymous_voting,
+                pp.expires_at,
+                pp.is_active,
+                pp.settings,
+                pp.created_at,
+                pp.updated_at,
+                p.title as post_title,
+                p.slug as post_slug,
+                CONCAT(u.first_name, " ", u.last_name) as author_name,
+                COUNT(DISTINCT pv.id) as total_votes,
+                COUNT(DISTINCT pv.user_id) as unique_voters,
+                COUNT(DISTINCT po.id) as options_count,
+                CASE 
+                    WHEN pp.expires_at IS NULL THEN "active"
+                    WHEN pp.expires_at > NOW() THEN "active"
+                    ELSE "expired"
+                END as poll_status
+            FROM post_polls pp
+            LEFT JOIN posts_optimized p ON pp.post_id = p.id
+            LEFT JOIN users u ON p.user_id = u.id
+            LEFT JOIN poll_votes pv ON pp.id = pv.poll_id
+            LEFT JOIN poll_options po ON pp.id = po.poll_id AND po.is_active = 1
+            WHERE pp.is_active = 1
+            GROUP BY pp.id, pp.post_id, pp.question, pp.poll_type, pp.allow_multiple_votes, 
+                     pp.show_results_before_vote, pp.anonymous_voting, pp.expires_at, pp.is_active, 
+                     pp.settings, pp.created_at, pp.updated_at, p.title, p.slug, u.first_name, u.last_name
+        ');
+
+        // Popüler anketler view'ı
+        DB::statement('
+            CREATE VIEW popular_polls_view AS
+            SELECT 
+                pp.id,
+                pp.post_id,
+                pp.question,
+                pp.poll_type,
+                pp.expires_at,
+                pp.created_at,
+                p.title as post_title,
+                p.views_count as post_views,
+                COUNT(DISTINCT pv.id) as total_votes,
+                COUNT(DISTINCT pv.user_id) as unique_voters,
+                COUNT(DISTINCT pc.id) as comments_count,
+                COUNT(DISTINCT ps.id) as shares_count,
+                (COUNT(DISTINCT pv.id) * 2 + COUNT(DISTINCT pc.id) * 1.5 + COUNT(DISTINCT ps.id) * 3) as engagement_score
+            FROM post_polls pp
+            LEFT JOIN posts_optimized p ON pp.post_id = p.id
+            LEFT JOIN poll_votes pv ON pp.id = pv.poll_id
+            LEFT JOIN poll_comments pc ON pp.id = pc.poll_id AND pc.is_approved = 1
+            LEFT JOIN poll_shares ps ON pp.id = ps.poll_id
+            WHERE pp.is_active = 1
+                AND (pp.expires_at IS NULL OR pp.expires_at > NOW())
+            GROUP BY pp.id, pp.post_id, pp.question, pp.poll_type, pp.expires_at, pp.created_at, 
+                     p.title, p.views_count
+            ORDER BY engagement_score DESC
+        ');
+
+        // Poll sonuçları view'ı
+        DB::statement('
+            CREATE VIEW poll_results_view AS
+            SELECT 
+                pp.id as poll_id,
+                pp.question,
+                po.id as option_id,
+                po.option_text,
+                po.votes_count,
+                ROUND(
+                    CASE 
+                        WHEN total_poll_votes.total > 0 
+                        THEN (po.votes_count * 100.0 / total_poll_votes.total)
+                        ELSE 0 
+                    END, 2
+                ) as vote_percentage
+            FROM post_polls pp
+            LEFT JOIN poll_options po ON pp.id = po.poll_id AND po.is_active = 1
+            LEFT JOIN (
+                SELECT 
+                    poll_id, 
+                    COUNT(*) as total 
+                FROM poll_votes 
+                GROUP BY poll_id
+            ) total_poll_votes ON pp.id = total_poll_votes.poll_id
+            WHERE pp.is_active = 1
+            ORDER BY pp.id, po.sort_order
+        ');
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        // Views'leri sil
+        DB::statement('DROP VIEW IF EXISTS poll_results_view');
+        DB::statement('DROP VIEW IF EXISTS popular_polls_view');
+        DB::statement('DROP VIEW IF EXISTS active_polls_view');
+
+        // Triggers'ları sil
+        DB::statement('DROP TRIGGER IF EXISTS update_poll_analytics');
+        DB::statement('DROP TRIGGER IF EXISTS decrease_poll_option_votes_count');
+        DB::statement('DROP TRIGGER IF EXISTS update_poll_option_votes_count');
+
+        // Tabloları sil (foreign key sırası önemli)
+        Schema::dropIfExists('poll_shares');
+        Schema::dropIfExists('poll_comments');
+        Schema::dropIfExists('poll_analytics');
+        Schema::dropIfExists('poll_votes');
+        Schema::dropIfExists('poll_options');
+        Schema::dropIfExists('post_polls');
+    }
+};

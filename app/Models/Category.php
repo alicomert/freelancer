@@ -17,6 +17,7 @@ class Category extends Model
         'color',
         'is_active',
         'sort_order',
+        'category_type',
     ];
 
     protected function casts(): array
@@ -41,6 +42,21 @@ class Category extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    public function scopeByType($query, $type)
+    {
+        return $query->where('category_type', $type);
+    }
+
+    public function scopeServices($query)
+    {
+        return $query->where('category_type', 'service');
+    }
+
+    public function scopeGeneral($query)
+    {
+        return $query->where('category_type', 'general');
     }
 
     // Methods

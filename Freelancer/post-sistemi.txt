@@ -1,0 +1,124 @@
+MySQL Veri Modeli ve Çok Amaçlı Posts Tasarımı
+Geniş kapsamlı bir sistemde (blog, hizmet-ilanı, açık artırma, anket vb.) en iyi yaklaşım genellikle
+normalizasyon yaparak ortak bir posts tablosu ve tip-spesifik alt tablolar oluşturmaktır. Örneğin;
+posts tablosu (id, user_id, category_id, title, slug, content, is_pinned, is_featured, status, created_at,
+vb.) temel ortak sütunları barındırır. Hizmet-ilanı için fiyat, indirim, otomatik teslimat gibi alanlar ayrı bir
+services tablosunda, açık artırma bilgileri ayrı bir auctions tablosunda, anket soruları polls
+tablosunda tutulabilir. Bu sayede boş (NULL) kolonlardan kaçınılır ve ileride değişiklik yapmak
+kolaylaşır. Doğru indekslerle MySQL çok büyük tablolarla da başa çıkabilir – bir yanıtın da belirttiği gibi,
+“tablo düzgün indekslendiyse, tek büyük bir tabloya yapılan sorgunun performansı [birden çok tabloya
+yapılan sorgu ile] benzer olur” . Özetle, türler arası ortak alanları posts tablosunda, özel alanları
+ise ilişkili (bir-bire bir) alt tablolarda tutmak hem mimarinin esnekliğini artırır hem de bakım kolaylığı
+sağlar.
+Örnek tablo yapıları:
+- posts (id, uuid, user_id, community_id, category_id, post_type, title, slug,
+content, image_url, likes_count, comments_count, shares_count, views_count,
+is_pinned, is_featured, status, created_at, updated_at, deleted_at) – ortak alanlar.
+- post_images (id, post_id, image_url) – birden fazla fotoğraf için.
+- post_tag (post_id, tag_id) , tags (id, title) – etiketler için.
+- polls (id, post_id, question, created_at) ve poll_options (id, poll_id,
+option_text, votes) – anketler için.
+- services (post_id, price, discounted_price, auto_delivery_flag, ...) – hizmet-ilanı
+için.
+- auctions (post_id, start_price, current_bid, end_time, ...) – açık artırma için.
+- portfolios (post_id, client, project_details, ...) – portfolyo için.
+Her alt tablo kendi alanlarını taşıyacağından, posts tablosu tek bir “catch-all” olmaktan çıkar ve
+performans için kritik sütunlara (örn. user_id , category_id , created_at , status ) kolayca
+indeks eklenebilir. Özetle, normalizasyon performansı da korurken tasarımı daha esnek kılar (zaten bir
+yanıtta işaret edildiği gibi “normalized design… performance is the least problem… Big tables are not a
+big deal for MySQL” ).
+İndeksleme ve Sorgu Optimizasyonu
+İndeksler en kritik performans unsurudur. Sıklıkla filtre veya sıralamada kullandığınız sütunlara indeks
+ekleyin: örneğin user_id , category_id , is_featured , created_at , slug gibi sütunları
+mutlaka dizinleyin. Özellikle slug üzerinde UNIQUE indeks kullanarak her post için hızlı arama
+sağlarsınız. Metin araması gerekiyorsa title ve content için FULLTEXT indeks düşünebilirsiniz.
+Çoklu kolonlu indeks (örneğin (community_id, created_at) ) benzer sorgulara hız kazandırır.
+Büyük veri hacimleri için bölümlendirme (partitioning) yararlı olabilir. Örneğin created_at tarihine
+göre RANGE (tarihe göre) bölümlendirme yaparak her ay ya da yıl için ayrı partı̇ syonlar oluşturabilirsiniz
+. Bu sayede eski veri kolayca silinip arşivlenebilir, sorgular sadece ilgili partisyonları tarar.
+Keboola örneğinde aylık partı̇ syonlar kullanılarak binlerce satırdan ziyade yalnızca ilgili partisyonlar
+taranmış ve sorgular hız kazanmıştır .
+1
+2
+3 4
+3 4
+1
+Ayrıca özet tablolar ve önbellek de önemlidir. likes_count , views_count gibi sayaçları çok
+yüksek trafikli bir posts tablosuna her okunuşta yazmak yerine ayrı bir sayaç tablosunda tutmak veya
+Redis gibi bir cache sistemi kullanmak yaygındır. Ağır istatistik sorguları için (örneğin son 24 saatte en
+çok görüntülenen yazılar gibi) özel özet tablolar oluşturabilirsiniz. Bir öneriye göre, “bunun gibi işler için
+indeksleme tek başına yardımcı olmayacaktır. Bunun yerine, gerekli özetleri depolayan ek tablolar ile
+önbellekleme stratejisi düşünün” . Örneğin günlük hitleri tutan küçük bir tabloya her kayıt
+eklemesinde güncellemeler yaparak karmaşık sorguları bu özet tabloya yönlendirebilirsiniz .
+Kısacası, uygun indeksleme ve veri bölümleme ile MySQL on milyonlarca kayıtla da etkin çalışır. Yoğun
+erişim gerektiren özet bilgiler için ise önceden hesaplanmış sayaçlar veya cache kullanmak
+performansı artırır.
+Laravel Entegrasyonu ve İlişkiler
+Laravel tarafında, yukarıdaki veritabanı tasarımını Eloquent modelleri ve ilişkiler ile yansıtabilirsiniz.
+Post modelinizde her post tipine göre polimorfik veya bire bir ilişkiler tanımlayabilirsiniz (örneğin bir
+Post birçok PostImage e sahip olabilir, bir Post bir Service e sahip olabilir vb.). Kategori ve
+topluluk ilişkilerini yabancı anahtar olarak kullanın ( category_id , community_id ). Slug ile route
+model binding için getRouteKeyName() kullanarak SEO dostu URL’ler oluşturabilirsiniz.
+Meta verileri yönetmek için Laravel’in polimorfik ilişkilerini kullanmak SEO açısından avantajlıdır.
+Örneğin tek bir seo tablosu oluşturarak her içerik türü için başlık/açıklama/anahtar kelime
+saklayabilirsiniz . Bu tablo seoble_id ve seoble_type sütunlarıyla ilgili post, proje veya sayfayı
+işaret eder. Böylece her yazıya özel meta etiketler (title, description) saklamak ve yönetmek kolaylaşır.
+SEO ve Google İndekslemesi
+Yapısal olarak SEO dostu bir site için anlaşılır URL’ler, doğru meta etiketleri ve site haritası gibi
+unsurlar önemlidir.
+URL Yapısı: Laravel’in yönlendirme sistemi ile kategori, topluluk ve post slug’larını içeren temiz
+URL’ler oluşturun. Örneğin /topluluk/js/javascript-ozellikleri veya /kategori/
+seo/hizmet-isimleri gibi adresler kullanıcı ve arama motoru dostudur . Yukarıdaki
+rehbere göre Laravel’in “clean and SEO-friendly URLs” oluşturma yeteneği SEO’yu olumlu etkiler
+. Her post için benzersiz bir slug kullanın ve gerektiğinde kategori veya topluluk slug’ını da
+URL’ye dahil edin.
+Meta Etiketler ve İçerik: Her sayfa için dinamik başlık ( <title> ) ve meta açıklama ( <meta
+name="description"> ) ayarlayın. Bu değerleri posts tablosundaki bir meta_data
+sütununda veya polimorfik seo tablosunda saklayabilirsiniz. Blade şablonlarında
+<h1>, <h2> başlık etiketlerini anlamlı kullanın ve içerik içinde özgün, kaliteli metin
+bulundurun. Dahili bağlantılar ( <a> etiketleri) ile benzer konuları birbirine bağlayın. Medya
+ögeleri için alt metinleri belirleyin. Tüm bunlar Google’ın sayfa içeriğinizi anlamasına ve dizine
+eklemesine yardımcı olur.
+Yapısal Veri (Structured Data): İçerikleri zenginleştirmek ve arama sonuçlarında öne çıkmak
+için JSON-LD formatında schema.org işaretlemeleri ekleyin. Örneğin, bir blog yazısı için
+@type: "Article" , başlık, tarih, yazar bilgilerini JSON-LD ile verebilirsiniz . Hizmet veya
+açık artırma ilanları için de Product veya Offer türünde düzenlemeler yaparak puan, fiyat,
+5
+5
+6
+•
+7 8
+7
+•
+•
+9
+2
+süresi gibi bilgileri işaretleyebilirsiniz. Developer rehberinde belirtildiği üzere, Blade
+şablonlarında <script type="application/ld+json"> kullanarak veri eklemek kolaydır
+. Bu sayede Google, içeriği daha iyi anlar ve zengin snippet’ler (ör. yıldızlı derecelendirme)
+oluşturabilir.
+Sitemap ve Robots: Tüm önemli sayfalarınızı (özellikle her post detay sayfasını) XML
+sitemap’ınıza ekleyin. Laravel için spatie/laravel-sitemap veya laravelium/laravel-sitemap gibi
+paketlerle dinamik site haritası oluşturabilirsiniz . Site haritası, Google’ın yeni içerikleri hızlı
+bulmasını sağlar. Ayrıca robots.txt dosyasında izin vereceğiniz dizinleri ve istemediğiniz
+sayfaları (admin, taslak içerikler vb.) kontrol edin. Canonical etiketleriyle kopya içeriği engelleyin.
+Performans ve Mobil Uyumluluk: SEO için site hızı çok önemlidir. Laravel’in önbellekleme
+mekanizmalarını (sayfa önbelleği, sorgu önbelleği) kullanın . Görselleri mümkünse sıkıştırın
+veya CDN’den sunun (ileride ekleyebilirsiniz). Sayfalarınız responsive olmalı. Teknik SEO ayarları
+(HTTPS kullanımı, hızlı sunucu, temiz HTML yapısı) da sıralamayı etkiler.
+Özetle, her post sayfası benzersiz ve anlamlı bir URL’ye sahip olmalı, düzgün meta etiketleri içermeli ve
+Google’ın anlayabileceği yapısal veriler sunmalıdır. Laravel’in SEO için sunduğu temiz yönlendirmeler ve
+önbellekleme özellikleri bu hedeflere ulaşmanıza yardımcı olur . Ayrıca dinamik sitemap’lar ile
+Google’ın tüm içeriğinizi dizine eklemesini sağlayabilirsiniz .
+Sonuç
+Özetle, on milyonlarca post için performans odaklı bir yapı kurarken şunlara dikkat edin: Birincisi,
+normalize edilmiş bir veri modeli kullanın; ortak alanları posts tablosunda, özelleşmiş alanları ilgili alt
+tablolarda tutun. İkincisi, kritik sütunlara uygun indeksler ekleyin ve gerekirse tabloyu tarih gibi bir
+kritere göre bölümlendirin . Üçüncüsü, sık kullandığınız sayaclar ve özet veriler için ek tablolar
+veya cache sistemleri kullanarak sorgu yükünü azaltın . Dördüncüsü, Laravel’in routing ve
+caching özellikleri ile SEO dostu URL’ler ve meta düzenlemeleri yapın .
+Bu önerilen yapıyla, performanslı bir veri katmanı oluşturup, sitenizi arama motorları için de optimize
+ederek uzun yıllar sorunsuz çalışacak bir altyapı kurabilirsiniz. Kaynaklarımıza göre doğru indeksleme ve
+mimari strateji, büyük veri hacimlerinde bile hızlı sorgular ve iyi kullanıcı deneyimi sağlar .
+Böylece Türkiye’nin kapsamlı bir Reddit/freelance platformu hedefinize uygun, ölçeklenebilir ve SEO
+dostu bir sistem tasarlayabilirsiniz

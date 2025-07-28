@@ -1,0 +1,284 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        // Mevcut view'ları sil
+        $views = [
+            'post_performance_view', 'popular_tags_view', 'category_stats_view', 
+            'user_activity_view', 'trending_posts_view', 'post_details_view'
+        ];
+        
+        foreach ($views as $view) {
+            DB::statement("DROP VIEW IF EXISTS {$view}");
+        }
+
+        // 1. Post Detay View - Tüm post bilgilerini tek sorguda getiren view
+        DB::statement('
+            CREATE VIEW post_details_view AS
+            SELECT 
+                p.id,
+                p.title,
+                p.content,
+                p.post_type,
+                p.status,
+                p.user_id,
+                CONCAT(u.first_name, " ", u.last_name) as author_name,
+                u.avatar as author_avatar,
+                p.category_id,
+                c.name as category_name,
+                p.views_count,
+                p.likes_count,
+                p.comments_count,
+                p.shares_count,
+                p.created_at,
+                p.updated_at,
+                
+                -- SEO bilgileri
+                sm.title as seo_title,
+                sm.description as seo_description,
+                sm.keywords as seo_keywords,
+                
+                -- Trending skoru
+                tp.trend_score,
+                tp.calculated_at as trend_calculated_at,
+                
+                -- Kalite skoru
+                pqs.quality_score,
+                pqs.spam_score,
+                pqs.quality_factors,
+                
+                -- Lokasyon bilgileri
+                pl.country_code,
+                pl.city,
+                pl.latitude,
+                pl.longitude,
+                pl.radius_km
+                
+            FROM posts_optimized p
+            LEFT JOIN users u ON p.user_id = u.id
+            LEFT JOIN categories c ON p.category_id = c.id
+            LEFT JOIN seo_meta sm ON sm.seoable_id = p.id AND sm.seoable_type = "App\\\\Models\\\\Post"
+            LEFT JOIN trending_posts tp ON tp.post_id = p.id
+            LEFT JOIN post_quality_scores pqs ON pqs.post_id = p.id
+            LEFT JOIN post_locations pl ON pl.post_id = p.id
+            WHERE p.status = 1
+        ');
+
+        // 2. Trending Posts View - Trend olan postları getiren view
+        DB::statement('
+            CREATE VIEW trending_posts_view AS
+            SELECT 
+                p.id,
+                p.title,
+                p.content,
+                p.post_type,
+                p.user_id,
+                CONCAT(u.first_name, " ", u.last_name) as author_name,
+                u.avatar as author_avatar,
+                p.category_id,
+                c.name as category_name,
+                p.views_count,
+                p.likes_count,
+                p.comments_count,
+                p.shares_count,
+                tp.trend_score,
+                tp.calculated_at,
+                p.created_at,
+                
+                -- Son 24 saatteki aktivite
+                COALESCE(dps.total_views, 0) as views_today,
+                COALESCE(dps.total_likes, 0) as likes_today,
+                COALESCE(dps.total_comments, 0) as comments_today,
+                COALESCE(dps.total_views, 0) as shares_today
+                
+            FROM posts_optimized p
+            INNER JOIN trending_posts tp ON tp.post_id = p.id
+            LEFT JOIN users u ON p.user_id = u.id
+            LEFT JOIN categories c ON p.category_id = c.id
+            LEFT JOIN daily_post_stats dps ON dps.category_id = p.category_id AND dps.stat_date = CURDATE()
+            WHERE p.status = 1
+                AND tp.trend_score > 0
+                AND tp.calculated_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+            ORDER BY tp.trend_score DESC
+        ');
+
+        // 3. User Activity View - Kullanıcı aktivitelerini gösteren view
+        DB::statement('
+            CREATE VIEW user_activity_view AS
+            SELECT 
+                upi.user_id,
+                CONCAT(u.first_name, " ", u.last_name) as user_name,
+                upi.post_id,
+                p.title as post_title,
+                upi.interaction_type,
+                upi.interacted_at,
+                
+                -- Post sahibi bilgileri
+                p.user_id as post_author_id,
+                CONCAT(pa.first_name, " ", pa.last_name) as post_author_name,
+                
+                -- Kategori bilgileri
+                p.category_id,
+                c.name as category_name
+                
+            FROM user_post_interactions upi
+            LEFT JOIN users u ON upi.user_id = u.id
+            LEFT JOIN posts_optimized p ON upi.post_id = p.id
+            LEFT JOIN users pa ON p.user_id = pa.id
+            LEFT JOIN categories c ON p.category_id = c.id
+            WHERE p.status = 1
+            ORDER BY upi.interacted_at DESC
+        ');
+
+        // 4. Category Stats View - Kategori istatistiklerini gösteren view
+        DB::statement('
+            CREATE VIEW category_stats_view AS
+            SELECT 
+                c.id as category_id,
+                c.name as category_name,
+                c.slug as category_slug,
+                
+                -- Post sayıları
+                COUNT(p.id) as total_posts,
+                COUNT(CASE WHEN p.status = 1 THEN 1 END) as published_posts,
+                COUNT(CASE WHEN p.created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY) THEN 1 END) as posts_last_30_days,
+                
+                -- Toplam istatistikler
+                COALESCE(SUM(p.views_count), 0) as total_views,
+                COALESCE(SUM(p.likes_count), 0) as total_likes,
+                COALESCE(SUM(p.comments_count), 0) as total_comments,
+                COALESCE(SUM(p.shares_count), 0) as total_shares,
+                
+                -- Ortalama değerler
+                COALESCE(AVG(p.views_count), 0) as avg_views_per_post,
+                COALESCE(AVG(p.likes_count), 0) as avg_likes_per_post,
+                COALESCE(AVG(p.comments_count), 0) as avg_comments_per_post,
+                
+                -- En son post tarihi
+                MAX(p.created_at) as last_post_date,
+                
+                -- Ortalama kalite skoru
+                COALESCE(AVG(pqs.quality_score), 0) as avg_quality_score
+                
+            FROM categories c
+            LEFT JOIN posts_optimized p ON c.id = p.category_id
+            LEFT JOIN post_quality_scores pqs ON pqs.post_id = p.id
+            GROUP BY c.id, c.name, c.slug
+        ');
+
+        // 5. Popular Tags View - Popüler etiketleri gösteren view
+        DB::statement('
+            CREATE VIEW popular_tags_view AS
+            SELECT 
+                t.id as tag_id,
+                t.name as tag_name,
+                t.slug as tag_slug,
+                
+                -- Kullanım sayıları
+                COUNT(pt.post_id) as usage_count,
+                COUNT(CASE WHEN p.created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY) THEN 1 END) as usage_last_7_days,
+                COUNT(CASE WHEN p.created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY) THEN 1 END) as usage_last_30_days,
+                
+                -- Toplam istatistikler
+                COALESCE(SUM(p.views_count), 0) as total_views,
+                COALESCE(SUM(p.likes_count), 0) as total_likes,
+                COALESCE(SUM(p.comments_count), 0) as total_comments,
+                
+                -- Ortalama değerler
+                COALESCE(AVG(p.views_count), 0) as avg_views_per_post,
+                COALESCE(AVG(p.likes_count), 0) as avg_likes_per_post,
+                
+                -- En son kullanım tarihi
+                MAX(p.created_at) as last_used_date
+                
+            FROM tags t
+            LEFT JOIN post_tags pt ON t.id = pt.tag_id
+            LEFT JOIN posts_optimized p ON pt.post_id = p.id AND p.status = 1
+            GROUP BY t.id, t.name, t.slug
+            HAVING usage_count > 0
+            ORDER BY usage_count DESC
+        ');
+
+        // 6. Post Performance View - Post performans analizi
+        DB::statement('
+            CREATE VIEW post_performance_view AS
+            SELECT 
+                p.id,
+                p.title,
+                p.post_type,
+                p.user_id,
+                CONCAT(u.first_name, " ", u.last_name) as author_name,
+                p.category_id,
+                c.name as category_name,
+                p.created_at,
+                
+                -- Temel metrikler
+                p.views_count,
+                p.likes_count,
+                p.comments_count,
+                p.shares_count,
+                
+                -- Hesaplanmış metrikler
+                CASE 
+                    WHEN p.views_count > 0 THEN (p.likes_count / p.views_count) * 100
+                    ELSE 0
+                END as like_rate,
+                
+                CASE 
+                    WHEN p.views_count > 0 THEN (p.comments_count / p.views_count) * 100
+                    ELSE 0
+                END as comment_rate,
+                
+                CASE 
+                    WHEN p.views_count > 0 THEN ((p.likes_count + p.comments_count + p.shares_count) / p.views_count) * 100
+                    ELSE 0
+                END as engagement_rate,
+                
+                -- Kalite skorları
+                pqs.quality_score,
+                pqs.spam_score,
+                
+                -- Trend skoru
+                tp.trend_score,
+                
+                -- Performans kategorisi
+                CASE 
+                    WHEN p.views_count >= 10000 AND ((p.likes_count + p.comments_count) / p.views_count) >= 0.05 THEN "Viral"
+                    WHEN p.views_count >= 5000 AND ((p.likes_count + p.comments_count) / p.views_count) >= 0.03 THEN "High Performing"
+                    WHEN p.views_count >= 1000 AND ((p.likes_count + p.comments_count) / p.views_count) >= 0.02 THEN "Good"
+                    WHEN p.views_count >= 100 THEN "Average"
+                    ELSE "Low"
+                END as performance_category
+                
+            FROM posts_optimized p
+            LEFT JOIN users u ON p.user_id = u.id
+            LEFT JOIN categories c ON p.category_id = c.id
+            LEFT JOIN post_quality_scores pqs ON pqs.post_id = p.id
+            LEFT JOIN trending_posts tp ON tp.post_id = p.id
+            WHERE p.status = 1
+        ');
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        DB::statement('DROP VIEW IF EXISTS post_performance_view');
+        DB::statement('DROP VIEW IF EXISTS popular_tags_view');
+        DB::statement('DROP VIEW IF EXISTS category_stats_view');
+        DB::statement('DROP VIEW IF EXISTS user_activity_view');
+        DB::statement('DROP VIEW IF EXISTS trending_posts_view');
+        DB::statement('DROP VIEW IF EXISTS post_details_view');
+    }
+};

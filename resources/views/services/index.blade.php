@@ -45,95 +45,35 @@
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Hosting & VPS -->
+            @foreach($serviceCategories as $category)
+            <!-- {{ $category->name }} -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center">
-                        <i class="fas fa-server text-blue-500 text-2xl mr-3"></i>
+                        <i class="{{ $category->icon }} text-2xl mr-3" style="color: {{ $category->color }}"></i>
                         <div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Hosting & VPS</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">47 ilan</p>
+                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">{{ $category->name }}</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                {{ $services->where('category', $category->slug)->count() }} ilan
+                            </p>
                         </div>
                     </div>
-                    <span class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 text-xs font-semibold px-2.5 py-0.5 rounded">Aktif</span>
+                    @php
+                        $badgeColors = [
+                            'hosting-vps' => ['bg' => 'bg-blue-100 dark:bg-blue-900', 'text' => 'text-blue-800 dark:text-blue-300', 'label' => 'Aktif'],
+                            'hesap-lisans' => ['bg' => 'bg-green-100 dark:bg-green-900', 'text' => 'text-green-800 dark:text-green-300', 'label' => 'Çok Satan'],
+                            'epin-oyun' => ['bg' => 'bg-purple-100 dark:bg-purple-900', 'text' => 'text-purple-800 dark:text-purple-300', 'label' => 'Otomatik'],
+                            'script-tema' => ['bg' => 'bg-orange-100 dark:bg-orange-900', 'text' => 'text-orange-800 dark:text-orange-300', 'label' => 'Popüler'],
+                            'sosyal-medya' => ['bg' => 'bg-pink-100 dark:bg-pink-900', 'text' => 'text-pink-800 dark:text-pink-300', 'label' => 'Trend'],
+                            'seo-pazarlama' => ['bg' => 'bg-indigo-100 dark:bg-indigo-900', 'text' => 'text-indigo-800 dark:text-indigo-300', 'label' => 'Profesyonel'],
+                        ];
+                        $badge = $badgeColors[$category->slug] ?? ['bg' => 'bg-gray-100 dark:bg-gray-900', 'text' => 'text-gray-800 dark:text-gray-300', 'label' => 'Yeni'];
+                    @endphp
+                    <span class="{{ $badge['bg'] }} {{ $badge['text'] }} text-xs font-semibold px-2.5 py-0.5 rounded">{{ $badge['label'] }}</span>
                 </div>
-                <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">Shared hosting, VPS, dedicated sunucu kiralama hizmetleri</p>
+                <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">{{ $category->description }}</p>
             </div>
-
-            <!-- Hesap & Lisans Satışları -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center">
-                        <i class="fas fa-key text-green-500 text-2xl mr-3"></i>
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Hesap & Lisans</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">156 ilan</p>
-                        </div>
-                    </div>
-                    <span class="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 text-xs font-semibold px-2.5 py-0.5 rounded">Çok Satan</span>
-                </div>
-                <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">Canva, ChatGPT, Adobe, Office, Windows lisansları</p>
-            </div>
-
-            <!-- E-Pin & Oyun Kredileri -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center">
-                        <i class="fas fa-gamepad text-purple-500 text-2xl mr-3"></i>
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">E-Pin & Oyun</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">89 ilan</p>
-                        </div>
-                    </div>
-                    <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-300 text-xs font-semibold px-2.5 py-0.5 rounded">Otomatik</span>
-                </div>
-                <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">Steam, PSN, Xbox, Google Play, iTunes kredileri</p>
-            </div>
-
-            <!-- Script & Tema Satışları -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center">
-                        <i class="fas fa-code text-orange-500 text-2xl mr-3"></i>
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Script & Tema</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">73 ilan</p>
-                        </div>
-                    </div>
-                    <span class="bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-300 text-xs font-semibold px-2.5 py-0.5 rounded">Popüler</span>
-                </div>
-                <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">WordPress, PHP, HTML temaları ve scriptleri</p>
-            </div>
-
-            <!-- Sosyal Medya Hesapları -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center">
-                        <i class="fab fa-instagram text-pink-500 text-2xl mr-3"></i>
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Sosyal Medya</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">124 ilan</p>
-                        </div>
-                    </div>
-                    <span class="bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-300 text-xs font-semibold px-2.5 py-0.5 rounded">Trend</span>
-                </div>
-                <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">Instagram, TikTok, YouTube, Facebook hesap satışları</p>
-            </div>
-
-            <!-- SEO & Dijital Pazarlama -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center">
-                        <i class="fas fa-chart-line text-indigo-500 text-2xl mr-3"></i>
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">SEO & Pazarlama</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">62 ilan</p>
-                        </div>
-                    </div>
-                    <span class="bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-300 text-xs font-semibold px-2.5 py-0.5 rounded">Profesyonel</span>
-                </div>
-                <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">SEO, Google Ads, sosyal medya pazarlama hizmetleri</p>
-            </div>
+            @endforeach
         </div>
     </div>
 
@@ -160,37 +100,55 @@
             </div>
         </div>
         <div class="space-y-4">
-            <!-- Hizmet İlanı 1 -->
+            @forelse($services as $service)
+            <!-- Hizmet İlanı -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 service-listing transition-all duration-300">
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between">
                     <div class="flex-1">
                         <div class="flex items-start space-x-4">
-                            <div class="w-16 h-16 bg-gradient-to-r from-blue-400 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
-                                <i class="fas fa-server"></i>
+                            <div class="w-16 h-16 bg-gradient-to-r from-{{ $service->color ?? 'blue' }}-400 to-{{ $service->color ?? 'blue' }}-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                                <i class="{{ $service->icon ?? 'fas fa-star' }}"></i>
                             </div>
                             <div class="flex-1">
                                 <div class="flex items-center space-x-2 mb-2">
-                                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">Premium Shared Hosting - 1 Yıl</h3>
-                                    <span class="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 text-xs px-2 py-1 rounded-full auto-delivery">
-                                        <i class="fas fa-bolt mr-1"></i>Otomatik Teslimat
-                                    </span>
+                                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ $service->title }}</h3>
+                                    @if($service->badges)
+                                        @foreach($service->badges as $badge)
+                                            @if($badge === 'featured')
+                                                <span class="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-300 text-xs px-2 py-1 rounded-full featured-badge">
+                                                    <i class="fas fa-fire mr-1"></i>Öne Çıkan
+                                                </span>
+                                            @elseif($badge === 'auto_delivery')
+                                                <span class="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 text-xs px-2 py-1 rounded-full auto-delivery">
+                                                    <i class="fas fa-bolt mr-1"></i>Otomatik Teslimat
+                                                </span>
+                                            @elseif($badge === 'trend')
+                                                <span class="bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-300 text-xs px-2 py-1 rounded-full">
+                                                    <i class="fas fa-heart mr-1"></i>Trend
+                                                </span>
+                                            @elseif($badge === 'category')
+                                                <span class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 text-xs px-2 py-1 rounded-full category-badge">
+                                                    <i class="fas fa-palette mr-1"></i>{{ $service->category->name ?? 'Tasarım' }}
+                                                </span>
+                                            @endif
+                                        @endforeach
+                                    @endif
                                 </div>
                                 <p class="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                                    cPanel, SSL sertifikası, günlük yedekleme, 24/7 teknik destek dahil premium hosting paketi. 
-                                    Unlimited bandwidth ve 50GB SSD depolama alanı.
+                                    {{ Str::limit($service->description, 150) }}
                                 </p>
                                 <div class="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
                                     <div class="flex items-center space-x-1">
-                                        <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Satıcı" class="w-6 h-6 rounded-full">
-                                        <span>TechHost Pro</span>
+                                        <img src="{{ $service->user->avatar ?? 'https://randomuser.me/api/portraits/men/45.jpg' }}" alt="Satıcı" class="w-6 h-6 rounded-full">
+                                        <span>{{ $service->user->name }}</span>
                                     </div>
                                     <div class="flex items-center space-x-1">
                                         <i class="fas fa-star text-yellow-500"></i>
-                                        <span>4.9 (127 değerlendirme)</span>
+                                        <span>{{ number_format($service->rating, 1) }} ({{ $service->review_count }} değerlendirme)</span>
                                     </div>
                                     <div class="flex items-center space-x-1">
                                         <i class="fas fa-shopping-cart"></i>
-                                        <span>89 satış</span>
+                                        <span>{{ $service->sales_count }} satış</span>
                                     </div>
                                 </div>
                             </div>
@@ -198,8 +156,12 @@
                     </div>
                     <div class="mt-4 lg:mt-0 lg:ml-6 flex flex-col items-end">
                         <div class="text-right mb-3">
-                            <div class="text-2xl font-bold text-green-600 dark:text-green-400">₺299</div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400 line-through">₺599</div>
+                            <div class="text-2xl font-bold text-green-600 dark:text-green-400">{{ $service->formatted_price }}</div>
+                            @if($service->original_price)
+                                <div class="text-sm text-gray-500 dark:text-gray-400 line-through">{{ $service->formatted_original_price }}</div>
+                            @else
+                                <div class="text-sm text-gray-500 dark:text-gray-400">{{ $service->delivery_time }}</div>
+                            @endif
                         </div>
                         <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
                             <i class="fas fa-shopping-cart mr-2"></i>
@@ -208,211 +170,21 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Hizmet İlanı 2 -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 service-listing transition-all duration-300">
-                <div class="flex flex-col lg:flex-row lg:items-center justify-between">
-                    <div class="flex-1">
-                        <div class="flex items-start space-x-4">
-                            <div class="w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
-                                <i class="fas fa-key"></i>
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-center space-x-2 mb-2">
-                                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">ChatGPT Plus Hesabı - 1 Aylık</h3>
-                                    <span class="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-300 text-xs px-2 py-1 rounded-full featured-badge">
-                                        <i class="fas fa-fire mr-1"></i>Öne Çıkan
-                                    </span>
-                                </div>
-                                <p class="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                                    Orijinal ChatGPT Plus hesabı. GPT-4 erişimi, öncelikli yanıt süresi, yeni özellikler dahil. 
-                                    Hesap bilgileri anında teslim edilir.
-                                </p>
-                                <div class="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
-                                    <div class="flex items-center space-x-1">
-                                        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Satıcı" class="w-6 h-6 rounded-full">
-                                        <span>AI Solutions</span>
-                                    </div>
-                                    <div class="flex items-center space-x-1">
-                                        <i class="fas fa-star text-yellow-500"></i>
-                                        <span>4.8 (234 değerlendirme)</span>
-                                    </div>
-                                    <div class="flex items-center space-x-1">
-                                        <i class="fas fa-shopping-cart"></i>
-                                        <span>156 satış</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-4 lg:mt-0 lg:ml-6 flex flex-col items-end">
-                        <div class="text-right mb-3">
-                            <div class="text-2xl font-bold text-green-600 dark:text-green-400">₺89</div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400">Aylık</div>
-                        </div>
-                        <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-                            <i class="fas fa-shopping-cart mr-2"></i>
-                            Satın Al
-                        </button>
-                    </div>
-                </div>
+            @empty
+            <div class="text-center py-12">
+                <i class="fas fa-box-open text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+                <h3 class="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">Henüz hizmet ilanı bulunmuyor</h3>
+                <p class="text-gray-500 dark:text-gray-500">İlk hizmet ilanını sen oluştur!</p>
             </div>
-
-            <!-- Hizmet İlanı 3 -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 service-listing transition-all duration-300">
-                <div class="flex flex-col lg:flex-row lg:items-center justify-between">
-                    <div class="flex-1">
-                        <div class="flex items-start space-x-4">
-                            <div class="w-16 h-16 bg-gradient-to-r from-purple-400 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
-                                <i class="fas fa-gamepad"></i>
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-center space-x-2 mb-2">
-                                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">Steam Cüzdan Kodu - 100 TL</h3>
-                                    <span class="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 text-xs px-2 py-1 rounded-full auto-delivery">
-                                        <i class="fas fa-bolt mr-1"></i>Otomatik Teslimat
-                                    </span>
-                                </div>
-                                <p class="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                                    Orijinal Steam cüzdan kodu. Anında teslimat, güvenli ödeme. 
-                                    Tüm Steam oyunları ve içerikleri için kullanılabilir.
-                                </p>
-                                <div class="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
-                                    <div class="flex items-center space-x-1">
-                                        <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Satıcı" class="w-6 h-6 rounded-full">
-                                        <span>GameStore TR</span>
-                                    </div>
-                                    <div class="flex items-center space-x-1">
-                                        <i class="fas fa-star text-yellow-500"></i>
-                                        <span>4.9 (445 değerlendirme)</span>
-                                    </div>
-                                    <div class="flex items-center space-x-1">
-                                        <i class="fas fa-shopping-cart"></i>
-                                        <span>278 satış</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-4 lg:mt-0 lg:ml-6 flex flex-col items-end">
-                        <div class="text-right mb-3">
-                            <div class="text-2xl font-bold text-green-600 dark:text-green-400">₺95</div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400">%5 indirim</div>
-                        </div>
-                        <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-                            <i class="fas fa-shopping-cart mr-2"></i>
-                            Satın Al
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Hizmet İlanı 4 -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 service-listing transition-all duration-300">
-                <div class="flex flex-col lg:flex-row lg:items-center justify-between">
-                    <div class="flex-1">
-                        <div class="flex items-start space-x-4">
-                            <div class="w-16 h-16 bg-gradient-to-r from-orange-400 to-orange-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
-                                <i class="fas fa-code"></i>
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-center space-x-2 mb-2">
-                                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">WordPress E-Ticaret Teması + Kurulum</h3>
-                                    <span class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 text-xs px-2 py-1 rounded-full category-badge">
-                                        <i class="fas fa-palette mr-1"></i>Tasarım
-                                    </span>
-                                </div>
-                                <p class="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                                    Profesyonel e-ticaret teması, kurulum ve temel konfigürasyon dahil. 
-                                    WooCommerce uyumlu, responsive tasarım, SEO optimizasyonu.
-                                </p>
-                                <div class="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
-                                    <div class="flex items-center space-x-1">
-                                        <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="Satıcı" class="w-6 h-6 rounded-full">
-                                        <span>WebDesign Pro</span>
-                                    </div>
-                                    <div class="flex items-center space-x-1">
-                                        <i class="fas fa-star text-yellow-500"></i>
-                                        <span>4.7 (89 değerlendirme)</span>
-                                    </div>
-                                    <div class="flex items-center space-x-1">
-                                        <i class="fas fa-shopping-cart"></i>
-                                        <span>45 satış</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-4 lg:mt-0 lg:ml-6 flex flex-col items-end">
-                        <div class="text-right mb-3">
-                            <div class="text-2xl font-bold text-green-600 dark:text-green-400">₺499</div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400">Kurulum dahil</div>
-                        </div>
-                        <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-                            <i class="fas fa-shopping-cart mr-2"></i>
-                            Satın Al
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Hizmet İlanı 5 -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 service-listing transition-all duration-300">
-                <div class="flex flex-col lg:flex-row lg:items-center justify-between">
-                    <div class="flex-1">
-                        <div class="flex items-start space-x-4">
-                            <div class="w-16 h-16 bg-gradient-to-r from-pink-400 to-pink-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
-                                <i class="fab fa-instagram"></i>
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-center space-x-2 mb-2">
-                                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">Instagram Hesabı - 50K Takipçi</h3>
-                                    <span class="bg-pink-100 dark:bg-pink-900 text-pink-800 dark:text-pink-300 text-xs px-2 py-1 rounded-full">
-                                        <i class="fas fa-heart mr-1"></i>Trend
-                                    </span>
-                                </div>
-                                <p class="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                                    Organik takipçili Instagram hesabı. Aktif kullanıcılar, yüksek etkileşim oranı. 
-                                    Lifestyle nişinde, kadın takipçi ağırlıklı.
-                                </p>
-                                <div class="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
-                                    <div class="flex items-center space-x-1">
-                                        <img src="https://randomuser.me/api/portraits/women/55.jpg" alt="Satıcı" class="w-6 h-6 rounded-full">
-                                        <span>SocialMedia Expert</span>
-                                    </div>
-                                    <div class="flex items-center space-x-1">
-                                        <i class="fas fa-star text-yellow-500"></i>
-                                        <span>4.6 (67 değerlendirme)</span>
-                                    </div>
-                                    <div class="flex items-center space-x-1">
-                                        <i class="fas fa-shopping-cart"></i>
-                                        <span>23 satış</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-4 lg:mt-0 lg:ml-6 flex flex-col items-end">
-                        <div class="text-right mb-3">
-                            <div class="text-2xl font-bold text-green-600 dark:text-green-400">₺2,499</div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400">Güvenli transfer</div>
-                        </div>
-                        <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-                            <i class="fas fa-shopping-cart mr-2"></i>
-                            Satın Al
-                        </button>
-                    </div>
-                </div>
-            </div>
+            @endforelse
         </div>
 
-        <!-- Load More Button -->
-        <div class="text-center mt-8">
-            <button class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-8 py-3 rounded-lg font-medium transition-colors">
-                <i class="fas fa-plus mr-2"></i>
-                Daha Fazla Hizmet Yükle
-            </button>
+        <!-- Sayfalama -->
+        @if($services->hasPages())
+        <div class="mt-8">
+            {{ $services->links() }}
         </div>
+        @endif
     </div>
 
     <!-- Öne Çıkan Satıcılar -->
@@ -428,7 +200,24 @@
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Satıcı 1 -->
+            @forelse($topSellers as $seller)
+            <!-- Satıcı -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 text-center hover:shadow-lg transition-shadow">
+                <img src="{{ $seller->user->avatar ?? 'https://randomuser.me/api/portraits/men/45.jpg' }}" alt="Satıcı" class="w-16 h-16 rounded-full mx-auto mb-4">
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-1">{{ $seller->user->name }}</h3>
+                <p class="text-gray-500 dark:text-gray-400 text-sm mb-3">{{ $seller->user->title ?? 'Hizmet Uzmanı' }}</p>
+                <div class="flex items-center justify-center space-x-1 mb-3">
+                    <i class="fas fa-star text-yellow-500"></i>
+                    <span class="text-sm font-medium text-gray-900 dark:text-white">{{ number_format($seller->avg_rating, 1) }}</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">({{ $seller->service_count }})</span>
+                </div>
+                <div class="text-sm text-gray-500 dark:text-gray-400 mb-4">{{ $seller->total_sales }} hizmet satışı</div>
+                <button class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-medium transition-colors">
+                    Profili Görüntüle
+                </button>
+            </div>
+            @empty
+            <!-- Varsayılan Satıcılar -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 text-center hover:shadow-lg transition-shadow">
                 <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Satıcı" class="w-16 h-16 rounded-full mx-auto mb-4">
                 <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-1">TechHost Pro</h3>
@@ -444,7 +233,6 @@
                 </button>
             </div>
 
-            <!-- Satıcı 2 -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 text-center hover:shadow-lg transition-shadow">
                 <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Satıcı" class="w-16 h-16 rounded-full mx-auto mb-4">
                 <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-1">AI Solutions</h3>
@@ -460,7 +248,6 @@
                 </button>
             </div>
 
-            <!-- Satıcı 3 -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 text-center hover:shadow-lg transition-shadow">
                 <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Satıcı" class="w-16 h-16 rounded-full mx-auto mb-4">
                 <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-1">GameStore TR</h3>
@@ -476,7 +263,6 @@
                 </button>
             </div>
 
-            <!-- Satıcı 4 -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 text-center hover:shadow-lg transition-shadow">
                 <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="Satıcı" class="w-16 h-16 rounded-full mx-auto mb-4">
                 <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-1">WebDesign Pro</h3>
@@ -491,6 +277,7 @@
                     Profili Görüntüle
                 </button>
             </div>
+            @endforelse
         </div>
     </div>
 </div>

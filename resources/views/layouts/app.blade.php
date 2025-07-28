@@ -282,10 +282,10 @@
                 <button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                     <i class="fas fa-envelope text-gray-600 dark:text-gray-300"></i>
                 </button>
-                <button class="flex items-center space-x-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full py-1 px-3 transition-colors">
+                <a href="{{ route('posts.create') }}" class="flex items-center space-x-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full py-1 px-3 transition-colors">
                     <i class="fas fa-plus text-sm text-gray-600 dark:text-gray-300"></i>
                     <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Gönderi</span>
-                </button>
+                </a>
                 <div class="w-px h-8 bg-gray-200 dark:bg-gray-600"></div>
                 @auth
                 <div class="flex items-center space-x-2 cursor-pointer">

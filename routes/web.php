@@ -7,6 +7,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SiteSettingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FollowController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\ServiceController;
 
 // Ana sayfa
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -27,10 +29,10 @@ Route::prefix('projects')->name('projects.')->group(function () {
 
 // Services
 Route::prefix('services')->name('services.')->group(function () {
-    Route::get('/', function () { return view('services.index'); })->name('index');
+    Route::get('/', [ServiceController::class, 'index'])->name('index');
     Route::get('/create', function () { return view('services.create'); })->name('create');
-    Route::get('/category/{category}', function () { return view('services.category'); })->name('category');
-    Route::get('/{service}', function () { return view('services.show'); })->name('show');
+    Route::get('/category/{category}', [ServiceController::class, 'category'])->name('category');
+    Route::get('/{service}', [ServiceController::class, 'show'])->name('show');
 });
 
 // Community
@@ -43,9 +45,9 @@ Route::prefix('community')->name('community.')->group(function () {
 // Posts
 Route::prefix('posts')->name('posts.')->group(function () {
     Route::get('/', function () { return view('posts.index'); })->name('index');
-    Route::get('/create', function () { return view('posts.create'); })->name('create');
-    Route::post('/', function () { return redirect()->back(); })->name('store');
-    Route::get('/{post}', function () { return view('posts.show'); })->name('show');
+    Route::get('/create', [PostController::class, 'create'])->name('create')->middleware('auth');
+    Route::post('/', [PostController::class, 'store'])->name('store')->middleware('auth');
+    Route::get('/{post}', [PostController::class, 'show'])->name('show');
 });
 
 // Categories

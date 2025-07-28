@@ -1,0 +1,263 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+
+return new class extends Migration
+{
+    /**
+     * 50 Milyon+ Veri İçin Optimize Edilmiş Post Sistemi
+     * Normalize edilmiş yapı ile performans odaklı tasarım
+     */
+    public function up(): void
+    {
+        // Önce mevcut tabloları kontrol et ve gerekirse sil
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        
+        $tables = [
+            'seo_meta', 'post_stats', 'post_portfolios', 'poll_votes', 
+            'poll_options', 'post_polls', 'post_auctions', 'post_services', 
+            'post_tags', 'tags', 'post_images', 'posts_optimized'
+        ];
+        
+        foreach ($tables as $table) {
+            DB::statement("DROP TABLE IF EXISTS {$table}");
+        }
+        
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        // 1. Ana Post Tablosu - Optimize edilmiş
+        Schema::create('posts_optimized', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid')->unique(); // Public ID için
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('community_id')->nullable()->constrained('categories')->onDelete('set null');
+            $table->foreignId('category_id')->nullable()->constrained()->onDelete('set null');
+            
+            // Post Tipi - Enum yerine tinyint (daha hızlı)
+            $table->tinyInteger('post_type')->default(1)->comment('1:post, 2:service, 3:auction, 4:poll, 5:portfolio, 6:article, 7:question');
+            
+            $table->string('title', 255)->index();
+            $table->string('slug', 300)->unique()->index();
+            $table->text('content');
+            $table->string('excerpt', 500)->nullable(); // SEO için
+            
+            // Medya
+            $table->string('featured_image', 500)->nullable();
+            
+            // Sayaçlar - Ayrı tabloya taşınacak
+            $table->integer('likes_count')->default(0)->index();
+            $table->integer('comments_count')->default(0)->index();
+            $table->integer('shares_count')->default(0);
+            $table->integer('views_count')->default(0)->index();
+            
+            // Durum ve Özellikler
+            $table->boolean('is_pinned')->default(false)->index();
+            $table->boolean('is_featured')->default(false)->index();
+            $table->tinyInteger('status')->default(1)->index()->comment('1:active, 2:draft, 3:hidden, 4:deleted, 5:pending');
+            
+            // SEO
+            $table->string('meta_title', 255)->nullable();
+            $table->string('meta_description', 500)->nullable();
+            $table->json('meta_keywords')->nullable();
+            
+            // Zaman damgaları
+            $table->timestamp('published_at')->nullable()->index();
+            $table->timestamps();
+            $table->softDeletes();
+            
+            // Performans İndeksleri
+            $table->index(['status', 'is_featured', 'published_at'], 'posts_main_query');
+            $table->index(['user_id', 'status', 'created_at'], 'posts_user_query');
+            $table->index(['category_id', 'post_type', 'status'], 'posts_category_query');
+            $table->index(['community_id', 'status', 'published_at'], 'posts_community_query');
+            $table->index(['created_at', 'status'], 'posts_timeline');
+            $table->index(['views_count', 'status'], 'posts_popular');
+            
+            // Fulltext arama
+            $table->fullText(['title', 'content', 'excerpt'], 'posts_search');
+        });
+
+        // 2. Post Görselleri - Çoklu medya için
+        Schema::create('post_images', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('post_id')->constrained('posts_optimized')->onDelete('cascade');
+            $table->string('image_url', 500);
+            $table->string('alt_text', 255)->nullable();
+            $table->tinyInteger('sort_order')->default(0);
+            $table->timestamps();
+            
+            $table->index(['post_id', 'sort_order']);
+        });
+
+        // 3. Etiketler Sistemi
+        Schema::create('tags', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 100)->unique();
+            $table->string('slug', 120)->unique();
+            $table->integer('usage_count')->default(0)->index();
+            $table->timestamps();
+            
+            $table->index(['usage_count', 'name']);
+        });
+
+        Schema::create('post_tags', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('post_id')->constrained('posts_optimized')->onDelete('cascade');
+            $table->foreignId('tag_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
+            
+            $table->unique(['post_id', 'tag_id']);
+            $table->index(['tag_id', 'post_id']);
+        });
+
+        // 4. Hizmet İlanları - Post Type 2
+        Schema::create('post_services', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('post_id')->constrained('posts_optimized')->onDelete('cascade');
+            $table->decimal('price', 10, 2);
+            $table->decimal('discounted_price', 10, 2)->nullable();
+            $table->tinyInteger('delivery_time')->comment('Gün cinsinden');
+            $table->boolean('auto_delivery')->default(false);
+            $table->json('features')->nullable(); // Hizmet özellikleri
+            $table->tinyInteger('revision_count')->default(0);
+            $table->timestamps();
+            
+            $table->index(['price', 'delivery_time']);
+            $table->unique('post_id');
+        });
+
+        // 5. Açık Artırma - Post Type 3
+        Schema::create('post_auctions', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('post_id')->constrained('posts_optimized')->onDelete('cascade');
+            $table->decimal('start_price', 10, 2);
+            $table->decimal('current_bid', 10, 2)->default(0);
+            $table->decimal('buy_now_price', 10, 2)->nullable();
+            $table->timestamp('start_time')->nullable();
+            $table->timestamp('end_time')->nullable()->index();
+            $table->foreignId('highest_bidder_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->integer('bid_count')->default(0);
+            $table->timestamps();
+            
+            $table->index(['end_time', 'current_bid']);
+            $table->unique('post_id');
+        });
+
+        // 6. Anketler - Post Type 4
+        Schema::create('post_polls', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('post_id')->constrained('posts_optimized')->onDelete('cascade');
+            $table->string('question', 500);
+            $table->boolean('multiple_choice')->default(false);
+            $table->timestamp('end_time')->nullable();
+            $table->integer('total_votes')->default(0);
+            $table->timestamps();
+            
+            $table->unique('post_id');
+        });
+
+        Schema::create('poll_options', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('poll_id')->constrained('post_polls')->onDelete('cascade');
+            $table->string('option_text', 255);
+            $table->integer('vote_count')->default(0);
+            $table->tinyInteger('sort_order')->default(0);
+            $table->timestamps();
+            
+            $table->index(['poll_id', 'sort_order']);
+        });
+
+        Schema::create('poll_votes', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('poll_id')->constrained('post_polls')->onDelete('cascade');
+            $table->foreignId('option_id')->constrained('poll_options')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->timestamp('voted_at')->nullable();
+            
+            $table->unique(['poll_id', 'user_id']);
+            $table->index(['option_id', 'voted_at']);
+        });
+
+        // 7. Portfolyo - Post Type 5
+        Schema::create('post_portfolios', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('post_id')->constrained('posts_optimized')->onDelete('cascade');
+            $table->string('client_name', 255)->nullable();
+            $table->string('project_url', 500)->nullable();
+            $table->json('technologies')->nullable(); // Kullanılan teknolojiler
+            $table->date('completion_date')->nullable();
+            $table->text('project_details')->nullable();
+            $table->timestamps();
+            
+            $table->unique('post_id');
+        });
+
+        // 8. Sayaç Tablosu - Yoğun yazma işlemleri için
+        Schema::create('post_stats', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('post_id')->constrained('posts_optimized')->onDelete('cascade');
+            $table->integer('hourly_views')->default(0);
+            $table->integer('daily_views')->default(0);
+            $table->integer('weekly_views')->default(0);
+            $table->integer('monthly_views')->default(0);
+            $table->date('stat_date');
+            $table->timestamps();
+            
+            $table->unique(['post_id', 'stat_date']);
+            $table->index(['stat_date', 'daily_views']);
+        });
+
+        // 9. SEO Tablosu - Polimorfik yapı
+        Schema::create('seo_meta', function (Blueprint $table) {
+            $table->id();
+            $table->morphs('seoable'); // post, user, category vs. (otomatik indeks oluşturur)
+            $table->string('title', 255)->nullable();
+            $table->string('description', 500)->nullable();
+            $table->json('keywords')->nullable();
+            $table->string('canonical_url', 500)->nullable();
+            $table->json('og_data')->nullable(); // Open Graph
+            $table->json('twitter_data')->nullable(); // Twitter Cards
+            $table->timestamps();
+        });
+
+        // 10. Partitioning için hazırlık (Manuel olarak yapılacak)
+        // Bu migration çalıştıktan sonra manuel olarak partitioning eklenebilir
+        
+        // Trigger'lar ve stored procedure'lar için hazırlık
+        DB::statement('
+            CREATE TRIGGER update_post_stats_on_view 
+            AFTER UPDATE ON posts_optimized 
+            FOR EACH ROW 
+            BEGIN 
+                IF NEW.views_count > OLD.views_count THEN
+                    INSERT INTO post_stats (post_id, daily_views, stat_date, created_at, updated_at) 
+                    VALUES (NEW.id, 1, CURDATE(), NOW(), NOW()) 
+                    ON DUPLICATE KEY UPDATE 
+                    daily_views = daily_views + 1, 
+                    updated_at = NOW();
+                END IF;
+            END
+        ');
+    }
+
+    public function down(): void
+    {
+        DB::statement('DROP TRIGGER IF EXISTS update_post_stats_on_view');
+        
+        Schema::dropIfExists('seo_meta');
+        Schema::dropIfExists('post_stats');
+        Schema::dropIfExists('post_portfolios');
+        Schema::dropIfExists('poll_votes');
+        Schema::dropIfExists('poll_options');
+        Schema::dropIfExists('post_polls');
+        Schema::dropIfExists('post_auctions');
+        Schema::dropIfExists('post_services');
+        Schema::dropIfExists('post_tags');
+        Schema::dropIfExists('tags');
+        Schema::dropIfExists('post_images');
+        Schema::dropIfExists('posts_optimized');
+    }
+};
