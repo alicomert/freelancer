@@ -154,6 +154,20 @@ return [
         'service_price' => 'Hizmet Fiyatı',
         'service_delivery_time' => 'Teslimat Süresi',
         'service_auto_delivery' => 'Otomatik Teslimat',
+        'delivery_time_fixed' => 'Teslimat Süresi',
+        'delivery_time_unit' => 'Teslimat Süresi Birimi',
+        
+        // Hizmet öğeleri
+        'service_items' => 'Hizmet Öğeleri',
+        'service_items.*.title' => 'Hizmet Öğesi Başlığı',
+        'service_items.*.description' => 'Hizmet Öğesi Açıklaması',
+        'service_items.*.price' => 'Hizmet Öğesi Fiyatı',
+        'service_items.*.discount_price' => 'İndirimli Fiyat',
+        'service_items.*.delivery_time' => 'Teslimat Süresi',
+        'service_items.*.delivery_time_unit' => 'Teslimat Süresi Birimi',
+        'service_items.*.sale_type' => 'Satış Tipi',
+        'service_items.*.external_url' => 'Harici URL',
+        
         'auction_starting_price' => 'Başlangıç Fiyatı',
         'auction_reserve_price' => 'Rezerv Fiyatı',
         'auction_end_time' => 'Bitiş Zamanı',

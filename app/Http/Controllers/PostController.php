@@ -15,9 +15,28 @@ class PostController extends Controller
      */
     public function create()
     {
-        $categories = Category::where('is_active', true)->orderBy('name')->get();
+        // Normal post ve anket için post kategorileri
+        $postCategories = Category::where('is_active', true)
+            ->where('category_type', 'post')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+            
+        // Hizmet ilanı ve açık artırma için servis kategorileri
+        $serviceCategories = Category::where('is_active', true)
+            ->where('category_type', 'service')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+
+        // Portfolyo ve freelance proje için proje kategorileri
+        $projectCategories = Category::where('is_active', true)
+            ->where('category_type', 'project')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
         
-        return view('posts.create', compact('categories'));
+        return view('posts.create', compact('postCategories', 'serviceCategories', 'projectCategories'));
     }
 
     /**
@@ -41,9 +60,16 @@ class PostController extends Controller
         switch ($request->post_type) {
             case 2: // Hizmet ilanı
                 $rules = array_merge($rules, [
-                    'service_price' => 'nullable|numeric|min:0',
-                    'service_delivery_time' => 'nullable|integer|min:1',
                     'service_auto_delivery' => 'nullable|boolean',
+                    'service_items' => 'nullable|array',
+                    'service_items.*.title' => 'required|string|max:255',
+                    'service_items.*.description' => 'nullable|string',
+                    'service_items.*.price' => 'required|numeric|min:0',
+                    'service_items.*.discount_price' => 'nullable|numeric|min:0',
+                    'service_items.*.delivery_time' => 'nullable|numeric|min:0',
+                    'service_items.*.delivery_time_unit' => 'nullable|in:instant,hour,day,week,month',
+                    'service_items.*.sale_type' => 'required|in:internal,external',
+                    'service_items.*.external_url' => 'required_if:service_items.*.sale_type,external|nullable|url',
                 ]);
                 break;
                 
@@ -74,7 +100,6 @@ class PostController extends Controller
                     'portfolio_project_url' => 'nullable|url',
                     'portfolio_technologies' => 'nullable|string',
                     'portfolio_completion_date' => 'nullable|date|before_or_equal:today',
-                    'portfolio_client_name' => 'nullable|string|max:255',
                 ]);
                 break;
         }
@@ -147,14 +172,43 @@ class PostController extends Controller
      */
     private function storeServiceData($postId, $request)
     {
-        DB::table('post_services')->insert([
-            'post_id' => $postId,
-            'price' => $request->service_price,
-            'delivery_time' => $request->service_delivery_time,
-            'auto_delivery' => $request->service_auto_delivery ?? false,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        // Hizmet öğelerini doğrudan post_services tablosuna kaydet
+        if ($request->service_items && is_array($request->service_items)) {
+            $totalItems = 0;
+            foreach ($request->service_items as $index => $item) {
+                // Sadece başlığı olan hizmet öğelerini kaydet
+                if (!empty(trim($item['title']))) {
+                    DB::table('post_services')->insert([
+                        'post_id' => $postId,
+                        'title' => $item['title'],
+                        'description' => $item['description'] ?? null,
+                        'price' => $item['price'] ?? 0,
+                        'discount_price' => !empty($item['discount_price']) ? $item['discount_price'] : null,
+                        'sale_type' => $item['sale_type'] ?? 'internal',
+                        'external_url' => ($item['sale_type'] === 'external' && !empty($item['external_url'])) ? $item['external_url'] : null,
+                        'delivery_time' => $item['delivery_time'] ?? null,
+                        'delivery_time_unit' => $item['delivery_time_unit'] ?? 'day',
+                        'auto_delivery' => isset($item['auto_delivery']) && $item['auto_delivery'] == '1' ? true : false,
+                        'features' => !empty($item['features']) ? $item['features'] : null, // Zaten JSON string olarak geliyor
+                        'is_active' => true,
+                        'sort_order' => $index + 1,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                    $totalItems++;
+                }
+            }
+
+            // Meta data'yı güncelle
+            $metaData = [
+                'service_type' => 'multi_item',
+                'total_items' => $totalItems,
+            ];
+
+            DB::table('posts_optimized')
+                ->where('id', $postId)
+                ->update(['meta_data' => json_encode($metaData)]);
+        }
     }
 
     /**
@@ -224,7 +278,6 @@ class PostController extends Controller
             'project_url' => $request->portfolio_project_url,
             'technologies_used' => $request->portfolio_technologies,
             'completion_date' => $request->portfolio_completion_date,
-            'client_name' => $request->portfolio_client_name,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

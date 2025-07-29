@@ -14,9 +14,16 @@ class PostService extends Model
         'post_id',
         'service_type',
         'price',
+        'price_min',
+        'price_max',
         'price_type',
-        'delivery_time',
+        'delivery_time_type',
         'delivery_time_unit',
+        'delivery_time_min',
+        'delivery_time_max',
+        'sale_type',
+        'external_url',
+        'auto_delivery',
         'revisions_included',
         'features',
         'requirements',
@@ -31,10 +38,14 @@ class PostService extends Model
 
     protected $casts = [
         'price' => 'decimal:2',
+        'price_min' => 'decimal:2',
+        'price_max' => 'decimal:2',
         'revisions_included' => 'integer',
-        'delivery_time' => 'integer',
+        'delivery_time_min' => 'integer',
+        'delivery_time_max' => 'integer',
         'express_delivery_time' => 'integer',
         'express_delivery_price' => 'decimal:2',
+        'auto_delivery' => 'boolean',
         'features' => 'array',
         'requirements' => 'array',
         'portfolio_items' => 'array',
@@ -48,6 +59,16 @@ class PostService extends Model
     public function post(): BelongsTo
     {
         return $this->belongsTo(PostOptimized::class, 'post_id');
+    }
+
+    public function serviceItems()
+    {
+        return $this->hasMany(ServiceItem::class)->ordered();
+    }
+
+    public function activeServiceItems()
+    {
+        return $this->hasMany(ServiceItem::class)->active()->ordered();
     }
 
     // Scope'lar
@@ -82,10 +103,51 @@ class PostService extends Model
         return number_format($this->price, 2) . ' TL';
     }
 
+    public function getPriceRangeAttribute(): string
+    {
+        if ($this->serviceItems()->exists()) {
+            $minPrice = $this->serviceItems()->min('price');
+            $maxPrice = $this->serviceItems()->max('price');
+            
+            if ($minPrice == $maxPrice) {
+                return number_format($minPrice, 0) . ' ₺';
+            }
+            
+            return number_format($minPrice, 0) . '-' . number_format($maxPrice, 0) . ' ₺';
+        }
+
+        if ($this->price_min && $this->price_max && $this->price_min != $this->price_max) {
+            return number_format($this->price_min, 0) . '-' . number_format($this->price_max, 0) . ' ₺';
+        }
+
+        return $this->formatted_price;
+    }
+
     public function getDeliveryTimeTextAttribute(): string
     {
-        $unit = $this->delivery_time_unit === 'days' ? 'gün' : 'saat';
-        return $this->delivery_time . ' ' . $unit;
+        $unitText = [
+            'hour' => 'saat',
+            'day' => 'gün',
+            'week' => 'hafta'
+        ];
+
+        $unit = $unitText[$this->delivery_time_unit] ?? 'gün';
+
+        if ($this->delivery_time_type === 'range' && $this->delivery_time_max) {
+            return "{$this->delivery_time_min}-{$this->delivery_time_max} {$unit}";
+        }
+
+        return "{$this->delivery_time_min} {$unit}";
+    }
+
+    public function getIsExternalAttribute(): bool
+    {
+        return $this->sale_type === 'external';
+    }
+
+    public function getIsInternalAttribute(): bool
+    {
+        return $this->sale_type === 'internal';
     }
 
     public function getHasPackagesAttribute(): bool

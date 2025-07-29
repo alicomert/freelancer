@@ -156,17 +156,20 @@
                     </div>
                     <div class="mt-4 lg:mt-0 lg:ml-6 flex flex-col items-end">
                         <div class="text-right mb-3">
-                            <div class="text-2xl font-bold text-green-600 dark:text-green-400">{{ $service->formatted_price }}</div>
-                            @if($service->original_price)
-                                <div class="text-sm text-gray-500 dark:text-gray-400 line-through">{{ $service->formatted_original_price }}</div>
-                            @else
-                                <div class="text-sm text-gray-500 dark:text-gray-400">{{ $service->delivery_time }}</div>
-                            @endif
+                            <div class="text-2xl font-bold text-green-600 dark:text-green-400">{{ $service->price_range }}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ $service->delivery_time_text }}</div>
                         </div>
-                        <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-                            <i class="fas fa-shopping-cart mr-2"></i>
-                            Satın Al
-                        </button>
+                        @if($service->is_external)
+                            <button class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                                <i class="fas fa-external-link-alt mr-2"></i>
+                                İncele
+                            </button>
+                        @else
+                            <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                                <i class="fas fa-shopping-cart mr-2"></i>
+                                Satın Al
+                            </button>
+                        @endif
                     </div>
                 </div>
             </div>
