@@ -3,8 +3,8 @@
 @section('title', 'Yeni Gönderi Oluştur')
 
 @section('content')
-<div class="container mx-auto px-4 py-6">
-    <div class="max-w-4xl mx-auto">
+<div class="container mx-auto px-4 py-8 max-w-5xl">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-8">
         <!-- Hata/Başarı Mesajları -->
         @if(session('error'))
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
@@ -30,9 +30,18 @@
         @endif
 
         <!-- Başlık -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-            <h1 class="text-2xl font-bold text-gray-900 mb-2">Yeni Gönderi Oluştur</h1>
-            <p class="text-gray-600">Hizmet ilanı, açık artırma, anket, portfolyo veya normal gönderi oluşturabilirsiniz.</p>
+        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-8 mb-8 border border-gray-100 dark:border-gray-700">
+            <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center mr-4 shadow-lg">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-"white mb-1">Yeni Gönderi Oluştur</h1>
+                    <p class="text-gray-600 dark:text-gray-400">Hizmet ilanı, açık artırma, anket, portfolyo veya normal gönderi oluşturabilirsiniz.</p>
+                </div>
+            </div>
         </div>
 
         <!-- Form -->
@@ -40,207 +49,619 @@
             @csrf
             
             <!-- Post Tipi Seçimi -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">Gönderi Tipi</h2>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <label class="post-type-option cursor-pointer">
+            <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 border border-gray-100 dark:border-gray-700">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
+                    <div class="w-8 h-8 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center mr-3">
+                        <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
+                        </svg>
+                    </div>
+                    Gönderi Tipi
+                </h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <label class="post-type-option cursor-pointer group">
                         <input type="radio" name="post_type" value="1" class="sr-only" checked>
-                        <div class="border-2 border-gray-200 rounded-lg p-4 text-center hover:border-blue-500 transition-colors">
-                            <div class="text-2xl mb-2">📝</div>
-                            <div class="font-medium">Normal Post</div>
-                            <div class="text-sm text-gray-500">Genel paylaşım</div>
+                        <div class="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-200 bg-gray-50 dark:bg-gray-800 hover:shadow-md group-hover:scale-105">
+                            <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                            </div>
+                            <div class="font-medium text-gray-900 dark:text-white text-sm">Normal Post</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Genel paylaşım</div>
                         </div>
                     </label>
                     
-                    <label class="post-type-option cursor-pointer">
+                    <label class="post-type-option cursor-pointer group">
                         <input type="radio" name="post_type" value="2" class="sr-only">
-                        <div class="border-2 border-gray-200 rounded-lg p-4 text-center hover:border-blue-500 transition-colors">
-                            <div class="text-2xl mb-2">💼</div>
-                            <div class="font-medium">Hizmet İlanı</div>
-                            <div class="text-sm text-gray-500">Hizmet sat</div>
+                        <div class="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center hover:border-green-500 dark:hover:border-green-400 transition-all duration-200 bg-gray-50 dark:bg-gray-800 hover:shadow-md group-hover:scale-105">
+                            <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                                </svg>
+                            </div>
+                            <div class="font-medium text-gray-900 dark:text-white text-sm">Hizmet İlanı</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Hizmet sat</div>
                         </div>
                     </label>
                     
-                    <label class="post-type-option cursor-pointer">
+                    <label class="post-type-option cursor-pointer group">
                         <input type="radio" name="post_type" value="3" class="sr-only">
-                        <div class="border-2 border-gray-200 rounded-lg p-4 text-center hover:border-blue-500 transition-colors">
-                            <div class="text-2xl mb-2">🔨</div>
-                            <div class="font-medium">Açık Artırma</div>
-                            <div class="text-sm text-gray-500">Teklif al</div>
+                        <div class="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center hover:border-orange-500 dark:hover:border-orange-400 transition-all duration-200 bg-gray-50 dark:bg-gray-800 hover:shadow-md group-hover:scale-105">
+                            <div class="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                </svg>
+                            </div>
+                            <div class="font-medium text-gray-900 dark:text-white text-sm">Açık Artırma</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Teklif al</div>
                         </div>
                     </label>
                     
-                    <label class="post-type-option cursor-pointer">
+                    <label class="post-type-option cursor-pointer group">
                         <input type="radio" name="post_type" value="4" class="sr-only">
-                        <div class="border-2 border-gray-200 rounded-lg p-4 text-center hover:border-blue-500 transition-colors">
-                            <div class="text-2xl mb-2">📊</div>
-                            <div class="font-medium">Anket</div>
-                            <div class="text-sm text-gray-500">Oy topla</div>
+                        <div class="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center hover:border-purple-500 dark:hover:border-purple-400 transition-all duration-200 bg-gray-50 dark:bg-gray-800 hover:shadow-md group-hover:scale-105">
+                            <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                            </div>
+                            <div class="font-medium text-gray-900 dark:text-white text-sm">Anket</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Oy topla</div>
                         </div>
                     </label>
                     
-                    <label class="post-type-option cursor-pointer">
+                    <label class="post-type-option cursor-pointer group">
                         <input type="radio" name="post_type" value="5" class="sr-only">
-                        <div class="border-2 border-gray-200 rounded-lg p-4 text-center hover:border-blue-500 transition-colors">
-                            <div class="text-2xl mb-2">🎨</div>
-                            <div class="font-medium">Portfolyo</div>
-                            <div class="text-sm text-gray-500">Çalışma göster</div>
+                        <div class="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center hover:border-indigo-500 dark:hover:border-indigo-400 transition-all duration-200 bg-gray-50 dark:bg-gray-800 hover:shadow-md group-hover:scale-105">
+                            <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                </svg>
+                            </div>
+                            <div class="font-medium text-gray-900 dark:text-white text-sm">Portfolyo</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Çalışma göster</div>
                         </div>
                     </label>
                     
-                    <label class="post-type-option cursor-pointer">
+                    <label class="post-type-option cursor-pointer group">
                         <input type="radio" name="post_type" value="6" class="sr-only">
-                        <div class="border-2 border-gray-200 rounded-lg p-4 text-center hover:border-blue-500 transition-colors">
-                            <div class="text-2xl mb-2">🚀</div>
-                            <div class="font-medium">Freelance Proje</div>
-                            <div class="text-sm text-gray-500">Proje ara</div>
+                        <div class="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center hover:border-teal-500 dark:hover:border-teal-400 transition-all duration-200 bg-gray-50 dark:bg-gray-800 hover:shadow-md group-hover:scale-105">
+                            <div class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                <svg class="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <div class="font-medium text-gray-900 dark:text-white text-sm">Freelance Proje</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Proje ara</div>
                         </div>
                     </label>
                 </div>
             </div>
 
             <!-- Temel Bilgiler -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">Temel Bilgiler</h2>
+            <div id="basic-info-section" class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 border border-gray-100 dark:border-gray-700">
+                <div class="flex items-center mb-6">
+                    <div class="w-10 h-10 bg-gradient-to-br from-gray-500 to-gray-600 rounded-full flex items-center justify-center mr-3 shadow-sm">
+                        <span class="text-white text-lg">📝</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Temel Bilgiler</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Gönderinizin temel bilgilerini girin</p>
+                    </div>
+                </div>
                 
-                <div class="space-y-4">
+                <div class="space-y-6">
                     <!-- Başlık -->
                     <div>
-                        <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Başlık *</label>
+                        <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                            </svg>
+                            Başlık <span class="text-red-500">*</span>
+                        </label>
                         <input type="text" id="title" name="title" value="{{ old('title') }}" 
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200" 
                                placeholder="Gönderiniz için açıklayıcı bir başlık yazın" required>
                         @error('title')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-2 text-sm text-red-600 flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                                {{ $message }}
+                            </p>
                         @enderror
                     </div>
 
                     <!-- Kategori -->
                     <div>
-                        <label for="category_id" class="block text-sm font-medium text-gray-700 mb-2">Kategori *</label>
-                        <select id="category_id" name="category_id" 
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
-                            <option value="">Kategori seçin</option>
-                            <!-- Forum kategorileri (Normal Post ve Anket için) -->
-                            <optgroup label="Forum Kategorileri" id="forum-categories" style="display: none;">
-                                @foreach($postCategories as $category)
-                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                        {{ $category->name }}
-                                    </option>
-                                @endforeach
-                            </optgroup>
-                            <!-- Hizmet kategorileri (Hizmet İlanı ve Açık Artırma için) -->
-                            <optgroup label="Hizmet Kategorileri" id="service-categories" style="display: none;">
-                                @foreach($serviceCategories as $category)
-                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                        {{ $category->name }}
-                                    </option>
-                                @endforeach
-                            </optgroup>
-                            <!-- Proje kategorileri (Portfolyo ve Freelance Proje için) -->
-                            <optgroup label="Proje Kategorileri" id="project-categories" style="display: none;">
-                                @foreach($projectCategories as $category)
-                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                        {{ $category->name }}
-                                    </option>
-                                @endforeach
-                            </optgroup>
-                        </select>
+                        <label for="category_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                            </svg>
+                            Kategori <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <select id="category_id" name="category_id" 
+                                    class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 appearance-none transition-all duration-200">
+                                <option value="">Kategori seçin</option>
+                                <!-- Forum kategorileri (Normal Post ve Anket için) -->
+                                <optgroup label="Forum Kategorileri" id="forum-categories" style="display: none;">
+                                    @foreach($postCategories as $category)
+                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </optgroup>
+                                <!-- Hizmet kategorileri (Hizmet İlanı ve Açık Artırma için) -->
+                                <optgroup label="Hizmet Kategorileri" id="service-categories" style="display: none;">
+                                    @foreach($serviceCategories as $category)
+                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </optgroup>
+                                <!-- Proje kategorileri (Portfolyo ve Freelance Proje için) -->
+                                <optgroup label="Proje Kategorileri" id="project-categories" style="display: none;">
+                                    @foreach($projectCategories as $category)
+                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </optgroup>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </div>
                         @error('category_id')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-2 text-sm text-red-600 flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                                {{ $message }}
+                            </p>
                         @enderror
                     </div>
 
                     <!-- İçerik -->
                     <div>
-                        <label for="content" class="block text-sm font-medium text-gray-700 mb-2">İçerik *</label>
+                        <label for="content" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                            İçerik <span class="text-red-500">*</span>
+                        </label>
                         <textarea name="content" id="content-textarea" style="display: none;" required>{{ old('content', '') }}</textarea>
-                        <div id="content-editor" style="min-height: 300px;">
+                        <div id="content-editor" class="border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 transition-all duration-200" style="min-height: 300px;">
                             {!! old('content', '') !!}
                         </div>
                         @error('content')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            <p class="mt-2 text-sm text-red-600 flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                                {{ $message }}
+                            </p>
                         @enderror
                     </div>
 
                     <!-- Etiketler -->
                     <div>
-                        <label for="tags" class="block text-sm font-medium text-gray-700 mb-2">Etiketler</label>
-                        <input type="text" id="tags" name="tags" value="{{ old('tags') }}" 
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                               placeholder="Etiketleri virgülle ayırın (örn: web tasarım, php, laravel)">
-                        <p class="mt-1 text-sm text-gray-500">Gönderinizi daha kolay bulunabilir hale getirmek için etiketler ekleyin.</p>
+                        <label for="tags" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                            <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                            </svg>
+                            Etiketler
+                        </label>
+                        
+                        <div class="tags-container">
+                            <div class="flex flex-wrap gap-2 mb-2 min-h-[40px] p-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800" id="tags-display">
+                                <!-- Eklenen etiketler burada görünecek -->
+                            </div>
+                            <div class="flex gap-2">
+                                <input type="text" 
+                                       class="flex-1 px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200 tag-input"
+                                       placeholder="Etiket ekleyin (örn: web tasarım, php, laravel...)"
+                                       maxlength="30">
+                                <button type="button" 
+                                        class="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-sm hover:shadow-md add-tag-btn">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Hidden input for form submission -->
+                        <input type="hidden" id="tags" name="tags" value="{{ old('tags') }}">
+                        
+                        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400 flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Gönderinizi daha kolay bulunabilir hale getirmek için etiketler ekleyin. (Maksimum 10 etiket)
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Freelance Proje Alt Kategorileri -->
+            <div id="freelance-sub-types" class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 border border-gray-100 dark:border-gray-700 hidden">
+                <div class="flex items-center mb-6">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mr-3 shadow-sm">
+                        <span class="text-white text-lg">💼</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Proje Türü Seçin</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Freelance projenizin türünü belirleyin</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Alıcı İsteği -->
+                    <label class="freelance-type-option cursor-pointer">
+                        <input type="radio" name="freelance_type" value="buyer_request" class="sr-only">
+                        <div class="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-6 hover:border-purple-300 dark:hover:border-purple-600 transition-all duration-200 hover:shadow-md bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Alıcı İsteği</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">İhtiyacınız olan hizmeti talep edin</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                                <div class="flex items-center">
+                                    <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Freelancer'lardan teklif alın
+                                </div>
+                                <div class="flex items-center">
+                                    <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Bütçenizi belirleyin
+                                </div>
+                                <div class="flex items-center">
+                                    <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    En uygun freelancer'ı seçin
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- İş İlanı Oluştur -->
+                    <label class="freelance-type-option cursor-pointer">
+                        <input type="radio" name="freelance_type" value="job_posting" class="sr-only">
+                        <div class="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-6 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 hover:shadow-md bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">İş İlanı Oluştur</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Detaylı iş ilanı yayınlayın</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                                <div class="flex items-center">
+                                    <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Detaylı iş tanımı yapın
+                                </div>
+                                <div class="flex items-center">
+                                    <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Gerekli becerileri belirtin
+                                </div>
+                                <div class="flex items-center">
+                                    <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Başvuruları değerlendirin
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Alıcı İsteği Alanları -->
+            <div id="buyer-request-details" class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 border border-gray-100 dark:border-gray-700 hidden">
+                <div class="flex items-center mb-6">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mr-3 shadow-sm">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Alıcı İsteği Detayları</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">İhtiyacınız olan hizmet için detayları belirtin</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Bütçe Aralığı -->
+                    <div class="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-6 border border-purple-100 dark:border-purple-700">
+                        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-4 flex items-center">
+                            <div class="w-6 h-6 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs mr-3 shadow-sm">₺</div>
+                            Bütçe Aralığı
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Minimum Bütçe (₺) <span class="text-red-500">*</span>
+                                </label>
+                                <input type="number" name="min_budget" min="0" step="0.01" 
+                                       class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200"
+                                       placeholder="0.00" data-required-when-buyer-request>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Maksimum Bütçe (₺) <span class="text-red-500">*</span>
+                                </label>
+                                <input type="number" name="max_budget" min="0" step="0.01" 
+                                       class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200"
+                                       placeholder="0.00" data-required-when-buyer-request>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Proje Süresi -->
+                    <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
+                        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-4 flex items-center">
+                            <div class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs mr-3 shadow-sm">⏱</div>
+                            Proje Süresi
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Süre Birimi
+                                </label>
+                                <select name="project_duration_unit" class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+                                    <option value="day">Gün</option>
+                                    <option value="week">Hafta</option>
+                                    <option value="month">Ay</option>
+                                    <option value="flexible">Esnek</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Süre
+                                </label>
+                                <input type="number" name="project_duration" min="1" 
+                                       class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200"
+                                       placeholder="1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gerekli Beceriler -->
+                    <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
+                        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-4 flex items-center">
+                            <div class="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-xs mr-3 shadow-sm">🎯</div>
+                            Gerekli Beceriler
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex gap-3">
+                                <input type="text" id="skill-input" 
+                                       class="flex-1 px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200"
+                                       placeholder="Beceri ekleyin (örn: PHP, Laravel, JavaScript)">
+                                <button type="button" id="add-skill-btn" 
+                                        class="px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                    Ekle
+                                </button>
+                            </div>
+                            <div id="skills-display" class="flex flex-wrap gap-2 min-h-[2rem] p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg">
+                                <span class="text-gray-400 dark:text-gray-500 text-sm">Henüz beceri eklenmedi</span>
+                            </div>
+                            <input type="hidden" name="required_skills" id="skills-hidden-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- İş İlanı Alanları -->
+            <div id="job-posting-details" class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 border border-gray-100 dark:border-gray-700 hidden">
+                <div class="flex items-center mb-6">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3 shadow-sm">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">İş İlanı Detayları</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Detaylı iş ilanı bilgilerini girin</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- İş Türü -->
+                    <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border border-blue-100 dark:border-blue-700">
+                        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-4 flex items-center">
+                            <div class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs mr-3 shadow-sm">💼</div>
+                            İş Türü
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <label class="flex items-center p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
+                                <input type="radio" name="job_type" value="time_based" class="text-blue-600 focus:ring-blue-500" checked>
+                                <div class="ml-3">
+                                    <span class="text-sm font-medium text-gray-900 dark:text-white">Süre Bazlı</span>
+                                    <span class="block text-xs text-gray-500 dark:text-gray-400">Belirli süre ile çalışma</span>
+                                </div>
+                            </label>
+                            <label class="flex items-center p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
+                                <input type="radio" name="job_type" value="project_based" class="text-blue-600 focus:ring-blue-500">
+                                <div class="ml-3">
+                                    <span class="text-sm font-medium text-gray-900 dark:text-white">Proje Bazlı</span>
+                                    <span class="block text-xs text-gray-500 dark:text-gray-400">Proje tamamlanana kadar</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Maaş/Ücret Bilgisi -->
+                    <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-6 border border-green-100 dark:border-green-700">
+                        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-4 flex items-center">
+                            <div class="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-xs mr-3 shadow-sm">₺</div>
+                            Ücret Bilgisi
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Ücret Türü <span class="text-red-500">*</span>
+                                </label>
+                                <select name="salary_type" class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100" data-required-when-job-posting>
+                                    <option value="">Seçiniz</option>
+                                    <option value="hourly">Saatlik</option>
+                                    <option value="daily">Günlük</option>
+                                    <option value="weekly">Haftalık</option>
+                                    <option value="monthly">Aylık</option>
+                                    <option value="project">Proje Bazlı</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Ücret Miktarı (₺) <span class="text-red-500">*</span>
+                                </label>
+                                <input type="number" name="salary_amount" min="0" step="0.01" 
+                                       class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200"
+                                       placeholder="0.00" data-required-when-job-posting>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Teslim Süresi -->
+                    <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
+                        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-4 flex items-center">
+                            <div class="w-6 h-6 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs mr-3 shadow-sm">⏰</div>
+                            Teslim Süresi
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <label class="flex items-center p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-colors">
+                                <input type="radio" name="delivery_time" value="few_days" class="text-purple-600 focus:ring-purple-500">
+                                <div class="ml-3">
+                                    <span class="text-sm font-medium text-gray-900 dark:text-white">Birkaç gün içinde</span>
+                                    <span class="block text-xs text-gray-500 dark:text-gray-400">1-3 gün</span>
+                                </div>
+                            </label>
+                            <label class="flex items-center p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-colors">
+                                <input type="radio" name="delivery_time" value="one_week" class="text-purple-600 focus:ring-purple-500" checked>
+                                <div class="ml-3">
+                                    <span class="text-sm font-medium text-gray-900 dark:text-white">Bir hafta içinde</span>
+                                    <span class="block text-xs text-gray-500 dark:text-gray-400">7 gün</span>
+                                </div>
+                            </label>
+                            <label class="flex items-center p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-colors">
+                                <input type="radio" name="delivery_time" value="one_month" class="text-purple-600 focus:ring-purple-500">
+                                <div class="ml-3">
+                                    <span class="text-sm font-medium text-gray-900 dark:text-white">Bir ay içinde</span>
+                                    <span class="block text-xs text-gray-500 dark:text-gray-400">30 gün</span>
+                                </div>
+                            </label>
+                            <label class="flex items-center p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-colors">
+                                <input type="radio" name="delivery_time" value="one_to_three_months" class="text-purple-600 focus:ring-purple-500">
+                                <div class="ml-3">
+                                    <span class="text-sm font-medium text-gray-900 dark:text-white">1-3 ay içinde</span>
+                                    <span class="block text-xs text-gray-500 dark:text-gray-400">30-90 gün</span>
+                                </div>
+                            </label>
+                            <label class="flex items-center p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-colors">
+                                <input type="radio" name="delivery_time" value="more_than_three_months" class="text-purple-600 focus:ring-purple-500">
+                                <div class="ml-3">
+                                    <span class="text-sm font-medium text-gray-900 dark:text-white">3 aydan daha fazla</span>
+                                    <span class="block text-xs text-gray-500 dark:text-gray-400">90+ gün</span>
+                                </div>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Hizmet İlanı Alanları -->
-            <div id="service-fields" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hidden">
+            <div id="service-fields" class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 border border-gray-100 dark:border-gray-700 hidden">
                 <div class="flex items-center mb-6">
-                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M8 6v10a2 2 0 002 2h4a2 2 0 002-2V6"></path>
-                        </svg>
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mr-3 shadow-sm">
+                        <span class="text-white text-lg">🛠️</span>
                     </div>
                     <div>
-                        <h2 class="text-xl font-semibold text-gray-900">Hizmet Detayları</h2>
-                        <p class="text-sm text-gray-500">Hizmetinizin temel bilgilerini ve öğelerini tanımlayın</p>
+                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Hizmet Detayları</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Hizmetinizin temel bilgilerini ve öğelerini tanımlayın</p>
                     </div>
                 </div>
                 
 
 
                 <!-- Hizmet Öğeleri -->
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-medium text-gray-800 flex items-center">
-                            <span class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs mr-2">1</span>
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 flex items-center">
+                            <div class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs mr-3 shadow-sm">1</div>
                             Hizmet Öğeleri
                         </h3>
                         <button type="button" id="add-service-item" 
-                                class="inline-flex items-center px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                             </svg>
                             Öğe Ekle
                         </button>
                     </div>
 
-                    <div id="service-items-container" class="space-y-4">
+                    <div id="service-items-container" class="space-y-6">
                         <!-- İlk hizmet öğesi -->
-                        <div class="service-item bg-white rounded-lg border border-gray-200 overflow-hidden">
+                        <div class="service-item bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
                             <!-- Başlık -->
-                            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-3 border-b border-gray-200">
+                            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                                 <div class="flex justify-between items-center">
-                                    <h4 class="font-medium text-gray-800 flex items-center">
-                                        <span class="w-5 h-5 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs mr-2">1</span>
+                                    <h4 class="font-medium text-gray-800 dark:text-gray-200 flex items-center">
+                                        <div class="w-5 h-5 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs mr-3 shadow-sm">1</div>
                                         Hizmet Öğesi #1
                                     </h4>
-                                    <button type="button" class="remove-service-item text-red-600 hover:text-red-800 text-sm font-medium hidden">
+                                    <button type="button" class="remove-service-item text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 text-sm font-medium hidden transition-colors duration-200">
                                         Kaldır
                                     </button>
                                 </div>
                             </div>
 
                             <!-- İçerik -->
-                            <div class="p-4 space-y-4">
+                            <div class="p-6 space-y-6">
                                 <!-- Başlık ve Fiyat -->
-                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                                            <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                            </svg>
                                             Başlık <span class="text-red-500">*</span>
                                         </label>
                                         <input type="text" name="service_items[0][title]" 
-                                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                               class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200"
                                                placeholder="Örn: Temel Logo Tasarımı" data-required-when-service>
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                                            <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                            </svg>
                                             Fiyat (₺) <span class="text-red-500">*</span>
                                         </label>
                                         <input type="number" name="service_items[0][price]" 
-                                               min="0" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                               min="0" step="0.01" class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200"
                                                placeholder="0.00" data-required-when-service>
                                     </div>
                                 </div>
@@ -250,8 +671,9 @@
                                     <div class="flex items-center mb-3">
                                         <input type="checkbox" name="service_items[0][has_discount]" value="1" 
                                                class="rounded border-gray-300 text-yellow-600 shadow-sm focus:border-yellow-300 focus:ring focus:ring-yellow-200 focus:ring-opacity-50 discount-checkbox"
-                                               data-index="0">
-                                        <label class="ml-3 text-sm font-medium text-gray-700 flex items-center cursor-pointer">
+                                               data-index="0"
+                                               id="discount-checkbox-0">
+                                        <label for="discount-checkbox-0" class="ml-3 text-sm font-medium text-gray-700 flex items-center cursor-pointer">
                                             <svg class="w-4 h-4 text-yellow-600 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
                                             </svg>
@@ -388,8 +810,16 @@
             </div>
 
             <!-- Açık Artırma Alanları -->
-            <div id="auction-fields" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hidden">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">Açık Artırma Detayları</h2>
+            <div id="auction-fields" class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 border border-gray-100 dark:border-gray-700 hidden">
+                <div class="flex items-center mb-6">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center mr-3 shadow-sm">
+                        <span class="text-white text-lg">🔨</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Açık Artırma Detayları</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Açık artırma ayarlarınızı belirleyin</p>
+                    </div>
+                </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -423,8 +853,16 @@
             </div>
 
             <!-- Anket Alanları -->
-            <div id="poll-fields" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hidden">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">Anket Detayları</h2>
+            <div id="poll-fields" class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 border border-gray-100 dark:border-gray-700 hidden">
+                <div class="flex items-center mb-6">
+                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mr-3 shadow-sm">
+                        <span class="text-white text-lg">📊</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Anket Detayları</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Anket sorularınızı ve seçeneklerinizi oluşturun</p>
+                    </div>
+                </div>
                 
                 <div class="space-y-4">
                     <div>
@@ -479,16 +917,14 @@
             </div>
 
             <!-- Portfolyo Alanları -->
-            <div id="portfolio-fields" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hidden">
+            <div id="portfolio-fields" class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 border border-gray-100 dark:border-gray-700 hidden">
                 <div class="flex items-center mb-6">
-                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
-                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                        </svg>
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center mr-3 shadow-sm">
+                        <span class="text-white text-lg">💼</span>
                     </div>
                     <div>
-                        <h2 class="text-xl font-semibold text-gray-900">Portfolyo Detayları</h2>
-                        <p class="text-sm text-gray-500">Projenizin detaylarını ve kullandığınız teknolojileri belirtin</p>
+                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Portfolyo Detayları</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Projenizin detaylarını ve kullandığınız teknolojileri belirtin</p>
                     </div>
                 </div>
                 
@@ -557,17 +993,26 @@
             </div>
 
             <!-- Form Butonları -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div class="flex justify-between items-center">
-                    <a href="{{ route('home') }}" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
+            <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md border border-gray-100 dark:border-gray-700 p-6">
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <a href="{{ route('home') }}" class="inline-flex items-center px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors duration-200">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
                         İptal
                     </a>
                     
-                    <div class="space-x-3">
-                        <button type="button" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <button type="button" class="inline-flex items-center px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
                             Taslak Kaydet
                         </button>
-                        <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                        <button type="submit" class="inline-flex items-center px-8 py-3 bg-gradient-to-br from-purple-500 to-blue-500 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
                             Yayınla
                         </button>
                     </div>
@@ -616,6 +1061,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Temel Bilgiler bölümü
+    const basicInfoSection = document.getElementById('basic-info-section');
+    const freelanceSubTypes = document.getElementById('freelance-sub-types');
+    
     // Post tipi değişikliklerini dinle
     postTypeInputs.forEach(input => {
         input.addEventListener('change', function() {
@@ -627,11 +1076,27 @@ document.addEventListener('DOMContentLoaded', function() {
             auctionFields.classList.add('hidden');
             pollFields.classList.add('hidden');
             portfolioFields.classList.add('hidden');
+            if (freelanceSubTypes) freelanceSubTypes.classList.add('hidden');
+            
+            // Freelance subcategory fields'ları da gizle
+            const buyerRequestDetails = document.getElementById('buyer-request-details');
+            const jobPostingDetails = document.getElementById('job-posting-details');
+            if (buyerRequestDetails) buyerRequestDetails.classList.add('hidden');
+            if (jobPostingDetails) jobPostingDetails.classList.add('hidden');
             
             // Tüm required attributelarını kaldır
-            document.querySelectorAll('[data-required-when-service], [data-required-when-auction], [data-required-when-poll], [data-required-when-portfolio]').forEach(field => {
+            document.querySelectorAll('[data-required-when-service], [data-required-when-auction], [data-required-when-poll], [data-required-when-portfolio], [data-required-when-buyer-request]').forEach(field => {
                 field.removeAttribute('required');
             });
+            
+            // Temel Bilgiler bölümünü kontrol et
+            if (basicInfoSection) {
+                if (this.value === '4' || this.value === '5' || this.value === '6') { // Anket, Portfolio veya Freelance Proje
+                    basicInfoSection.classList.add('hidden');
+                } else {
+                    basicInfoSection.classList.remove('hidden');
+                }
+            }
             
             // Seçili tipe göre alanları göster ve required ekle
             switch(this.value) {
@@ -651,6 +1116,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     portfolioFields.classList.remove('hidden');
                     document.querySelectorAll('#portfolio-fields [data-required-when-portfolio]').forEach(field => field.setAttribute('required', ''));
                     break;
+                case '6': // Freelance Proje
+                    if (freelanceSubTypes) freelanceSubTypes.classList.remove('hidden');
+                    // Freelance type listener'larını yeniden başlat
+                    setTimeout(() => {
+                        initFreelanceTypeListeners();
+                    }, 100);
+                    break;
             }
             
             // Görsel feedback
@@ -663,6 +1135,93 @@ document.addEventListener('DOMContentLoaded', function() {
             this.closest('.post-type-option').querySelector('div').classList.add('border-blue-500', 'bg-blue-50');
         });
     });
+
+    // Alıcı İsteği için beceri ekleme fonksiyonları
+    const skillInput = document.getElementById('skill-input');
+    const addSkillBtn = document.getElementById('add-skill-btn');
+    const skillsDisplay = document.getElementById('skills-display');
+    const skillsHiddenInput = document.getElementById('required-skills');
+    
+    let skills = [];
+    
+    if (addSkillBtn && skillInput) {
+        addSkillBtn.addEventListener('click', function() {
+            addSkill();
+        });
+        
+        skillInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addSkill();
+            }
+        });
+    }
+    
+    function addSkill() {
+        const value = skillInput.value.trim();
+        
+        if (value === '') {
+            alert('Lütfen bir beceri girin.');
+            return;
+        }
+        
+        if (skills.length >= 10) {
+            alert('Maksimum 10 beceri ekleyebilirsiniz.');
+            return;
+        }
+        
+        if (skills.includes(value)) {
+            alert('Bu beceri zaten eklenmiş.');
+            return;
+        }
+        
+        skills.push(value);
+        updateSkillsDisplay();
+        updateSkillsHiddenInput();
+        skillInput.value = '';
+    }
+    
+    function removeSkill(index) {
+        skills.splice(index, 1);
+        updateSkillsDisplay();
+        updateSkillsHiddenInput();
+    }
+    
+    function updateSkillsDisplay() {
+        if (!skillsDisplay) return;
+        
+        skillsDisplay.innerHTML = '';
+        
+        skills.forEach((skill, index) => {
+            const skillElement = document.createElement('span');
+            skillElement.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800 border border-green-200';
+            skillElement.innerHTML = `
+                ${skill}
+                <button type="button" class="ml-2 text-green-600 hover:text-green-800" onclick="removeSkill(${index})">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            `;
+            skillsDisplay.appendChild(skillElement);
+        });
+        
+        if (skills.length === 0) {
+            const placeholder = document.createElement('span');
+            placeholder.className = 'text-gray-400 text-sm';
+            placeholder.textContent = 'Henüz beceri eklenmedi';
+            skillsDisplay.appendChild(placeholder);
+        }
+    }
+    
+    function updateSkillsHiddenInput() {
+        if (skillsHiddenInput) {
+            skillsHiddenInput.value = JSON.stringify(skills);
+        }
+    }
+    
+    // Global fonksiyon olarak tanımla
+    window.removeSkill = removeSkill;
 
     // Sayfa yüklendiğinde varsayılan olarak Normal Post seçili olduğu için forum kategorilerini göster
     filterCategories('1');
@@ -1227,6 +1786,168 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Global fonksiyon olarak tanımla
     window.removeTechnology = removeTechnology;
+
+    // Etiket ekleme/çıkarma işlemleri
+    const tagInput = document.querySelector('.tag-input');
+    const addTagBtn = document.querySelector('.add-tag-btn');
+    const tagsDisplay = document.getElementById('tags-display');
+    const tagsHiddenInput = document.getElementById('tags');
+    
+    let tags = [];
+    
+    // Eski değerleri yükle
+    if (tagsHiddenInput && tagsHiddenInput.value) {
+        try {
+            // Virgülle ayrılmış string'i array'e çevir
+            const oldTags = tagsHiddenInput.value.split(',').map(tag => tag.trim()).filter(tag => tag);
+            tags = oldTags;
+            updateTagsDisplay();
+        } catch (e) {
+            tags = [];
+        }
+    }
+    
+    if (addTagBtn && tagInput) {
+        addTagBtn.addEventListener('click', function() {
+            addTag();
+        });
+        
+        tagInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addTag();
+            }
+        });
+    }
+    
+    function addTag() {
+        const value = tagInput.value.trim();
+        
+        if (value === '') {
+            alert('Lütfen bir etiket girin.');
+            return;
+        }
+        
+        if (tags.length >= 10) {
+            alert('Maksimum 10 etiket ekleyebilirsiniz.');
+            return;
+        }
+        
+        if (tags.includes(value)) {
+            alert('Bu etiket zaten eklenmiş.');
+            return;
+        }
+        
+        tags.push(value);
+        updateTagsDisplay();
+        updateTagsHiddenInput();
+        tagInput.value = '';
+    }
+    
+    function removeTag(index) {
+        tags.splice(index, 1);
+        updateTagsDisplay();
+        updateTagsHiddenInput();
+    }
+    
+    function updateTagsDisplay() {
+        if (!tagsDisplay) return;
+        
+        tagsDisplay.innerHTML = '';
+        
+        tags.forEach((tag, index) => {
+            const tagElement = document.createElement('span');
+            tagElement.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-700';
+            tagElement.innerHTML = `
+                ${tag}
+                <button type="button" class="ml-2 text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-100" onclick="removeTag(${index})">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            `;
+            tagsDisplay.appendChild(tagElement);
+        });
+        
+        if (tags.length === 0) {
+            const placeholder = document.createElement('span');
+            placeholder.className = 'text-gray-400 dark:text-gray-500 text-sm';
+            placeholder.textContent = 'Henüz etiket eklenmedi';
+            tagsDisplay.appendChild(placeholder);
+        }
+    }
+    
+    function updateTagsHiddenInput() {
+        if (tagsHiddenInput) {
+            tagsHiddenInput.value = tags.join(', ');
+        }
+    }
+    
+    // Global fonksiyon olarak tanımla
+    window.removeTag = removeTag;
+
+    // Freelance Proje alt kategorileri için event listener'lar
+    function initFreelanceTypeListeners() {
+        const freelanceTypeInputs = document.querySelectorAll('input[name="freelance_type"]');
+        const buyerRequestDetails = document.getElementById('buyer-request-details');
+        const jobPostingDetails = document.getElementById('job-posting-details');
+        
+        console.log('initFreelanceTypeListeners çalıştı');
+        console.log('buyerRequestDetails:', buyerRequestDetails);
+        console.log('jobPostingDetails:', jobPostingDetails);
+        
+        freelanceTypeInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                console.log('Freelance type changed:', this.value); // Debug için
+                
+                // Tüm seçeneklerin görsel feedback'ini sıfırla
+                document.querySelectorAll('.freelance-type-option div').forEach(div => {
+                    div.classList.remove('border-purple-500', 'border-blue-500', 'bg-purple-50', 'bg-blue-50');
+                    div.classList.add('border-gray-200');
+                });
+                
+                // Seçili seçeneğe görsel feedback ekle
+                const parentDiv = this.closest('.freelance-type-option').querySelector('div');
+                parentDiv.classList.remove('border-gray-200');
+                
+                // Tüm detay alanlarını gizle
+                if (buyerRequestDetails) {
+                    buyerRequestDetails.classList.add('hidden');
+                    console.log('Buyer request details hidden');
+                } else {
+                    console.log('buyerRequestDetails element bulunamadı!');
+                }
+                
+                if (jobPostingDetails) {
+                    jobPostingDetails.classList.add('hidden');
+                    console.log('Job posting details hidden');
+                } else {
+                    console.log('jobPostingDetails element bulunamadı!');
+                }
+                
+                if (this.value === 'buyer_request') {
+                    parentDiv.classList.add('border-purple-500', 'bg-purple-50');
+                    // Alıcı İsteği detaylarını göster
+                    if (buyerRequestDetails) {
+                        buyerRequestDetails.classList.remove('hidden');
+                        console.log('Buyer request details shown');
+                    }
+                } else if (this.value === 'job_posting') {
+                    parentDiv.classList.add('border-blue-500', 'bg-blue-50');
+                    // İş İlanı detaylarını göster
+                    if (jobPostingDetails) {
+                        jobPostingDetails.classList.remove('hidden');
+                        console.log('Job posting details shown');
+                    }
+                }
+            });
+        });
+    }
+
+    // Freelance type listener'larını başlat
+    setTimeout(() => {
+        initFreelanceTypeListeners();
+    }, 500); // 500ms bekle
 
     // İlk yükleme için varsayılan seçimi aktif et
     const checkedInput = document.querySelector('input[name="post_type"]:checked');
