@@ -46,6 +46,12 @@ Route::prefix('community')->name('community.')->group(function () {
 Route::prefix('posts')->name('posts.')->group(function () {
     Route::get('/', function () { return view('posts.index'); })->name('index');
     Route::get('/create', [PostController::class, 'create'])->name('create')->middleware('auth');
+    Route::get('/create/post', [PostController::class, 'createPost'])->name('create.post')->middleware('auth');
+    Route::get('/create/service', [PostController::class, 'createService'])->name('create.service')->middleware('auth');
+    Route::get('/create/auction', [PostController::class, 'createAuction'])->name('create.auction')->middleware('auth');
+    Route::get('/create/poll', [PostController::class, 'createPoll'])->name('create.poll')->middleware('auth');
+    Route::get('/create/portfolio', [PostController::class, 'createPortfolio'])->name('create.portfolio')->middleware('auth');
+    Route::get('/create/freelance', [PostController::class, 'createFreelance'])->name('create.freelance')->middleware('auth');
     Route::post('/', [PostController::class, 'store'])->name('store')->middleware('auth');
     Route::get('/{post}', [PostController::class, 'show'])->name('show');
 });

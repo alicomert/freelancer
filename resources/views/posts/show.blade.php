@@ -24,7 +24,7 @@
                         @case(2) bg-blue-100 text-blue-800 @break
                         @case(3) bg-yellow-100 text-yellow-800 @break
                         @case(4) bg-green-100 text-green-800 @break
-                        @case(5) bg-purple-100 text-purple-800 @break
+                        @case(5) bg-indigo-100 text-indigo-800 @break
                         @case(6) bg-red-100 text-red-800 @break
                     @endswitch
                 ">
@@ -33,8 +33,8 @@
                         @case(2) Hizmet İlanı @break
                         @case(3) Açık Artırma @break
                         @case(4) Anket @break
-                        @case(5) Portfolyo @break
-                        @case(6) Freelance Proje @break
+                        @case(5) Freelance Proje @break
+                        @case(6) Portfolyo @break
                     @endswitch
                 </span>
             </div>
@@ -69,7 +69,7 @@
                 <!-- Anket Detayları -->
                 @include('posts.partials.poll-details', ['postId' => $post->id])
                 @break
-            @case(5)
+            @case(6)
                 <!-- Portfolyo Detayları -->
                 @include('posts.partials.portfolio-details', ['postId' => $post->id])
                 @break

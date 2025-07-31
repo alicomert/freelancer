@@ -29,14 +29,98 @@ class PostController extends Controller
             ->orderBy('name')
             ->get();
 
-        // Portfolyo ve freelance proje için proje kategorileri
+        // Portfolyo ve freelance proje için portfolyo kategorileri
         $projectCategories = Category::where('is_active', true)
-            ->where('category_type', 'project')
+            ->where('category_type', 'portfolio')
             ->orderBy('sort_order')
             ->orderBy('name')
             ->get();
         
         return view('posts.create', compact('postCategories', 'serviceCategories', 'projectCategories'));
+    }
+
+    /**
+     * Normal post oluşturma sayfasını göster
+     */
+    public function createPost()
+    {
+        $postCategories = Category::where('is_active', true)
+            ->where('category_type', 'post')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+        
+        return view('posts.create.post', compact('postCategories'));
+    }
+
+    /**
+     * Hizmet ilanı oluşturma sayfasını göster
+     */
+    public function createService()
+    {
+        $serviceCategories = Category::where('is_active', true)
+            ->where('category_type', 'service')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+        
+        return view('posts.create.service', compact('serviceCategories'));
+    }
+
+    /**
+     * Açık artırma oluşturma sayfasını göster
+     */
+    public function createAuction()
+    {
+        $serviceCategories = Category::where('is_active', true)
+            ->where('category_type', 'service')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+        
+        return view('posts.create.auction', compact('serviceCategories'));
+    }
+
+    /**
+     * Anket oluşturma sayfasını göster
+     */
+    public function createPoll()
+    {
+        $postCategories = Category::where('is_active', true)
+            ->where('category_type', 'post')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+        
+        return view('posts.create.poll', compact('postCategories'));
+    }
+
+    /**
+     * Portfolyo oluşturma sayfasını göster
+     */
+    public function createPortfolio()
+    {
+        $projectCategories = Category::where('is_active', true)
+            ->where('category_type', 'portfolio')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+        
+        return view('posts.create.portfolio', compact('projectCategories'));
+    }
+
+    /**
+     * Freelance proje oluşturma sayfasını göster
+     */
+    public function createFreelance()
+    {
+        $projectCategories = Category::where('is_active', true)
+            ->where('category_type', 'portfolio')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+        
+        return view('posts.create.freelance', compact('projectCategories'));
     }
 
     /**
@@ -84,7 +168,8 @@ class PostController extends Controller
                 
             case 4: // Anket
                 $rules = array_merge($rules, [
-                    'poll_question' => 'required|string|max:500',
+                    'poll_question' => 'required|string|max:255',
+                    'category_id' => 'required|exists:categories,id',
                     'poll_options' => 'required|array|min:2',
                     'poll_options.*' => 'required|string|max:255',
                     'poll_type' => 'nullable|in:single,multiple',
@@ -93,8 +178,23 @@ class PostController extends Controller
                 ]);
                 break;
                 
-            case 5: // Portfolyo
+            case 5: // Alıcı İsteği (Buyer Request)
                 $rules = array_merge($rules, [
+                    'buyer_request_job_type' => 'required|in:time_based,project_based',
+                    'buyer_request_budget_min' => 'nullable|numeric|min:0',
+                    'buyer_request_budget_max' => 'nullable|numeric|min:0|gte:buyer_request_budget_min',
+                    'buyer_request_currency' => 'required|string|size:3',
+                    'buyer_request_work_duration_type' => 'required_if:buyer_request_job_type,time_based|in:hourly,daily',
+                    'buyer_request_delivery_time' => 'required_if:buyer_request_job_type,project_based|in:few_days,one_week,one_month,one_to_three_months,more_than_three_months',
+                    'buyer_request_experience_level' => 'nullable|in:beginner,intermediate,expert',
+                    'buyer_request_location' => 'nullable|string|max:255',
+                    'buyer_request_deadline' => 'nullable|date|after:now',
+                ]);
+                break;
+                
+            case 6: // Portfolyo
+                $rules = array_merge($rules, [
+                    'portfolio_category_id' => 'required|exists:categories,id',
                     'portfolio_project_title' => 'required|string|max:255',
                     'portfolio_project_description' => 'required|string',
                     'portfolio_project_url' => 'nullable|url',
@@ -109,16 +209,33 @@ class PostController extends Controller
         try {
             DB::beginTransaction();
 
+            // Portfolyo için kategori ID'sini belirle
+            $categoryId = $request->category_id;
+            $title = $request->title;
+            $content = $request->content;
+            
+            if ($request->post_type == 6) {
+                if ($request->portfolio_category_id) {
+                    $categoryId = $request->portfolio_category_id;
+                }
+                if ($request->portfolio_project_title) {
+                    $title = $request->portfolio_project_title;
+                }
+                if ($request->portfolio_project_description) {
+                    $content = $request->portfolio_project_description;
+                }
+            }
+
             // Ana post kaydı
             $postId = DB::table('posts_optimized')->insertGetId([
                 'uuid' => Str::uuid(),
                 'user_id' => Auth::id(),
                 'post_type' => $request->post_type,
-                'title' => $request->title,
-                'slug' => Str::slug($request->title) . '-' . Str::random(6),
-                'content' => $request->content,
-                'excerpt' => Str::limit(strip_tags($request->content), 200),
-                'category_id' => $request->category_id,
+                'title' => $title,
+                'slug' => Str::slug($title) . '-' . Str::random(6),
+                'content' => $content,
+                'excerpt' => Str::limit(strip_tags($content), 200),
+                'category_id' => $categoryId,
                 'status' => 1, // Yayında
                 'published_at' => now(),
                 'created_at' => now(),
@@ -138,10 +255,13 @@ class PostController extends Controller
                 case 4: // Anket
                     $this->storePollData($postId, $request);
                     break;
-                case 5: // Portfolyo
+                case 5: // Alıcı İsteği (Buyer Request)
+                    $this->storeBuyerRequestData($postId, $request);
+                    break;
+                case 6: // Portfolyo
                     $this->storePortfolioData($postId, $request);
                     break;
-                case 6: // Freelance proje
+                case 7: // Freelance proje
                     $this->storeProjectData($postId, $request);
                     break;
             }
@@ -178,6 +298,33 @@ class PostController extends Controller
             foreach ($request->service_items as $index => $item) {
                 // Sadece başlığı olan hizmet öğelerini kaydet
                 if (!empty(trim($item['title']))) {
+                    // Teslimat süresini birim bazında hesapla (gün cinsinden)
+                    $deliveryTimeInDays = 1; // Varsayılan 1 gün
+                    if (!empty($item['delivery_time']) && is_numeric($item['delivery_time'])) {
+                        $timeValue = (int)$item['delivery_time'];
+                        $unit = $item['delivery_time_unit'] ?? 'day';
+                        
+                        switch ($unit) {
+                            case 'instant':
+                                $deliveryTimeInDays = 0;
+                                break;
+                            case 'hour':
+                                $deliveryTimeInDays = max(1, ceil($timeValue / 24));
+                                break;
+                            case 'day':
+                                $deliveryTimeInDays = $timeValue;
+                                break;
+                            case 'week':
+                                $deliveryTimeInDays = $timeValue * 7;
+                                break;
+                            case 'month':
+                                $deliveryTimeInDays = $timeValue * 30;
+                                break;
+                            default:
+                                $deliveryTimeInDays = $timeValue;
+                        }
+                    }
+
                     DB::table('post_services')->insert([
                         'post_id' => $postId,
                         'title' => $item['title'],
@@ -186,8 +333,7 @@ class PostController extends Controller
                         'discount_price' => !empty($item['discount_price']) ? $item['discount_price'] : null,
                         'sale_type' => $item['sale_type'] ?? 'internal',
                         'external_url' => ($item['sale_type'] === 'external' && !empty($item['external_url'])) ? $item['external_url'] : null,
-                        'delivery_time' => $item['delivery_time'] ?? null,
-                        'delivery_time_unit' => $item['delivery_time_unit'] ?? 'day',
+                        'delivery_time' => $deliveryTimeInDays,
                         'auto_delivery' => isset($item['auto_delivery']) && $item['auto_delivery'] == '1' ? true : false,
                         'features' => !empty($item['features']) ? $item['features'] : null, // Zaten JSON string olarak geliyor
                         'is_active' => true,
@@ -234,10 +380,10 @@ class PostController extends Controller
      */
     private function storePollData($postId, $request)
     {
-        // Ana anket kaydı
+        // Anket verilerini kaydet
         $pollId = DB::table('post_polls')->insertGetId([
             'post_id' => $postId,
-            'question' => $request->poll_question,
+            'question' => $request->poll_question, // poll_question yerine title kullanıyoruz
             'multiple_choice' => $request->poll_type === 'multiple',
             'anonymous_voting' => $request->poll_anonymous ?? true,
             'end_date' => $request->poll_expires_at,
@@ -281,6 +427,55 @@ class PostController extends Controller
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+    }
+
+    /**
+     * Alıcı isteği verilerini kaydet
+     */
+    private function storeBuyerRequestData($postId, $request)
+    {
+        // Gerekli becerileri JSON formatına çevir
+        $requiredSkills = [];
+        if ($request->has('buyer_request_skills')) {
+            $skills = is_string($request->buyer_request_skills) 
+                ? array_map('trim', explode(',', $request->buyer_request_skills))
+                : $request->buyer_request_skills;
+            $requiredSkills = array_filter($skills);
+        }
+
+        // Meta veriler
+        $metaData = [
+            'original_type' => 'buyer_request',
+            'job_type' => $request->buyer_request_job_type,
+            'skills' => $requiredSkills,
+        ];
+
+        DB::table('post_buyer_requests')->insert([
+            'post_id' => $postId,
+            'job_type' => $request->buyer_request_job_type,
+            'work_duration_type' => $request->buyer_request_job_type === 'time_based' 
+                ? $request->buyer_request_work_duration_type 
+                : null,
+            'delivery_time' => $request->buyer_request_job_type === 'project_based' 
+                ? $request->buyer_request_delivery_time 
+                : null,
+            'budget_min' => $request->buyer_request_budget_min ?? null,
+            'budget_max' => $request->buyer_request_budget_max ?? null,
+            'currency' => $request->buyer_request_currency ?? 'TRY',
+            'required_skills' => json_encode($requiredSkills),
+            'experience_level' => $request->buyer_request_experience_level ?? null,
+            'location' => $request->buyer_request_location ?? null,
+            'meta_data' => json_encode($metaData),
+            'status' => 1, // Aktif
+            'deadline' => $request->buyer_request_deadline ?? null,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // Posts_optimized tablosundaki meta veriyi güncelle
+        DB::table('posts_optimized')
+            ->where('id', $postId)
+            ->update(['meta_data' => json_encode($metaData)]);
     }
 
     /**
