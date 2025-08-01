@@ -172,7 +172,7 @@ class ForumCategorySeeder extends Seeder
                     'color' => $categoryData['color'],
                     'is_active' => true,
                     'sort_order' => $categoryData['sort_order'],
-                    'category_type' => 'general'
+                    'category_type' => 'post'
                 ]);
                 
                 echo "Forum kategorisi eklendi: " . $categoryData['name'] . "\n";

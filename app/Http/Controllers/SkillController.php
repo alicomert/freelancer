@@ -135,24 +135,39 @@ class SkillController extends Controller
 
     public function search(Request $request)
     {
-        $query = $request->input('query', '');
-        $skillsPath = resource_path('data/skills.json');
+        try {
+            $query = $request->input('query', '');
+            $skillsPath = resource_path('data/skills.json');
 
-        if (!File::exists($skillsPath)) {
-            $this->generateSkillsJson();
+            if (!File::exists($skillsPath)) {
+                $this->generateSkillsJson();
+            }
+
+            $allSkills = json_decode(File::get($skillsPath), true);
+            
+            // Ensure we have a valid array
+            if (!is_array($allSkills)) {
+                $allSkills = [];
+            }
+            
+            if (empty($query)) {
+                return response()->json(array_slice($allSkills, 0, 15));
+            }
+
+            $filteredSkills = array_filter($allSkills, function ($skill) use ($query) {
+                return stripos($skill, $query) !== false;
+            });
+
+            return response()->json(array_values($filteredSkills));
+        } catch (\Exception $e) {
+            \Log::error('Skills search error: ' . $e->getMessage(), [
+                'query' => $request->input('query', ''),
+                'user_id' => Auth::id(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([], 500);
         }
-
-        $allSkills = json_decode(File::get($skillsPath), true);
-        
-        if (empty($query)) {
-            return response()->json(array_slice($allSkills, 0, 15));
-        }
-
-        $filteredSkills = array_filter($allSkills, function ($skill) use ($query) {
-            return stripos($skill, $query) !== false;
-        });
-
-        return response()->json(array_values($filteredSkills));
     }
 
     private function generateSkillsJson()

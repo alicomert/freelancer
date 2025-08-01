@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 
 class SiteSettingSeeder extends Seeder
 {
-    public function run(): void
+            public function run(): void
     {
         $settings = [
             // Genel Site Bilgileri

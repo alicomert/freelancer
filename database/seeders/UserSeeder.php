@@ -2,14 +2,17 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Facades\DB;
+
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    public function run(): void
+        public function run(): void
     {
+        DB::table('users')->truncate();
         // Test kullanıcıları oluştur
         $users = [
             [
@@ -20,7 +23,7 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'title' => 'Full Stack Developer',
                 'bio' => 'Laravel ve React konularında uzman, 5+ yıl deneyim.',
-                'skills' => ['PHP', 'Laravel', 'React', 'MySQL', 'JavaScript'],
+
                 'hourly_rate' => 150,
                 'rating' => 4.8,
                 'total_reviews' => 25,
@@ -38,7 +41,6 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'title' => 'UI/UX Designer',
                 'bio' => 'Modern ve kullanıcı dostu arayüz tasarımları.',
-                'skills' => ['Figma', 'Adobe XD', 'Photoshop', 'Illustrator', 'Sketch'],
                 'hourly_rate' => 120,
                 'rating' => 4.9,
                 'total_reviews' => 32,
@@ -56,7 +58,6 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'title' => 'Mobile App Developer',
                 'bio' => 'iOS ve Android uygulama geliştirme uzmanı.',
-                'skills' => ['Swift', 'Kotlin', 'React Native', 'Flutter', 'Firebase'],
                 'hourly_rate' => 140,
                 'rating' => 4.7,
                 'total_reviews' => 18,
@@ -74,7 +75,6 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'title' => 'Grafik Tasarımcı',
                 'bio' => 'Yaratıcı ve etkileyici görsel tasarımlar.',
-                'skills' => ['Photoshop', 'Illustrator', 'InDesign', 'After Effects', 'Branding'],
                 'hourly_rate' => 100,
                 'rating' => 4.6,
                 'total_reviews' => 22,
@@ -92,7 +92,6 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'title' => 'DevOps Engineer',
                 'bio' => 'Cloud ve deployment konularında uzman.',
-                'skills' => ['AWS', 'Docker', 'Kubernetes', 'Jenkins', 'Linux'],
                 'hourly_rate' => 180,
                 'rating' => 4.9,
                 'total_reviews' => 15,
@@ -110,7 +109,6 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'title' => 'İçerik Yazarı',
                 'bio' => 'SEO uyumlu ve etkileyici içerik üretimi.',
-                'skills' => ['SEO', 'Content Writing', 'Copywriting', 'Blog Writing', 'Social Media'],
                 'hourly_rate' => 80,
                 'rating' => 4.5,
                 'total_reviews' => 28,

@@ -450,9 +450,17 @@
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-6">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-xl font-bold text-gray-900 dark:text-white">Portfolyo</h2>
-                    <a href="{{ url('/portfolio') }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium" aria-label="Tüm portfolyo projelerini görüntüle">
-                        Tümünü Gör
-                    </a>
+                    <div class="flex items-center space-x-4">
+                        @if(!isset($user) || (auth()->check() && auth()->user()->id === $user->id))
+                            <a href="{{ url('/posts/create/portfolio') }}" class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors duration-200">
+                                <i class="fas fa-plus mr-1"></i>
+                                Portfolyo Ekle
+                            </a>
+                        @endif
+                        <a href="{{ url('/portfolio') }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium" aria-label="Tüm portfolyo projelerini görüntüle">
+                            Tümünü Gör
+                        </a>
+                    </div>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <article class="group cursor-pointer" itemscope itemtype="https://schema.org/CreativeWork">
@@ -1831,10 +1839,23 @@
                         'X-Requested-With': 'XMLHttpRequest'
                     }
                 });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const suggestions = await response.json();
-                renderSuggestions(suggestions);
+                
+                // Ensure suggestions is an array
+                if (Array.isArray(suggestions)) {
+                    renderSuggestions(suggestions);
+                } else {
+                    console.error('Invalid response format:', suggestions);
+                    skillSuggestions.classList.add('hidden');
+                }
             } catch (error) {
                 console.error('Error searching skills:', error);
+                skillSuggestions.classList.add('hidden');
             }
         }, 300);
     });

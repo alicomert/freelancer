@@ -324,28 +324,25 @@ class ProjectCategorySeeder extends Seeder
             ]
         ];
 
-        foreach ($projectCategories as $index => $categoryData) {
-            $slug = Str::slug($categoryData['name']);
-            
-            // Kategori zaten var mı kontrol et
-            $existingCategory = Category::where('slug', $slug)->first();
-            
-            if (!$existingCategory) {
-                Category::create([
-                    'name' => $categoryData['name'],
-                    'slug' => $slug,
-                    'description' => $categoryData['description'],
-                    'icon' => $categoryData['icon'],
-                    'color' => $categoryData['color'],
-                    'is_active' => true,
-                    'sort_order' => $index + 1,
-                    'category_type' => 'project'
-                ]);
-                
-                echo "Proje kategorisi eklendi: " . $categoryData['name'] . "\n";
-            } else {
-                echo "Kategori zaten mevcut: " . $categoryData['name'] . "\n";
+        foreach ($projectCategories as $cat) {
+            $parent = null;
+            if (isset($cat['parent_name'])) {
+                $parent = Category::where('name', $cat['parent_name'])->where('category_type', 'project')->first();
             }
+
+            Category::updateOrCreate(
+                ['slug' => Str::slug($cat['name']), 'category_type' => 'project'],
+                [
+                    'name' => $cat['name'],
+                    'description' => $cat['description'] ?? null,
+                    'icon' => $cat['icon'] ?? null,
+                    'color' => $cat['color'] ?? null,
+                    'is_active' => true,
+                    'parent_id' => $parent ? $parent->id : null,
+                ]
+            );
         }
+
+        $this->command->info('Proje kategorileri başarıyla eklendi veya güncellendi.');
     }
 }

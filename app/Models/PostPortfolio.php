@@ -12,14 +12,14 @@ class PostPortfolio extends Model
 
     protected $fillable = [
         'post_id',
-        'project_title',
+        // 'project_title' kaldırıldı
         'client_name',
         'project_url',
         'completion_date',
         'project_duration',
         'project_budget',
         'technologies_used',
-        'project_description',
+        // 'project_description' kaldırıldı
         'challenges_faced',
         'solutions_provided',
         'results_achieved',

@@ -44,7 +44,7 @@ Route::prefix('community')->name('community.')->group(function () {
 
 // Posts
 Route::prefix('posts')->name('posts.')->group(function () {
-    Route::get('/', function () { return view('posts.index'); })->name('index');
+    Route::get('/', [PostController::class, 'index'])->name('index');
     Route::get('/create', [PostController::class, 'create'])->name('create')->middleware('auth');
     Route::get('/create/post', [PostController::class, 'createPost'])->name('create.post')->middleware('auth');
     Route::get('/create/service', [PostController::class, 'createService'])->name('create.service')->middleware('auth');

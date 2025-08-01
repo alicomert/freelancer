@@ -11,6 +11,61 @@ use App\Models\Category;
 class PostController extends Controller
 {
     /**
+     * Tüm gönderileri listele
+     */
+    public function index(Request $request)
+    {
+        $query = \App\Models\PostOptimized::with(['user', 'category', 'tags'])
+            ->where('status', 1)
+            ->orderBy('created_at', 'desc');
+
+        // Filtreleme
+        if ($request->filled('type')) {
+            $query->where('post_type', $request->type);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('content', 'like', "%{$search}%")
+                  ->orWhere('excerpt', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        // Sıralama
+        if ($request->filled('sort')) {
+            switch ($request->sort) {
+                case 'popular':
+                    $query->orderBy('views_count', 'desc');
+                    break;
+                case 'trending':
+                    $query->where('created_at', '>=', now()->subDays(7))
+                          ->orderBy('views_count', 'desc');
+                    break;
+                default:
+                    $query->orderBy('created_at', 'desc');
+            }
+        }
+
+        // AJAX isteği için JSON döndür
+        if ($request->ajax()) {
+            $posts = $query->paginate(9);
+            return response()->json([
+                'posts' => $posts->items(),
+                'has_more' => $posts->hasMorePages(),
+                'next_page' => $posts->currentPage() + 1
+            ]);
+        }
+
+        return view('posts.index');
+    }
+
+    /**
      * Gönderi ekleme sayfasını göster
      */
     public function create()
@@ -31,7 +86,7 @@ class PostController extends Controller
 
         // Portfolyo ve freelance proje için portfolyo kategorileri
         $projectCategories = Category::where('is_active', true)
-            ->where('category_type', 'portfolio')
+            ->where('category_type', 'project')
             ->orderBy('sort_order')
             ->orderBy('name')
             ->get();
@@ -115,7 +170,7 @@ class PostController extends Controller
     public function createFreelance()
     {
         $projectCategories = Category::where('is_active', true)
-            ->where('category_type', 'portfolio')
+            ->where('category_type', 'project')
             ->orderBy('sort_order')
             ->orderBy('name')
             ->get();
@@ -168,7 +223,7 @@ class PostController extends Controller
                 
             case 4: // Anket
                 $rules = array_merge($rules, [
-                    'poll_question' => 'required|string|max:255',
+                    'title' => 'required|string|max:255', // poll_question yerine title
                     'category_id' => 'required|exists:categories,id',
                     'poll_options' => 'required|array|min:2',
                     'poll_options.*' => 'required|string|max:255',
@@ -176,6 +231,8 @@ class PostController extends Controller
                     'poll_expires_at' => 'nullable|date|after:now',
                     'poll_anonymous' => 'nullable|boolean',
                 ]);
+                // Content zorunlu değil, kaldırıyoruz
+                unset($rules['content']);
                 break;
                 
             case 5: // Alıcı İsteği (Buyer Request)
@@ -193,14 +250,15 @@ class PostController extends Controller
                 break;
                 
             case 6: // Portfolyo
-                $rules = array_merge($rules, [
+                $rules = [
+                    'post_type' => 'required|integer|in:1,2,3,4,5,6,7',
                     'portfolio_category_id' => 'required|exists:categories,id',
                     'portfolio_project_title' => 'required|string|max:255',
                     'portfolio_project_description' => 'required|string',
                     'portfolio_project_url' => 'nullable|url',
                     'portfolio_technologies' => 'nullable|string',
                     'portfolio_completion_date' => 'nullable|date|before_or_equal:today',
-                ]);
+                ];
                 break;
         }
 
@@ -209,12 +267,14 @@ class PostController extends Controller
         try {
             DB::beginTransaction();
 
-            // Portfolyo için kategori ID'sini belirle
+            // Post tipine göre kategori ID, başlık ve içerik belirle
             $categoryId = $request->category_id;
             $title = $request->title;
-            $content = $request->content;
+            $content = $request->content ?? '';
             
-            if ($request->post_type == 6) {
+            if ($request->post_type == 4) { // Anket
+                $content = ''; // Anket için içerik boş
+            } elseif ($request->post_type == 6) { // Portfolyo
                 if ($request->portfolio_category_id) {
                     $categoryId = $request->portfolio_category_id;
                 }
@@ -383,7 +443,7 @@ class PostController extends Controller
         // Anket verilerini kaydet
         $pollId = DB::table('post_polls')->insertGetId([
             'post_id' => $postId,
-            'question' => $request->poll_question, // poll_question yerine title kullanıyoruz
+            'question' => $request->title, // title kullanıyoruz
             'multiple_choice' => $request->poll_type === 'multiple',
             'anonymous_voting' => $request->poll_anonymous ?? true,
             'end_date' => $request->poll_expires_at,
@@ -417,12 +477,20 @@ class PostController extends Controller
      */
     private function storePortfolioData($postId, $request)
     {
+        // Teknolojileri JSON formatına çevir
+        $technologies = [];
+        if ($request->portfolio_technologies) {
+            $technologies = array_map('trim', explode(',', $request->portfolio_technologies));
+            $technologies = array_filter($technologies);
+        }
+
         DB::table('post_portfolios')->insert([
             'post_id' => $postId,
-            'project_title' => $request->portfolio_project_title,
-            'project_description' => $request->portfolio_project_description,
+            // 'project_title' kaldırıldı; başlık posts_optimized.tablosuna kaydediliyor
+            // 'project_description' kaldırıldı; içerik posts_optimized.tablosuna kaydediliyor
+            'client_name' => '', // Artık kullanılmıyor
             'project_url' => $request->portfolio_project_url,
-            'technologies_used' => $request->portfolio_technologies,
+            'technologies_used' => json_encode($technologies),
             'completion_date' => $request->portfolio_completion_date,
             'created_at' => now(),
             'updated_at' => now(),
