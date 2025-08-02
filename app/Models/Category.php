@@ -15,9 +15,10 @@ class Category extends Model
         'description',
         'icon',
         'color',
-        'is_active',
+        'parent_id',
+        'type',
         'sort_order',
-        'category_type',
+        'is_active',
     ];
 
     protected function casts(): array
@@ -28,9 +29,14 @@ class Category extends Model
     }
 
     // Relationships
-    public function projects()
+    public function parent()
     {
-        return $this->hasMany(Project::class);
+        return $this->belongsTo(Category::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Category::class, 'parent_id');
     }
 
     public function posts()
@@ -46,17 +52,17 @@ class Category extends Model
 
     public function scopeByType($query, $type)
     {
-        return $query->where('category_type', $type);
+        return $query->where('type', $type);
     }
 
     public function scopeServices($query)
     {
-        return $query->where('category_type', 'service');
+        return $query->where('type', 'service');
     }
 
-    public function scopeGeneral($query)
+    public function scopeParents($query)
     {
-        return $query->where('category_type', 'general');
+        return $query->whereNull('parent_id');
     }
 
     // Methods

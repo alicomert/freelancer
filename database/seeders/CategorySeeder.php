@@ -97,7 +97,10 @@ class CategorySeeder extends Seeder
         foreach ($categories as $category) {
             Category::updateOrCreate(
                 ['slug' => $category['slug']],
-                array_merge($category, ['category_type' => 'general'])
+                array_merge($category, [
+                    'type' => 'service',
+                    'is_active' => true
+                ])
             );
         }
     }

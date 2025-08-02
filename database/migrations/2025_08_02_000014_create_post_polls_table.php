@@ -23,7 +23,7 @@ return new class extends Migration
             $table->unsignedInteger('total_votes')->default(0)->index();
             $table->timestamps();
             
-            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
+            $table->foreign('post_id')->references('id')->on('posts_optimized')->onDelete('cascade');
             $table->index(['end_date', 'total_votes']);
         });
     }

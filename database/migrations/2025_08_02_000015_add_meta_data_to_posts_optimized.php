@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('sessions', function (Blueprint $table) {
-            $table->boolean('is_blocked')->default(false)->after('last_activity')->comment('Remote logout control');
+        Schema::table('posts_optimized', function (Blueprint $table) {
+            $table->json('meta_data')->nullable()->after('meta_keywords');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('sessions', function (Blueprint $table) {
-            $table->dropColumn('is_blocked');
+        Schema::table('posts_optimized', function (Blueprint $table) {
+            $table->dropColumn('meta_data');
         });
     }
 };

@@ -133,19 +133,35 @@ class PostSeeder extends Seeder
             ],
         ];
 
+        $typeMap = [
+            'post' => 1,
+            'service' => 2,
+            'auction' => 3,
+            'poll' => 4,
+            'portfolio' => 5,
+            'article' => 6,
+            'question' => 7
+        ];
+
         foreach ($posts as $postData) {
+            $title = $postData['title'];
+            $slug = \Str::slug($title) . '-' . \Str::random(6);
+            
             Post::create([
+                'uuid' => \Str::uuid(),
                 'user_id' => $users->random()->id,
                 'category_id' => $categories->random()->id,
-                'title' => $postData['title'],
+                'post_type' => $typeMap[$postData['type']] ?? 1,
+                'title' => $title,
+                'slug' => $slug,
                 'content' => $postData['content'],
-                'type' => $postData['type'],
-                'budget' => $postData['budget'] ?? null,
-                'status' => 'published',
+                'excerpt' => \Str::limit($postData['content'], 200),
+                'status' => 1, // active
                 'likes_count' => $postData['likes_count'],
                 'comments_count' => $postData['comments_count'],
                 'views_count' => $postData['views_count'],
                 'is_featured' => $postData['is_featured'],
+                'published_at' => now()->subDays(rand(1, 30)),
                 'created_at' => now()->subDays(rand(1, 30)),
                 'updated_at' => now()->subDays(rand(1, 30)),
             ]);

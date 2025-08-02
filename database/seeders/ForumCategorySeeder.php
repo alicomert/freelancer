@@ -158,7 +158,7 @@ class ForumCategorySeeder extends Seeder
         ];
 
         foreach ($forumCategories as $index => $categoryData) {
-            $slug = Str::slug($categoryData['name']);
+            $slug = 'forum-' . Str::slug($categoryData['name']);
             
             // Kategori zaten var mı kontrol et
             $existingCategory = Category::where('slug', $slug)->first();
@@ -172,7 +172,7 @@ class ForumCategorySeeder extends Seeder
                     'color' => $categoryData['color'],
                     'is_active' => true,
                     'sort_order' => $categoryData['sort_order'],
-                    'category_type' => 'post'
+                    'type' => 'community'
                 ]);
                 
                 echo "Forum kategorisi eklendi: " . $categoryData['name'] . "\n";

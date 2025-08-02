@@ -18,11 +18,11 @@ class SiteSetting extends Model
         'label',
         'description',
         'sort_order',
-        'is_active'
+        'is_public'
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
+        'is_public' => 'boolean',
         'sort_order' => 'integer'
     ];
 
@@ -31,20 +31,18 @@ class SiteSetting extends Model
      */
     public static function get(string $key, $default = null)
     {
-        return Cache::remember("site_setting_{$key}", 3600, function () use ($key, $default) {
-            $setting = static::where('key', $key)->where('is_active', true)->first();
-            
-            if (!$setting) {
-                return $default;
-            }
+        $setting = static::where('key', $key)->first();
+        
+        if (!$setting) {
+            return $default;
+        }
 
-            return match ($setting->type) {
-                'boolean' => filter_var($setting->value, FILTER_VALIDATE_BOOLEAN),
-                'json' => json_decode($setting->value, true),
-                'image' => $setting->value ? asset('storage/' . $setting->value) : $default,
-                default => $setting->value ?: $default
-            };
-        });
+        return match ($setting->type) {
+            'boolean' => filter_var($setting->value, FILTER_VALIDATE_BOOLEAN),
+            'json' => json_decode($setting->value, true),
+            'image' => $setting->value ? asset('storage/' . $setting->value) : $default,
+            default => $setting->value ?: $default
+        };
     }
 
     /**
@@ -52,17 +50,14 @@ class SiteSetting extends Model
      */
     public static function set(string $key, $value, string $type = 'text'): void
     {
-        $setting = static::updateOrCreate(
+        static::updateOrCreate(
             ['key' => $key],
             [
                 'value' => is_array($value) ? json_encode($value) : $value,
                 'type' => $type,
-                'is_active' => true
+                'is_public' => false
             ]
         );
-
-        // Clear cache
-        Cache::forget("site_setting_{$key}");
     }
 
     /**
@@ -70,14 +65,11 @@ class SiteSetting extends Model
      */
     public static function getAllGrouped(): array
     {
-        return Cache::remember('site_settings_grouped', 3600, function () {
-            return static::where('is_active', true)
-                ->orderBy('group')
-                ->orderBy('sort_order')
-                ->get()
-                ->groupBy('group')
-                ->toArray();
-        });
+        return static::orderBy('group')
+            ->orderBy('sort_order')
+            ->get()
+            ->groupBy('group')
+            ->toArray();
     }
 
     /**
@@ -85,28 +77,6 @@ class SiteSetting extends Model
      */
     public static function clearCache(): void
     {
-        Cache::forget('site_settings_grouped');
-        
-        // Clear individual setting caches
-        $keys = static::pluck('key');
-        foreach ($keys as $key) {
-            Cache::forget("site_setting_{$key}");
-        }
-    }
-
-    /**
-     * Boot method to clear cache on model events
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::saved(function () {
-            static::clearCache();
-        });
-
-        static::deleted(function () {
-            static::clearCache();
-        });
+        // Cache cleared
     }
 }

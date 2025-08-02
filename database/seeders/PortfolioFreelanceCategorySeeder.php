@@ -103,7 +103,7 @@ class PortfolioFreelanceCategorySeeder extends Seeder
 
         foreach ($categories as $index => $categoryData) {
             // Ana kategoriyi kontrol et veya oluştur
-            $slug = Str::slug($categoryData['name']);
+            $slug = 'portfolyo-' . Str::slug($categoryData['name']);
             $parentCategory = Category::where('slug', $slug)->first();
 
             if (!$parentCategory) {
@@ -115,20 +115,20 @@ class PortfolioFreelanceCategorySeeder extends Seeder
                     'color' => $categoryData['color'],
                     'is_active' => true,
                     'sort_order' => $index + 1,
-                    'category_type' => 'portfolio',
+                    'type' => 'portfolio',
                     'parent_id' => null,
                 ]);
             } else {
                 // Mevcut kategoriyi güncelle
                 $parentCategory->update([
-                    'category_type' => 'portfolio',
+                    'type' => 'portfolio',
                     'parent_id' => null,
                 ]);
             }
 
             // Alt kategorileri kontrol et ve oluştur
             foreach ($categoryData['subcategories'] as $subIndex => $subcategoryName) {
-                $subSlug = Str::slug($subcategoryName);
+                $subSlug = 'portfolyo-' . Str::slug($subcategoryName);
                 $existingSubcategory = Category::where('slug', $subSlug)->first();
 
                 if (!$existingSubcategory) {
@@ -140,13 +140,13 @@ class PortfolioFreelanceCategorySeeder extends Seeder
                         'color' => '#95a5a6',
                         'is_active' => true,
                         'sort_order' => $subIndex + 1,
-                        'category_type' => 'portfolio',
+                        'type' => 'portfolio',
                         'parent_id' => $parentCategory->id,
                     ]);
                 } else {
                     // Mevcut alt kategoriyi güncelle
                     $existingSubcategory->update([
-                        'category_type' => 'portfolio',
+                        'type' => 'portfolio',
                         'parent_id' => $parentCategory->id,
                     ]);
                 }

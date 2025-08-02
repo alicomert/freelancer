@@ -59,6 +59,7 @@ class PostOptimized extends Model
     protected $casts = [
         'gallery_images' => 'array',
         'skills_required' => 'array',
+        'meta_keywords' => 'array',
         'is_featured' => 'boolean',
         'is_urgent' => 'boolean',
         'budget_min' => 'decimal:2',

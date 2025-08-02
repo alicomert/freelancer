@@ -10,26 +10,36 @@ class Post extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'posts_optimized';
+
     protected $fillable = [
+        'uuid',
         'user_id',
+        'community_id',
         'category_id',
+        'post_type',
         'title',
+        'slug',
         'content',
-        'type',
-        'image',
-        'budget',
+        'excerpt',
+        'featured_image',
         'status',
         'likes_count',
         'comments_count',
         'views_count',
         'is_featured',
-        'meta_data'
+        'is_pinned',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
+        'published_at'
     ];
 
     protected $casts = [
-        'meta_data' => 'array',
+        'meta_keywords' => 'array',
         'is_featured' => 'boolean',
-        'budget' => 'decimal:2'
+        'is_pinned' => 'boolean',
+        'published_at' => 'datetime'
     ];
 
     protected $dates = [
@@ -62,7 +72,7 @@ class Post extends Model
     // Scopes
     public function scopePublished($query)
     {
-        return $query->where('status', 'published');
+        return $query->where('status', 1);
     }
 
     public function scopeFeatured($query)
@@ -72,7 +82,17 @@ class Post extends Model
 
     public function scopeByType($query, $type)
     {
-        return $query->where('type', $type);
+        $typeMap = [
+            'post' => 1,
+            'service' => 2,
+            'auction' => 3,
+            'poll' => 4,
+            'portfolio' => 5,
+            'article' => 6,
+            'question' => 7
+        ];
+        
+        return $query->where('post_type', $typeMap[$type] ?? 1);
     }
 
     // Accessors

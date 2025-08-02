@@ -46,7 +46,7 @@ class ServiceController extends Controller
     public function category($slug)
     {
         $category = Category::where('slug', $slug)
-            ->where('category_type', 'service')
+            ->where('type', 'service')
             ->firstOrFail();
 
         $services = Service::with(['user', 'category'])
