@@ -80,21 +80,40 @@
         </div>
         @endauth
 
-        <!-- Post Filters -->
-        <div class="bg-white rounded-lg shadow-sm p-4">
+        <!-- Post Filters - Alpine.js Test -->
+        <div class="bg-white rounded-lg shadow-sm p-4" x-data="{ activeFilter: 'popular' }">
             <div class="flex items-center space-x-4">
-                <button class="px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-sm font-medium">
+                <button 
+                    @click="activeFilter = 'popular'"
+                    :class="activeFilter === 'popular' ? 'px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-sm font-medium' : 'px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-full text-sm'"
+                    class="transition-colors">
                     <i class="fas fa-fire mr-1"></i>Popüler
                 </button>
-                <button class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-full text-sm">
+                <button 
+                    @click="activeFilter = 'newest'"
+                    :class="activeFilter === 'newest' ? 'px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-sm font-medium' : 'px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-full text-sm'"
+                    class="transition-colors">
                     <i class="fas fa-clock mr-1"></i>En Yeni
                 </button>
-                <button class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-full text-sm">
+                <button 
+                    @click="activeFilter = 'following'"
+                    :class="activeFilter === 'following' ? 'px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-sm font-medium' : 'px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-full text-sm'"
+                    class="transition-colors">
                     <i class="fas fa-heart mr-1"></i>Takip Edilenler
                 </button>
-                <button class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-full text-sm">
+                <button 
+                    @click="activeFilter = 'projects'"
+                    :class="activeFilter === 'projects' ? 'px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-sm font-medium' : 'px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-full text-sm'"
+                    class="transition-colors">
                     <i class="fas fa-briefcase mr-1"></i>Projeler
                 </button>
+            </div>
+            
+            <!-- Alpine.js Test Indicator -->
+            <div class="mt-3 text-sm text-gray-500">
+                <span>Aktif filtre: </span>
+                <span x-text="activeFilter" class="font-medium text-blue-600"></span>
+                <span class="ml-2 text-green-600">✓ Alpine.js çalışıyor!</span>
             </div>
         </div>
 

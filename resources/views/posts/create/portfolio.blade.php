@@ -30,28 +30,49 @@
         @endif
 
         <!-- Başlık ve Progress Bar -->
-        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl shadow-lg p-8 mb-8 text-white">
-            <div class="flex items-center justify-between mb-6">
+        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl shadow-lg p-6 md:p-8 mb-8 text-white">
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 space-y-4 md:space-y-0">
                 <div class="flex items-center">
-                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-xl flex items-center justify-center mr-4 backdrop-blur-sm">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center mr-4 shadow-lg">
+                        <svg class="w-5 h-5 md:w-6 md:h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-3xl font-bold mb-1">Portfolyo Oluştur</h1>
-                        <p class="text-white text-opacity-90">Çalışmalarınızı kolayca sergileyin</p>
+                        <h1 class="text-2xl md:text-3xl font-bold mb-1">Portfolyo Oluştur</h1>
+                        <p class="text-sm md:text-base text-white text-opacity-90">Çalışmalarınızı kolayca sergileyin</p>
                     </div>
                 </div>
-                <div class="text-right">
-                    <div class="text-sm text-white text-opacity-75 mb-1">Adım</div>
-                    <div class="text-2xl font-bold" id="step-counter">1 / 2</div>
+                <div class="flex items-center justify-end">
+                    <div class="text-xs md:text-sm text-white text-opacity-75 mr-2">Adım</div>
+                    <div class="text-lg md:text-2xl font-bold" id="step-counter">1/2</div>
                 </div>
             </div>
             
             <!-- Progress Bar -->
-            <div class="w-full bg-white bg-opacity-20 rounded-full h-2">
-                <div class="bg-white rounded-full h-2 transition-all duration-500 ease-out" id="progress-bar" style="width: 50%"></div>
+            <div class="w-full bg-white bg-opacity-20 rounded-full h-3 overflow-hidden">
+                <div class="bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full h-3 transition-all duration-700 ease-out shadow-sm" 
+                     id="progress-bar" style="width: 50%"></div>
+            </div>
+            
+            <!-- Step Indicators -->
+            <div class="flex justify-between mt-4">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 bg-gradient-to-r from-lime-400 to-green-500 text-white shadow-lg shadow-green-500/30" id="step-1-indicator">
+                        <span>1</span>
+                    </div>
+                    <div class="ml-2 text-sm font-medium transition-all duration-300 text-white" id="step-1-label">
+                        <span>Temel Bilgiler</span>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 bg-gray-300 text-gray-600" id="step-2-indicator">
+                        <span>2</span>
+                    </div>
+                    <div class="ml-2 text-sm font-medium transition-all duration-300 text-white text-opacity-60" id="step-2-label">
+                        <span>Detaylar</span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -61,7 +82,7 @@
             <input type="hidden" name="post_type" value="6">
 
             <!-- Adım 1: Temel Bilgiler -->
-            <div id="step-1" class="step-content">
+            <div id="step-1" class="step-content block">
                 <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 border border-gray-100 dark:border-gray-700">
                     <div class="flex items-center mb-6">
                         <div class="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold mr-4">1</div>
@@ -80,9 +101,9 @@
                             </span>
                         </label>
                         <input type="text" 
-                               id="portfolio_project_title" 
-                               name="portfolio_project_title" 
-                               value="{{ old('portfolio_project_title') }}" 
+                               id="title" 
+                               name="title" 
+                               value="{{ old('title') }}" 
                                required 
                                placeholder="Örn: E-ticaret Web Sitesi Tasarımı"
                                class="w-full px-4 py-4 text-lg border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-800 dark:text-white transition-all duration-200 shadow-sm">
@@ -99,16 +120,40 @@
                                 <span class="text-red-500 ml-1">*</span>
                             </span>
                         </label>
-                        <select id="portfolio_category_id" 
-                                name="portfolio_category_id" 
+                        <select id="category_id" 
+                                name="category_id" 
                                 required 
                                 class="w-full px-4 py-4 text-lg border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-800 dark:text-white transition-all duration-200 shadow-sm">
                             <option value="">Kategori seçin</option>
                             @foreach($projectCategories as $category)
-                                <option value="{{ $category->id }}" {{ old('portfolio_category_id') == $category->id ? 'selected' : '' }}>
+                                <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
                                     {{ $category->name }}
                                 </option>
                             @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Proje Tipi -->
+                    <div class="mb-8">
+                        <label for="project_type" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                </svg>
+                                Proje Tipi
+                                <span class="text-red-500 ml-1">*</span>
+                            </span>
+                        </label>
+                        <select id="project_type" 
+                                name="project_type" 
+                                required 
+                                class="w-full px-4 py-4 text-lg border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-800 dark:text-white transition-all duration-200 shadow-sm">
+                            <option value="">Proje tipi seçin</option>
+                            <option value="web" {{ old('project_type') == 'web' ? 'selected' : '' }}>Web Projesi</option>
+                            <option value="mobile" {{ old('project_type') == 'mobile' ? 'selected' : '' }}>Mobil Uygulama</option>
+                            <option value="desktop" {{ old('project_type') == 'desktop' ? 'selected' : '' }}>Masaüstü Uygulaması</option>
+                            <option value="design" {{ old('project_type') == 'design' ? 'selected' : '' }}>Tasarım Projesi</option>
+                            <option value="other" {{ old('project_type') == 'other' ? 'selected' : '' }}>Diğer (Otomasyon, API, vs.)</option>
                         </select>
                     </div>
 
@@ -134,7 +179,7 @@
                     <!-- Sonraki Adım Butonu -->
                     <div class="flex justify-end">
                         <button type="button" 
-                                id="next-step-btn" 
+                                id="next-step-btn"
                                 class="px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center">
                             Sonraki Adım
                             <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,8 +209,7 @@
                                 <span class="text-red-500 ml-1">*</span>
                             </span>
                         </label>
-                        <div id="content-editor" style="height: 350px;" class="border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm"></div>
-                        <textarea name="portfolio_project_description" id="portfolio-project-description-textarea" style="display: none;" required>{{ old('portfolio_project_description', '') }}</textarea>
+                        <textarea name="content" id="content-textarea" rows="4" placeholder="Porfolyo açıklamanızı yazın..." class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 resize-none transition-all duration-200" required>{{ old('content', '') }}</textarea>
                     </div>
 
                     <!-- Kullanılan Teknolojiler -->
@@ -185,10 +229,13 @@
                             </div>
                             <div class="flex gap-2">
                                 <input type="text" 
+                                       id="technology-input"
                                        class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-800 dark:text-white transition-all duration-200 technology-input"
-                                       placeholder="Teknoloji ekleyin (örn: React, Node.js, MongoDB...)"
-                                       maxlength="30">
+                                       placeholder="Lütfen bir teknoloji adı girin."
+                                       maxlength="30"
+                                       autocomplete="off">
                                 <button type="button" 
+                                        id="add-technology-btn"
                                         class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-sm hover:shadow-md add-technology-btn">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -204,41 +251,7 @@
                         </p>
                     </div>
 
-                    <!-- Etiketler -->
-                    <div class="mb-8">
-                        <label for="tags" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-                            <span class="flex items-center">
-                                <svg class="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a2 2 0 012-2z"></path>
-                                </svg>
-                                Etiketler
-                            </span>
-                        </label>
-                        
-                        <div class="tags-container">
-                            <div class="flex flex-wrap gap-2 mb-3 min-h-[50px] p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-800" id="tags-display">
-                                <span class="text-gray-400 dark:text-gray-500 text-sm">Henüz etiket eklenmedi</span>
-                            </div>
-                            <div class="flex gap-2">
-                                <input type="text" 
-                                       class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-800 dark:text-white transition-all duration-200 tag-input"
-                                       placeholder="Etiket ekleyin (örn: web tasarım, portfolio, grafik...)"
-                                       maxlength="30">
-                                <button type="button" 
-                                        class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-sm hover:shadow-md add-tag-btn">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <input type="hidden" id="tags" name="tags" value="{{ old('tags') }}">
-                        
-                        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                            Portfolyonuzu daha kolay bulunabilir hale getirmek için etiketler ekleyin. (Maksimum 10 etiket)
-                        </p>
-                    </div>
+
 
                     <!-- Tamamlanma Tarihi -->
                     <div class="mb-8">
@@ -261,7 +274,7 @@
                     <!-- Butonlar -->
                     <div class="flex justify-between items-center">
                         <button type="button" 
-                                id="prev-step-btn" 
+                                id="prev-step-btn"
                                 class="px-8 py-4 bg-gray-500 text-white font-semibold rounded-xl hover:bg-gray-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
@@ -283,196 +296,35 @@
 </div>
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
-
 <script>
+// Portfolio form state
+let currentStep = 1;
+const totalSteps = 2;
+let technologies = [];
+const maxTechnologies = 15;
+
+// DOM elements
+let stepCounter, progressBar, step1Indicator, step1Label, step2Indicator, step2Label;
+let step1Content, step2Content;
+let nextStepBtn, prevStepBtn;
+let technologyInput, addTechnologyBtn, technologiesDisplay;
+
+// Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    let currentStep = 1;
-    const totalSteps = 2;
-
-    // Step Navigation
-    function showStep(step) {
-        // Hide all steps
-        document.querySelectorAll('.step-content').forEach(el => {
-            el.classList.add('hidden');
-        });
-        
-        // Show current step
-        document.getElementById(`step-${step}`).classList.remove('hidden');
-        
-        // Update progress
-        const progress = (step / totalSteps) * 100;
-        document.getElementById('progress-bar').style.width = progress + '%';
-        document.getElementById('step-counter').textContent = `${step} / ${totalSteps}`;
-        
-        currentStep = step;
-    }
-
-    // Next Step Button
-    document.getElementById('next-step-btn').addEventListener('click', function() {
-        // Validate current step
-        const title = document.getElementById('portfolio_project_title').value.trim();
-        const category = document.getElementById('portfolio_category_id').value;
-        
-        if (!title) {
-            alert('Lütfen proje başlığını girin.');
-            document.getElementById('portfolio_project_title').focus();
-            return;
-        }
-        
-        if (!category) {
-            alert('Lütfen bir kategori seçin.');
-            document.getElementById('portfolio_category_id').focus();
-            return;
-        }
-        
-        if (currentStep < totalSteps) {
-            showStep(currentStep + 1);
-        }
-    });
-
-    // Previous Step Button
-    document.getElementById('prev-step-btn').addEventListener('click', function() {
-        if (currentStep > 1) {
-            showStep(currentStep - 1);
-        }
-    });
-
-    // Quill Editor
-    var quill = new Quill('#content-editor', {
-        theme: 'snow',
-        placeholder: 'Portfolyo projenizin detaylı açıklamasını yazın...',
-        modules: {
-            toolbar: [
-                ['bold', 'italic', 'underline', 'strike'],
-                ['blockquote', 'code-block'],
-                [{ 'header': 1 }, { 'header': 2 }],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                ['link', 'image'],
-                ['clean']
-            ]
-        }
-    });
-
-    // Use the newer text-change event handler
-    quill.on('text-change', function(delta, oldDelta, source) {
-        document.getElementById('portfolio-project-description-textarea').value = quill.getSemanticHTML();
-    });
-
-    // Technology System
-    let technologies = [];
-    const maxTechnologies = 15;
-    
-    function updateTechnologiesDisplay() {
-        const technologiesDisplay = document.getElementById('technologies-display');
-        technologiesDisplay.innerHTML = '';
-        
-        if (technologies.length === 0) {
-            technologiesDisplay.innerHTML = '<span class="text-gray-400 dark:text-gray-500 text-sm">Henüz teknoloji eklenmedi</span>';
-            return;
-        }
-        
-        technologies.forEach((tech, index) => {
-            const techElement = document.createElement('span');
-            techElement.className = 'inline-flex items-center px-3 py-2 rounded-full text-sm bg-gradient-to-r from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800 text-blue-800 dark:text-blue-200 shadow-sm';
-            techElement.innerHTML = `
-                ${tech}
-                <button type="button" class="ml-2 text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-100 transition-colors" onclick="removeTechnology(${index})">
-                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                    </svg>
-                </button>
-            `;
-            technologiesDisplay.appendChild(techElement);
-        });
-        
-        document.getElementById('portfolio_technologies').value = technologies.join(',');
-    }
-    
-    window.removeTechnology = function(index) {
-        technologies.splice(index, 1);
-        updateTechnologiesDisplay();
-    };
-    
-    document.querySelector('.add-technology-btn').addEventListener('click', function() {
-        const input = document.querySelector('.technology-input');
-        const tech = input.value.trim();
-        
-        if (tech && !technologies.includes(tech) && technologies.length < maxTechnologies) {
-            technologies.push(tech);
-            input.value = '';
-            updateTechnologiesDisplay();
-        } else if (technologies.length >= maxTechnologies) {
-            alert('Maksimum 15 teknoloji ekleyebilirsiniz.');
-        } else if (technologies.includes(tech)) {
-            alert('Bu teknoloji zaten eklenmiş.');
-        }
-    });
-    
-    document.querySelector('.technology-input').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            document.querySelector('.add-technology-btn').click();
-        }
-    });
-
-    // Tag System
-    let tags = [];
-    const maxTags = 10;
-    
-    function updateTagsDisplay() {
-        const tagsDisplay = document.getElementById('tags-display');
-        tagsDisplay.innerHTML = '';
-        
-        if (tags.length === 0) {
-            tagsDisplay.innerHTML = '<span class="text-gray-400 dark:text-gray-500 text-sm">Henüz etiket eklenmedi</span>';
-            return;
-        }
-        
-        tags.forEach((tag, index) => {
-            const tagElement = document.createElement('span');
-            tagElement.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200';
-            tagElement.innerHTML = `
-                ${tag}
-                <button type="button" class="ml-2 text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-100" onclick="removeTag(${index})">
-                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                    </svg>
-                </button>
-            `;
-            tagsDisplay.appendChild(tagElement);
-        });
-        
-        document.getElementById('tags').value = tags.join(',');
-    }
-    
-    window.removeTag = function(index) {
-        tags.splice(index, 1);
-        updateTagsDisplay();
-    };
-    
-    document.querySelector('.add-tag-btn').addEventListener('click', function() {
-        const input = document.querySelector('.tag-input');
-        const tag = input.value.trim();
-        
-        if (tag && !tags.includes(tag) && tags.length < maxTags) {
-            tags.push(tag);
-            input.value = '';
-            updateTagsDisplay();
-        } else if (tags.length >= maxTags) {
-            alert('Maksimum 10 etiket ekleyebilirsiniz.');
-        } else if (tags.includes(tag)) {
-            alert('Bu etiket zaten eklenmiş.');
-        }
-    });
-    
-    document.querySelector('.tag-input').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            document.querySelector('.add-tag-btn').click();
-        }
-    });
+    // Get DOM elements
+    stepCounter = document.getElementById('step-counter');
+    progressBar = document.getElementById('progress-bar');
+    step1Indicator = document.getElementById('step-1-indicator');
+    step1Label = document.getElementById('step-1-label');
+    step2Indicator = document.getElementById('step-2-indicator');
+    step2Label = document.getElementById('step-2-label');
+    step1Content = document.getElementById('step-1');
+    step2Content = document.getElementById('step-2');
+    nextStepBtn = document.getElementById('next-step-btn');
+    prevStepBtn = document.getElementById('prev-step-btn');
+    technologyInput = document.getElementById('technology-input');
+    addTechnologyBtn = document.getElementById('add-technology-btn');
+    technologiesDisplay = document.getElementById('technologies-display');
     
     // Set maximum date to today
     const today = new Date().toISOString().split('T')[0];
@@ -484,31 +336,201 @@ document.addEventListener('DOMContentLoaded', function() {
         technologies = existingTechnologies.split(',').filter(tech => tech.trim());
         updateTechnologiesDisplay();
     }
-
-    // Load existing tags
-    const existingTags = document.getElementById('tags').value;
-    if (existingTags) {
-        tags = existingTags.split(',').filter(tag => tag.trim());
-        updateTagsDisplay();
-    }
-
-    // Form validation before submit
-    document.getElementById('portfolio-form').addEventListener('submit', function(e) {
-        const content = quill.getText().trim();
-        if (!content || content.length < 10) {
+    
+    // Event listeners
+    nextStepBtn.addEventListener('click', nextStep);
+    prevStepBtn.addEventListener('click', prevStep);
+    addTechnologyBtn.addEventListener('click', addTechnology);
+    technologyInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
             e.preventDefault();
-            alert('Lütfen proje açıklamasını girin (en az 10 karakter).');
-            showStep(2);
-            return false;
+            addTechnology();
         }
-        
-        // Update the hidden textarea with content
-        document.getElementById('portfolio-project-description-textarea').value = quill.getSemanticHTML();
     });
-
-    // Initialize first step
-    showStep(1);
+    
+    // Initialize display
+    updateStepDisplay();
+    updateTechnologiesDisplay();
 });
+
+function updateStepDisplay() {
+    // Update step counter
+    stepCounter.textContent = `Adım ${currentStep} / ${totalSteps}`;
+    
+    // Update progress bar
+    const progressPercentage = (currentStep / totalSteps) * 100;
+    progressBar.style.width = progressPercentage + '%';
+    
+    // Update step indicators
+    if (currentStep >= 1) {
+        step1Indicator.className = 'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 bg-gradient-to-r from-lime-400 to-green-500 text-white shadow-lg shadow-green-500/30';
+        step1Label.className = 'ml-2 text-sm font-medium transition-all duration-300 text-white';
+    } else {
+        step1Indicator.className = 'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 bg-gray-300 text-gray-600';
+        step1Label.className = 'ml-2 text-sm font-medium transition-all duration-300 text-white text-opacity-60';
+    }
+    
+    if (currentStep >= 2) {
+        step2Indicator.className = 'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 bg-gradient-to-r from-lime-400 to-green-500 text-white shadow-lg shadow-green-500/30';
+        step2Label.className = 'ml-2 text-sm font-medium transition-all duration-300 text-white';
+    } else {
+        step2Indicator.className = 'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 bg-gray-300 text-gray-600';
+        step2Label.className = 'ml-2 text-sm font-medium transition-all duration-300 text-white text-opacity-60';
+    }
+    
+    // Update step content visibility
+    if (currentStep === 1) {
+        step1Content.className = 'step-content block';
+        step2Content.className = 'step-content hidden';
+    } else {
+        step1Content.className = 'step-content hidden';
+        step2Content.className = 'step-content block';
+    }
+}
+
+function nextStep() {
+     // Validate current step
+     const title = document.getElementById('title').value.trim();
+     const category = document.getElementById('category_id').value;
+     const projectType = document.getElementById('project_type').value;
+     
+     if (!title) {
+         showError('Lütfen proje başlığını girin.');
+         document.getElementById('title').focus();
+         return;
+     }
+     
+     if (!category) {
+         showError('Lütfen bir kategori seçin.');
+         document.getElementById('category_id').focus();
+         return;
+     }
+     
+     if (!projectType) {
+         showError('Lütfen proje tipini seçin.');
+         document.getElementById('project_type').focus();
+         return;
+     }
+     
+     if (currentStep < totalSteps) {
+         currentStep++;
+         updateStepDisplay();
+     }
+ }
+
+function prevStep() {
+    if (currentStep > 1) {
+        currentStep--;
+        updateStepDisplay();
+    }
+}
+
+function showError(message) {
+    const toast = document.createElement('div');
+    toast.className = 'fixed top-4 right-4 bg-rose-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.classList.remove('translate-x-full');
+    }, 100);
+    
+    setTimeout(() => {
+        toast.classList.add('translate-x-full');
+        setTimeout(() => {
+            document.body.removeChild(toast);
+        }, 300);
+    }, 3000);
+}
+
+function showSuccess(message) {
+    const toast = document.createElement('div');
+    toast.className = 'fixed top-4 right-4 bg-emerald-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.classList.remove('translate-x-full');
+    }, 100);
+    
+    setTimeout(() => {
+        toast.classList.add('translate-x-full');
+        setTimeout(() => {
+            document.body.removeChild(toast);
+        }, 300);
+    }, 2000);
+}
+
+function addTechnology() {
+     const tech = technologyInput.value.trim();
+     
+     if (!tech) {
+         showError('Lütfen bir teknoloji adı girin.');
+         technologyInput.focus();
+         return;
+     }
+     
+     if (technologies.includes(tech)) {
+         showError('Bu teknoloji zaten eklenmiş.');
+         technologyInput.focus();
+         return;
+     }
+     
+     if (technologies.length >= maxTechnologies) {
+         showError('Maksimum 15 teknoloji ekleyebilirsiniz.');
+         return;
+     }
+     
+     // Add technology
+     technologies.push(tech);
+     technologyInput.value = '';
+     updateTechnologiesDisplay();
+     technologyInput.focus();
+ }
+
+function removeTechnology(index) {
+    technologies.splice(index, 1);
+    updateTechnologiesDisplay();
+}
+
+function updateTechnologiesDisplay() {
+    technologiesDisplay.innerHTML = '';
+    
+    if (technologies.length === 0) {
+        technologiesDisplay.innerHTML = '<span class="text-gray-400 dark:text-gray-500 text-sm">Henüz teknoloji eklenmedi</span>';
+        return;
+    }
+    
+    technologies.forEach((tech, index) => {
+        const techElement = document.createElement('span');
+        techElement.className = 'inline-flex items-center px-3 py-2 rounded-full text-sm bg-gradient-to-r from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800 text-blue-800 dark:text-blue-200 shadow-sm';
+        techElement.innerHTML = `
+            ${tech}
+            <button type="button" class="ml-2 text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-100 transition-colors" onclick="removeTechnology(${index})">
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                </svg>
+            </button>
+        `;
+        technologiesDisplay.appendChild(techElement);
+    });
+    
+    document.getElementById('portfolio_technologies').value = technologies.join(',');
+}
+
+// Form validation before submit
+ document.querySelector('form').addEventListener('submit', function(e) {
+     const content = document.getElementById('content-textarea').value.trim();
+     if (!content || content.length < 10) {
+         e.preventDefault();
+         showError('Lütfen proje açıklamasını girin (en az 10 karakter).');
+         currentStep = 2;
+         updateStepDisplay();
+         document.getElementById('content-textarea').focus();
+         return false;
+     }
+     showSuccess('Portfolyo oluşturuluyor...');
+ });
 </script>
 @endpush
 @endsection

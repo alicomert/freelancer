@@ -125,10 +125,8 @@
                             </svg>
                             İçerik <span class="text-red-500">*</span>
                         </label>
-                        <textarea name="content" id="content-textarea" style="display: none;" required>{{ old('content', '') }}</textarea>
-                        <div id="content-editor" class="border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 transition-all duration-200" style="min-height: 300px;">
-                            {!! old('content', '') !!}
-                        </div>
+                        <textarea name="content" id="content-textarea" rows="4" placeholder="Gönderinizin içeriğini yazın..." class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 resize-none transition-all duration-200" required>{{ old('content', '') }}</textarea>
+                        <div id="content-editor" class="hidden"></div>
                         @error('content')
                             <p class="mt-2 text-sm text-red-600 flex items-center">
                                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -193,8 +191,8 @@
 </div>
 
 @push('scripts')
-<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+{{-- <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script> --}}
+{{-- <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet"> --}}
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

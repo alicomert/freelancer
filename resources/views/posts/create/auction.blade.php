@@ -115,10 +115,8 @@
                             </svg>
                             Açık Artırma Açıklaması <span class="text-red-500">*</span>
                         </label>
-                        <textarea name="content" id="content-textarea" style="display: none;" required>{{ old('content', '') }}</textarea>
-                        <div id="content-editor" class="border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 transition-all duration-200" style="min-height: 300px;">
-                            {!! old('content', '') !!}
-                        </div>
+                        <textarea name="content" id="content-textarea" rows="4" placeholder="Açık artırma açıklamanızı yazın..." class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 resize-none transition-all duration-200" required>{{ old('content', '') }}</textarea>
+                        <div id="content-editor" class="hidden"></div>
                         @error('content')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -255,7 +253,9 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Quill Editor
+    // Quill Editor removed
+    // var quill = new Quill('#content-editor', {...});
+    // quill.on('text-change', ...);
     var quill = new Quill('#content-editor', {
         theme: 'snow',
         placeholder: 'Açık artırmanızın detaylı açıklamasını yazın...',

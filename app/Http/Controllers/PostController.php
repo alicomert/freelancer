@@ -250,15 +250,12 @@ class PostController extends Controller
                 break;
                 
             case 6: // Portfolyo
-                $rules = [
-                    'post_type' => 'required|integer|in:1,2,3,4,5,6,7',
-                    'portfolio_category_id' => 'required|exists:categories,id',
-                    'portfolio_project_title' => 'required|string|max:255',
-                    'portfolio_project_description' => 'required|string',
+                $rules = array_merge($rules, [
+                    'project_type' => 'required|in:web,mobile,desktop,design,other',
                     'portfolio_project_url' => 'nullable|url',
                     'portfolio_technologies' => 'nullable|string',
                     'portfolio_completion_date' => 'nullable|date|before_or_equal:today',
-                ];
+                ]);
                 break;
         }
 
@@ -274,16 +271,6 @@ class PostController extends Controller
             
             if ($request->post_type == 4) { // Anket
                 $content = ''; // Anket için içerik boş
-            } elseif ($request->post_type == 6) { // Portfolyo
-                if ($request->portfolio_category_id) {
-                    $categoryId = $request->portfolio_category_id;
-                }
-                if ($request->portfolio_project_title) {
-                    $title = $request->portfolio_project_title;
-                }
-                if ($request->portfolio_project_description) {
-                    $content = $request->portfolio_project_description;
-                }
             }
 
             // SEO meta verilerini oluştur
@@ -593,9 +580,7 @@ class PostController extends Controller
 
         DB::table('post_portfolios')->insert([
             'post_id' => $postId,
-            // 'project_title' kaldırıldı; başlık posts_optimized.tablosuna kaydediliyor
-            // 'project_description' kaldırıldı; içerik posts_optimized.tablosuna kaydediliyor
-            'client_name' => '', // Artık kullanılmıyor
+            'project_type' => $request->project_type,
             'project_url' => $request->portfolio_project_url,
             'technologies_used' => json_encode($technologies),
             'completion_date' => $request->portfolio_completion_date,
@@ -606,6 +591,7 @@ class PostController extends Controller
         // Meta veriler
         $metaData = [
             'original_type' => 'portfolio',
+            'project_type' => $request->project_type,
             'technologies_count' => count($technologies),
             'technologies' => $technologies,
             'has_project_url' => !empty($request->portfolio_project_url),
@@ -613,7 +599,16 @@ class PostController extends Controller
             'completion_year' => $request->portfolio_completion_date ? date('Y', strtotime($request->portfolio_completion_date)) : null
         ];
 
-        $excerpt = "Portfolyo projesi - " . count($technologies) . " teknoloji kullanılmış.";
+        $projectTypeText = [
+            'web' => 'Web',
+            'mobile' => 'Mobil',
+            'desktop' => 'Masaüstü',
+            'design' => 'Tasarım',
+            'other' => 'Diğer'
+        ];
+        
+        $typeText = $projectTypeText[$request->project_type] ?? 'Portfolyo';
+        $excerpt = "{$typeText} projesi - " . count($technologies) . " teknoloji kullanılmış.";
         
         DB::table('posts_optimized')
             ->where('id', $postId)

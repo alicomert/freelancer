@@ -115,10 +115,7 @@
                             </svg>
                             Hizmet Açıklaması <span class="text-red-500">*</span>
                         </label>
-                        <textarea name="content" id="content-textarea" style="display: none;" required>{{ old('content', '') }}</textarea>
-                        <div id="content-editor" class="border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 transition-all duration-200" style="min-height: 300px;">
-                            {!! old('content', '') !!}
-                        </div>
+                        <textarea name="content" id="content-textarea" rows="4" placeholder="Hizmetiniz hakkında ne düşünüyorsunuz?" class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 resize-none transition-all duration-200" required>{{ old('content', '') }}</textarea>
                         @error('content')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -346,7 +343,7 @@
                                         </div>
                                         <div class="flex gap-2">
                                             <input type="text" 
-                                                   class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 feature-input"
+                                                   class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 feature-input"
                                                    placeholder="Özellik ekleyin (örn: 99% Uptime, Cpanel, Plesk...)"
                                                    maxlength="50">
                                             <button type="button" 
@@ -389,13 +386,14 @@
     </div>
 </div>
 
-@push('scripts')
-<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+{{-- Quill kaldırıldı --}}
+{{-- <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script> --}}
+{{-- <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet"> --}}
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Quill Editor
+    /*
+    // Quill Editor disabled
     var quill = new Quill('#content-editor', {
         theme: 'snow',
         placeholder: 'Hizmetinizin detaylı açıklamasını yazın...',
@@ -414,28 +412,29 @@ document.addEventListener('DOMContentLoaded', function() {
     quill.on('text-change', function() {
         document.getElementById('content-textarea').value = quill.root.innerHTML;
     });
-
-    // Tag System
-    let tags = [];
-    const maxTags = 10;
+    */
     
-    function updateTagsDisplay() {
-        const tagsDisplay = document.getElementById('tags-display');
-        tagsDisplay.innerHTML = '';
+        // Tag System
+        let tags = [];
+        const maxTags = 10;
         
-        if (tags.length === 0) {
-            tagsDisplay.innerHTML = '<span class="text-gray-400 dark:text-gray-500 text-sm">Henüz etiket eklenmedi</span>';
-            return;
-        }
-        
-        tags.forEach((tag, index) => {
-            const tagElement = document.createElement('span');
-            tagElement.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200';
-            tagElement.innerHTML = `
-                ${tag}
-                <button type="button" class="ml-2 text-green-600 dark:text-green-300 hover:text-green-800 dark:hover:text-green-100" onclick="removeTag(${index})">
-                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+        function updateTagsDisplay() {
+            const tagsDisplay = document.getElementById('tags-display');
+            tagsDisplay.innerHTML = '';
+            
+            if (tags.length === 0) {
+                tagsDisplay.innerHTML = '<span class="text-gray-400 dark:text-gray-500 text-sm">Henüz etiket eklenmedi</span>';
+                return;
+            }
+            
+            tags.forEach((tag, index) => {
+                const tagElement = document.createElement('span');
+                tagElement.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200';
+                tagElement.innerHTML = `
+                    ${tag}
+                    <button type="button" class="ml-2 text-green-600 dark:text-green-300 hover:text-green-800 dark:hover:text-green-100" onclick="removeTag(${index})">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                     </svg>
                 </button>
             `;
@@ -807,5 +806,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-@endpush
+
 @endsection

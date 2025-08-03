@@ -115,8 +115,8 @@
                             </svg>
                             Proje Açıklaması <span class="text-red-500">*</span>
                         </label>
-                        <textarea name="content" id="content-textarea" style="display: none;" required>{{ old('content', '') }}</textarea>
-                        <div id="content-editor" class="border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 transition-all duration-200" style="min-height: 300px;">
+                        <textarea name="content" id="content-textarea" rows="4" placeholder="Proje açıklamanızı yazın..." class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 resize-none transition-all duration-200" required>{{ old('content', '') }}</textarea>
+                        <div id="content-editor" class="border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 transition-all duration-200 hidden" style="min-height: 300px;">
                             {!! old('content', '') !!}
                         </div>
                         @error('content')

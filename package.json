@@ -17,5 +17,8 @@
         "sortablejs": "^1.15.6",
         "tailwindcss": "^4.1.11",
         "vite": "^7.0.4"
+    },
+    "dependencies": {
+        "alpinejs": "^3.14.9"
     }
 }

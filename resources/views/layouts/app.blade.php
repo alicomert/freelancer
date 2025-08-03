@@ -39,13 +39,11 @@
     <link rel="canonical" href="{{ url()->current() }}">
     @endif
     
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-        }
-    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Vite Assets -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
     <style>
         /* Custom CSS for elements that need more precise styling */
         .gradient-bg {
@@ -87,28 +85,32 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 font-sans antialiased transition-colors duration-300">
+<body class="bg-gray-100 dark:bg-gray-900 font-sans antialiased transition-colors duration-300" 
+      x-data="darkMode()" 
+      x-init="init()">
     <!-- Mobile Navigation -->
-    <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-lg z-50 border-t border-gray-200 dark:border-gray-700 transition-colors duration-300">
+    <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-lg z-50 border-t border-gray-200 dark:border-gray-700 transition-colors duration-300"
+         x-data="pageNavigation()"
+         @page-loaded.window="updateActiveLink($event.detail.url)">
         <div class="flex justify-around items-center py-2 px-1">
-            <a href="/" class="nav-item text-center flex-1 py-2 {{ request()->is('/') ? 'bg-blue-50 dark:bg-blue-900/20 rounded-lg' : '' }}">
+            <a href="/" @click="navigateToPage($event, '/')" class="nav-item text-center flex-1 py-2 {{ request()->is('/') ? 'bg-blue-50 dark:bg-blue-900/20 rounded-lg' : '' }}">
                 <i class="nav-icon fas fa-home {{ request()->is('/') ? 'text-blue-600 dark:text-blue-400' : 'text-blue-500' }} text-lg block mb-1 transition-transform"></i>
                 <span class="text-xs leading-tight {{ request()->is('/') ? 'text-blue-600 dark:text-blue-400 font-semibold' : 'text-gray-700 dark:text-gray-300' }}">Ana Sayfa</span>
             </a>
-            <a href="/community" class="nav-item text-center flex-1 py-2 {{ request()->is('community*') ? 'bg-purple-50 dark:bg-purple-900/20 rounded-lg' : '' }}">
+            <a href="/community" @click="navigateToPage($event, '/community')" class="nav-item text-center flex-1 py-2 {{ request()->is('community*') ? 'bg-purple-50 dark:bg-purple-900/20 rounded-lg' : '' }}">
                 <i class="nav-icon fas fa-users {{ request()->is('community*') ? 'text-purple-600 dark:text-purple-400' : 'text-purple-500' }} text-lg block mb-1 transition-transform"></i>
                 <span class="text-xs leading-tight {{ request()->is('community*') ? 'text-purple-600 dark:text-purple-400 font-semibold' : 'text-gray-700 dark:text-gray-300' }}">Topluluk</span>
             </a>
-            <a href="/projects" class="nav-item text-center flex-1 py-2 {{ request()->is('projects*') ? 'bg-green-50 dark:bg-green-900/20 rounded-lg' : '' }}">
+            <a href="/projects" @click="navigateToPage($event, '/projects')" class="nav-item text-center flex-1 py-2 {{ request()->is('projects*') ? 'bg-green-50 dark:bg-green-900/20 rounded-lg' : '' }}">
                 <i class="nav-icon fas fa-briefcase {{ request()->is('projects*') ? 'text-green-600 dark:text-green-400' : 'text-green-500' }} text-lg block mb-1 transition-transform"></i>
                 <span class="text-xs leading-tight {{ request()->is('projects*') ? 'text-green-600 dark:text-green-400 font-semibold' : 'text-gray-700 dark:text-gray-300' }}">Projeler</span>
             </a>
-            <a href="/services" class="nav-item text-center flex-1 py-2 {{ request()->is('services*') ? 'bg-orange-50 dark:bg-orange-900/20 rounded-lg' : '' }}">
+            <a href="/services" @click="navigateToPage($event, '/services')" class="nav-item text-center flex-1 py-2 {{ request()->is('services*') ? 'bg-orange-50 dark:bg-orange-900/20 rounded-lg' : '' }}">
                 <i class="nav-icon fas fa-cogs {{ request()->is('services*') ? 'text-orange-600 dark:text-orange-400' : 'text-orange-500' }} text-lg block mb-1 transition-transform"></i>
                 <span class="text-xs leading-tight {{ request()->is('services*') ? 'text-orange-600 dark:text-orange-400 font-semibold' : 'text-gray-700 dark:text-gray-300' }}">Hizmetler</span>
             </a>
        
-            <a href="/profile" class="nav-item text-center flex-1 py-2 {{ request()->is('profile*') ? 'bg-pink-50 dark:bg-pink-900/20 rounded-lg' : '' }}">
+            <a href="/profile" @click="navigateToPage($event, '/profile')" class="nav-item text-center flex-1 py-2 {{ request()->is('profile*') ? 'bg-pink-50 dark:bg-pink-900/20 rounded-lg' : '' }}">
                 <i class="nav-icon fas fa-user {{ request()->is('profile*') ? 'text-pink-600 dark:text-pink-400' : 'text-pink-500' }} text-lg block mb-1 transition-transform"></i>
                 <span class="text-xs leading-tight {{ request()->is('profile*') ? 'text-pink-600 dark:text-pink-400 font-semibold' : 'text-gray-700 dark:text-gray-300' }}">Profil</span>
             </a>
@@ -116,7 +118,9 @@
     </div>
 
     <!-- Desktop Navigation -->
-    <nav class="hidden lg:flex flex-col w-64 h-screen fixed left-0 top-0 bg-white dark:bg-gray-800 shadow-lg z-40 transition-colors duration-300">
+    <nav class="hidden lg:flex flex-col w-64 h-screen fixed left-0 top-0 bg-white dark:bg-gray-800 shadow-lg z-40 transition-colors duration-300" 
+         x-data="pageNavigation()"
+         @page-loaded.window="updateActiveLink($event.detail.url)">
         <div class="p-4 gradient-bg">
             <h1 class="text-white text-2xl font-bold">{{ $siteSettings['site_name'] ?? 'FreelancerHub' }}</h1>
             <p class="text-white text-opacity-80 text-sm">{{ $siteSettings['site_tagline'] ?? 'Sosyal Forum & Freelance Platform' }}</p>
@@ -146,35 +150,35 @@
                 @endauth
                 
                 <div class="space-y-1">
-                    <a href="/" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('/') ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
+                    <a href="/" @click="navigateToPage($event, '/')" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('/') ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
                         <i class="fas fa-home w-5"></i>
                         <span>Ana Sayfa</span>
                     </a>
-                    <a href="/community" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('community*') ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
+                    <a href="/community" @click="navigateToPage($event, '/community')" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('community*') ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
                         <i class="fas fa-users w-5"></i>
                         <span>Topluluk</span>
                     </a>
-                    <a href="/projects" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('projects*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
+                    <a href="/projects" @click="navigateToPage($event, '/projects')" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('projects*') ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
                         <i class="fas fa-briefcase w-5"></i>
                         <span>Projeler</span>
                     </a>
-                    <a href="/services" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('services*') ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
+                    <a href="/services" @click="navigateToPage($event, '/services')" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('services*') ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
                         <i class="fas fa-cogs w-5"></i>
                         <span>Hizmetler</span>
                     </a>
-                    <a href="/auctions" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('auctions*') ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
+                    <a href="/auctions" @click="navigateToPage($event, '/auctions')" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('auctions*') ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
                         <i class="fas fa-gavel w-5"></i>
                         <span>Açık Arttırma</span>
                     </a>
-                    <a href="/messages" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('messages*') ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
+                    <a href="/messages" @click="navigateToPage($event, '/messages')" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('messages*') ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
                         <i class="fas fa-comments w-5"></i>
                         <span>Mesajlar</span>
                     </a>
-                    <a href="/notifications" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('notifications*') ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
+                    <a href="/notifications" @click="navigateToPage($event, '/notifications')" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('notifications*') ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
                         <i class="fas fa-bell w-5"></i>
                         <span>Bildirimler</span>
                     </a>
-                    <a href="/wallet" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('wallet*') ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
+                    <a href="/wallet" @click="navigateToPage($event, '/wallet')" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('wallet*') ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
                         <i class="fas fa-wallet w-5"></i>
                         <span>Cüzdan</span>
                     </a>
@@ -206,11 +210,11 @@
         
         <div class="p-4 border-t border-gray-200 dark:border-gray-700">
             <!-- Dark Mode Toggle -->
-            <button onclick="toggleDarkMode()" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left text-gray-700 dark:text-gray-300 transition-colors mb-2">
-                <i class="fas fa-moon dark:hidden w-5"></i>
-                <i class="fas fa-sun hidden dark:block w-5"></i>
-                <span class="dark:hidden">Karanlık Mod</span>
-                <span class="hidden dark:block">Aydınlık Mod</span>
+            <button @click="toggle()" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left text-gray-700 dark:text-gray-300 transition-colors mb-2">
+                <i class="fas fa-moon w-5" x-show="!isDark"></i>
+                <i class="fas fa-sun w-5" x-show="isDark"></i>
+                <span x-show="!isDark">Karanlık Mod</span>
+                <span x-show="isDark">Aydınlık Mod</span>
             </button>
             
             <a href="/settings" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->is('settings*') ? 'bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300' }} transition-colors">
@@ -243,9 +247,9 @@
                 <h1 class="font-bold text-lg text-gray-900 dark:text-white">{{ $siteSettings['site_name'] ?? 'FreelancerHub' }}</h1>
             </div>
             <div class="flex items-center space-x-4">
-                <button onclick="toggleDarkMode()" class="text-gray-600 dark:text-gray-300 transition-colors">
-                    <i class="fas fa-moon dark:hidden"></i>
-                    <i class="fas fa-sun hidden dark:block"></i>
+                <button @click="toggle()" class="text-gray-600 dark:text-gray-300 transition-colors">
+                    <i class="fas fa-moon" x-show="!isDark"></i>
+                    <i class="fas fa-sun" x-show="isDark"></i>
                 </button>
                 <button class="text-gray-600 dark:text-gray-300 transition-colors">
                     <i class="fas fa-search"></i>
@@ -271,9 +275,9 @@
                 </div>
             </div>
             <div class="flex items-center space-x-4">
-                <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    <i class="fas fa-moon text-gray-600 dark:text-gray-300 dark:hidden"></i>
-                    <i class="fas fa-sun text-gray-600 dark:text-gray-300 hidden dark:block"></i>
+                <button @click="toggle()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-moon text-gray-600 dark:text-gray-300" x-show="!isDark"></i>
+                    <i class="fas fa-sun text-gray-600 dark:text-gray-300" x-show="isDark"></i>
                 </button>
                 <button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 relative transition-colors">
                     <i class="fas fa-bell text-gray-600 dark:text-gray-300"></i>
@@ -306,7 +310,27 @@
             </div>
         </header>
 
-        @yield('content')
+        <!-- Page Content Container -->
+        <div x-data="pageLoader()" 
+             x-show="!loading" 
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 transform translate-y-4"
+             x-transition:enter-end="opacity-100 transform translate-y-0">
+            @yield('content')
+        </div>
+        
+        <!-- Loading Indicator -->
+        <div x-data="pageLoader()" 
+             x-show="loading" 
+             x-transition:enter="transition ease-out duration-150"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             class="flex items-center justify-center min-h-screen">
+            <div class="text-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p class="text-gray-600 dark:text-gray-400">Yükleniyor...</p>
+            </div>
+        </div>
     
     <!-- Welcome Toast Notification -->
     <div id="welcome-toast" class="fixed top-4 right-4 z-50 transform translate-x-full opacity-0 transition-all duration-500 ease-in-out pointer-events-none">
@@ -614,32 +638,6 @@
     </div>
 
     <script>
-        // Dark mode toggle functionality
-        function toggleDarkMode() {
-            const html = document.documentElement;
-            const isDark = html.classList.contains('dark');
-            
-            if (isDark) {
-                html.classList.remove('dark');
-                localStorage.setItem('darkMode', 'false');
-            } else {
-                html.classList.add('dark');
-                localStorage.setItem('darkMode', 'true');
-            }
-        }
-
-        // Initialize dark mode based on localStorage
-        function initializeDarkMode() {
-            const darkMode = localStorage.getItem('darkMode');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            
-            if (darkMode === 'true' || (darkMode === null && prefersDark)) {
-                document.documentElement.classList.add('dark');
-            }
-        }
-
-        // Initialize dark mode on page load
-        initializeDarkMode();
 
         // Welcome Toast Functions
         function showWelcomeToast(userName) {

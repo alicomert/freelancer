@@ -45,7 +45,9 @@
         </div>
 
         <!-- Gönderi Tipi Seçimi -->
-        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 border border-gray-100 dark:border-gray-700">
+        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 border border-gray-100 dark:border-gray-700"
+             x-data="pageNavigation()"
+             @page-loaded.window="updateActiveLink($event.detail.url)">
             <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
                 <div class="w-8 h-8 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center mr-3">
                     <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,7 +58,7 @@
             </h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Normal Post -->
-                <a href="{{ route('posts.create.post') }}" class="post-type-card group">
+                <a href="{{ route('posts.create.post') }}" @click="navigateToPage($event, '{{ route('posts.create.post') }}')" class="post-type-card group">
                     <div class="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-6 text-center hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-200 bg-gray-50 dark:bg-gray-800 hover:shadow-lg group-hover:scale-105 cursor-pointer">
                         <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mx-auto mb-4">
                             <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -69,7 +71,7 @@
                 </a>
                 
                 <!-- Hizmet İlanı -->
-                <a href="{{ route('posts.create.service') }}" class="post-type-card group">
+                <a href="{{ route('posts.create.service') }}" @click="navigateToPage($event, '{{ route('posts.create.service') }}')" class="post-type-card group">
                     <div class="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-6 text-center hover:border-green-500 dark:hover:border-green-400 transition-all duration-200 bg-gray-50 dark:bg-gray-800 hover:shadow-lg group-hover:scale-105 cursor-pointer">
                         <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center mx-auto mb-4">
                             <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -82,7 +84,7 @@
                 </a>
                 
                 <!-- Açık Artırma -->
-                <a href="{{ route('posts.create.auction') }}" class="post-type-card group">
+                <a href="{{ route('posts.create.auction') }}" @click="navigateToPage($event, '{{ route('posts.create.auction') }}')" class="post-type-card group">
                     <div class="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-6 text-center hover:border-orange-500 dark:hover:border-orange-400 transition-all duration-200 bg-gray-50 dark:bg-gray-800 hover:shadow-lg group-hover:scale-105 cursor-pointer">
                         <div class="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center mx-auto mb-4">
                             <svg class="w-8 h-8 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,7 +97,7 @@
                 </a>
                 
                 <!-- Anket -->
-                <a href="{{ route('posts.create.poll') }}" class="post-type-card group">
+                <a href="{{ route('posts.create.poll') }}" @click="navigateToPage($event, '{{ route('posts.create.poll') }}')" class="post-type-card group">
                     <div class="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-6 text-center hover:border-purple-500 dark:hover:border-purple-400 transition-all duration-200 bg-gray-50 dark:bg-gray-800 hover:shadow-lg group-hover:scale-105 cursor-pointer">
                         <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mx-auto mb-4">
                             <svg class="w-8 h-8 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,7 +110,7 @@
                 </a>
                 
                 <!-- Portfolyo -->
-                <a href="{{ route('posts.create.portfolio') }}" class="post-type-card group">
+                <a href="{{ route('posts.create.portfolio') }}" @click="navigateToPage($event, '{{ route('posts.create.portfolio') }}')" class="post-type-card group">
                     <div class="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-6 text-center hover:border-indigo-500 dark:hover:border-indigo-400 transition-all duration-200 bg-gray-50 dark:bg-gray-800 hover:shadow-lg group-hover:scale-105 cursor-pointer">
                         <div class="w-16 h-16 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center mx-auto mb-4">
                             <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,7 +123,7 @@
                 </a>
                 
                 <!-- Freelance Proje -->
-                <a href="{{ route('posts.create.freelance') }}" class="post-type-card group">
+                <a href="{{ route('posts.create.freelance') }}" @click="navigateToPage($event, '{{ route('posts.create.freelance') }}')" class="post-type-card group">
                     <div class="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-6 text-center hover:border-teal-500 dark:hover:border-teal-400 transition-all duration-200 bg-gray-50 dark:bg-gray-800 hover:shadow-lg group-hover:scale-105 cursor-pointer">
                         <div class="w-16 h-16 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center mx-auto mb-4">
                             <svg class="w-8 h-8 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
