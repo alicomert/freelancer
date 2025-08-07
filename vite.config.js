@@ -10,6 +10,22 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+    // Eski Node.js versiyonları için uyumluluk
+    define: {
+        global: 'globalThis',
+        process: 'process',
+    },
+    resolve: {
+        alias: {
+            // Polyfills için
+            crypto: 'crypto-browserify',
+            buffer: 'buffer',
+            process: 'process/browser',
+        },
+    },
+    optimizeDeps: {
+        include: ['crypto-browserify', 'buffer', 'process'],
+    },
     build: {
         // Paylaşımlı hosting için optimize edilmiş ayarlar
         outDir: 'public/build',

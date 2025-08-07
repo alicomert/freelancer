@@ -178,6 +178,32 @@ bootstrap/cache/: 775
 - Database kullanıcısı oluşturuldu mu?
 - Host bilgisi localhost mi?
 
+### 4. Node.js Build Hatası (crypto.getRandomValues)
+Bu hata eski Node.js versiyonlarında oluşur. Çözüm:
+
+```bash
+# Legacy build kullanın
+npm run build:plesk
+
+# Eğer hala hata alıyorsanız fallback kullanın
+npm run build:plesk-fallback
+```
+
+**Hata Detayları:**
+- Plesk'te Node.js 16 veya daha eski versiyonlar kullanılıyorsa
+- `crypto.getRandomValues` fonksiyonu desteklenmiyorsa
+- Vite'ın modern crypto API'lerini kullanması durumunda
+
+**Çözüm Adımları:**
+1. `npm run build:plesk` (legacy build - ES2015 target)
+2. Eğer çalışmazsa: `npm run build:plesk-fallback` 
+3. Son çare: Manuel build (`vite build --target es2015`)
+
+**Polyfill Paketleri Yüklü:**
+- crypto-browserify
+- buffer
+- process
+
 ## 📞 Destek
 
 Herhangi bir sorun yaşarsanız:
