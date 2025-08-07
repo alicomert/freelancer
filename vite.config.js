@@ -10,23 +10,42 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
-    // Eski Node.js versiyonları için uyumluluk
+    // Eski Node.js versiyonları için kapsamlı uyumluluk
     define: {
         global: 'globalThis',
-        process: 'process',
+        'process.env.NODE_ENV': '"production"',
     },
     resolve: {
         alias: {
-            // Polyfills için
+            // Node.js polyfills
             crypto: 'crypto-browserify',
             buffer: 'buffer',
             process: 'process/browser',
+            stream: 'stream-browserify',
+            util: 'util',
+            path: 'path-browserify',
+            fs: false,
+            os: false,
         },
     },
     optimizeDeps: {
-        include: ['crypto-browserify', 'buffer', 'process'],
+        include: [
+            'crypto-browserify',
+            'buffer',
+            'process',
+            'stream-browserify',
+            'util',
+            'path-browserify'
+        ],
+        exclude: ['fs', 'os'],
     },
+    // Build ayarları - Legacy browser desteği ve paylaşımlı hosting optimizasyonu
     build: {
+        target: 'es2015',
+        // Module preload polyfill ayarı (yeni format)
+        modulePreload: {
+            polyfill: false
+        },
         // Paylaşımlı hosting için optimize edilmiş ayarlar
         outDir: 'public/build',
         assetsDir: 'assets',
