@@ -34,6 +34,12 @@ window.pageNavigation = () => ({
             // İçeriği değiştir
             document.querySelector('main').innerHTML = newContent;
             
+            // Alpine.js'i yeni içerik için yeniden başlat
+            if (window.Alpine) {
+                // Yeni DOM elementlerini Alpine.js ile başlat
+                window.Alpine.initTree(document.querySelector('main'));
+            }
+            
             // Yeni içeriğin içindeki <script> taglerini çalıştır
             doc.querySelectorAll('script').forEach((oldScript) => {
                 const newScript = document.createElement('script');
@@ -122,4 +128,10 @@ window.darkMode = () => ({
 });
 
 // Alpine.js'i başlat
-Alpine.start();
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        Alpine.start();
+    });
+} else {
+    Alpine.start();
+}
