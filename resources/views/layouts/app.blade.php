@@ -41,8 +41,130 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Vite Assets -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
+    
+    <!-- Alpine.js Functions -->
+    <script>
+        // Hızlı Sayfa Geçişi Sistemi (SEO Güvenli)
+        window.pageNavigation = () => ({
+            currentUrl: window.location.pathname,
+            
+            navigateToPage(event, url) {
+                event.preventDefault();
+                
+                // Eğer aynı sayfadaysak, hiçbir şey yapma
+                if (this.currentUrl === url) return;
+                
+                // Loading göster
+                window.dispatchEvent(new CustomEvent('show-loading'));
+                
+                // AJAX ile sayfa içeriğini yükle
+                fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'text/html'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    // Sayfa içeriğini güncelle
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newContent = doc.querySelector('main').innerHTML;
+                    
+                    // İçeriği değiştir
+                    document.querySelector('main').innerHTML = newContent;
+                    
+                    // Alpine.js'i yeni içerik için yeniden başlat
+                    if (window.Alpine) {
+                        // Yeni DOM elementlerini Alpine.js ile başlat
+                        window.Alpine.initTree(document.querySelector('main'));
+                    }
+                    
+                    // URL'yi güncelle
+                    history.pushState({}, '', url);
+                    this.currentUrl = url;
+                    
+                    // Loading gizle
+                    window.dispatchEvent(new CustomEvent('hide-loading'));
+                    
+                    // Sayfa yüklendiğini bildir
+                    window.dispatchEvent(new CustomEvent('page-loaded', {
+                        detail: { url: url }
+                    }));
+                    
+                    // Scroll'u en üste al
+                    window.scrollTo(0, 0);
+                })
+                .catch(error => {
+                    console.error('Sayfa yüklenirken hata:', error);
+                    // Hata durumunda normal yönlendirme yap
+                    window.location.href = url;
+                });
+            },
+            
+            updateActiveLink(url) {
+                this.currentUrl = url;
+            }
+        });
+
+        window.pageLoader = () => ({
+            loading: false,
+            
+            init() {
+                // Loading event'lerini dinle
+                window.addEventListener('show-loading', () => {
+                    this.loading = true;
+                });
+                
+                window.addEventListener('hide-loading', () => {
+                    this.loading = false;
+                });
+            }
+        });
+
+        // Dark Mode Sistemi
+        window.darkMode = () => ({
+            isDark: false,
+            
+            init() {
+                // LocalStorage'dan dark mode durumunu al
+                const darkMode = localStorage.getItem('darkMode');
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                
+                // Dark mode durumunu belirle
+                this.isDark = darkMode === 'true' || (darkMode === null && prefersDark);
+                
+                // İlk yüklemede dark class'ını uygula
+                this.updateDarkClass();
+                
+                // isDark değişkenini izle ve değiştiğinde DOM'u güncelle
+                this.$watch('isDark', (value) => {
+                    this.updateDarkClass();
+                    localStorage.setItem('darkMode', value.toString());
+                });
+            },
+            
+            updateDarkClass() {
+                if (this.isDark) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            },
+            
+            toggle() {
+                this.isDark = !this.isDark;
+            }
+        });
+    </script>
+    
+    <!-- CSS Styles (CDN-based solution) -->
+    <style>
+        /* Tailwind CSS CDN */
+        @import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
+    </style>
     
     <style>
         /* Custom CSS for elements that need more precise styling */
