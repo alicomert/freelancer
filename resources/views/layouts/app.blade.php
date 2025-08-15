@@ -160,13 +160,34 @@
         });
     </script>
     
-    <!-- CSS Styles (CDN-based solution) -->
-    <style>
-        /* Tailwind CSS CDN */
-        @import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
-    </style>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {}
+            }
+        }
+        
+        // Prevent dark mode flash - apply dark class immediately if needed
+        ;(function() {
+            const darkMode = localStorage.getItem('darkMode');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const shouldBeDark = darkMode === 'true' || (darkMode === null && prefersDark);
+            
+            if (shouldBeDark) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
     
     <style>
+        /* Prevent dark mode flash */
+        html {
+            color-scheme: light dark;
+        }
+        
         /* Custom CSS for elements that need more precise styling */
         .gradient-bg {
             background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
